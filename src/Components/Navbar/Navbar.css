@@ -1,0 +1,39 @@
+.navClass{
+   
+   display: flex;
+   background-color: transparent;
+   backdrop-filter: blur(500px); 
+   padding: 10px;
+   justify-content: space-between;
+   margin-right: 100px;
+}
+.navClass > div:first-child {
+    flex: 1;
+  }
+  
+  .navClass > div:last-child {
+    display: flex;
+    justify-content: flex-end;
+  }
+.nav-link {
+    color: #333; 
+    font-family: 'poppins';
+    font-size: 20px;
+    display: flex;
+    background-color: transparent;
+    backdrop-filter: blur; 
+    border: none; 
+    border-radius: 0; 
+    padding: 10px 20px; 
+    text-decoration: none; 
+  }
+  .nav-link:hover{
+    color: #3982b8;
+    /* background-color: #C0CFFA; */
+    /* border-radius: 12px; */
+    text-decoration: underline;
+  }
+  .nav-link:active{
+    background-color: #ccc;
+    color: #444;
+  }

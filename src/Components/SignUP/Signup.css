@@ -1,0 +1,13 @@
+/* body{
+    background-image: radial-gradient( at top right, #C0CFFA 55.55%, #fff 70%); 
+
+} */
+
+.signup-container{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: radial-gradient( at top right, #C0CFFA 55.55%, #fff 70%); 
+}
