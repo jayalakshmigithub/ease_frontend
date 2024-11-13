@@ -14,6 +14,7 @@ const createAxiosInstance=(baseURL)=>{
 
 export const axiosPrivate =createAxiosInstance(BASE_URL)
 export const axiosUser = createAxiosInstance(`${BASE_URL}/user`)
+export const axiosAdmin = createAxiosInstance(`${BASE_URL}/admin`)
 
 
  

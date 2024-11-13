@@ -1,5 +1,5 @@
 
-import { Button } from '@mui/material';
+import { Button  , useMediaQuery , useTheme} from '@mui/material';
 import { display } from '@mui/system';
 import React,{useState} from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -178,7 +178,9 @@ import InviteMembers from '../InviteMembers';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [openInviteDialog, setOpenInviteDialog] = useState(false); // State to manage dialog visibility
+  const [openInviteDialog, setOpenInviteDialog] = useState(false); 
+  const [drawerOpen , setDrawerOpen] = useState(false);
+  const theme = useTheme()
 
   const handleClick = () => {
     navigate('/signin');
@@ -313,7 +315,7 @@ const Navbar = () => {
         ) : (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         
-          {isWorkspacesPage && (
+          {/* {isWorkspacesPage && (
             <Button
               sx={{
                 display: 'flex',
@@ -330,7 +332,7 @@ const Navbar = () => {
               <AddIcon />
               Invite
             </Button>
-          )}
+          )} */}
           
           {!isLandingPage &&  (
             <StyledButton onClick={handleNewProject}>

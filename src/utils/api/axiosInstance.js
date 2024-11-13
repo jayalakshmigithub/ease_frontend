@@ -1,13 +1,15 @@
 import axios from "axios";
 import { store } from "../Redux/store.js";
-import { clearUser } from "../Redux/Slice/userSlice.js";
+import { clearUser, userName } from "../Redux/Slice/userSlice.js";
+import { adminName,clearAdmin } from "../Redux/Slice/adminSlice.js";
 import { refreshTokenApi } from "./api.js";
 import config from "../../config/config.js";
 
 const API_URL = config.API_URL;
 const USER_API_URL = config.USER_API_URL;
+const ADMIN_API_URL = config.ADMIN_API_URL;
 
-const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAction) => {
+const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAction,userRole) => {
     const instance = axios.create({
         baseURL,
         headers: { "Content-Type": "application/json" },
@@ -17,7 +19,7 @@ const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAct
     instance.interceptors.request.use(
         (config) => {
             const accessToken = localStorage.getItem(accessTokenKey);
-            console.log(accessToken, 'accessToken');
+            console.log(accessToken, 'accessToken in axios interceptor request');
             if (accessToken) {
                 config.headers = config.headers || {};
                 config.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -38,11 +40,16 @@ const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAct
                 originalRequest._retry = true;
                 try {
                     
-                    const response = await axios.post(refreshTokenApi, {}, {
+                    console.log(refreshTokenApi,'refreshTokenApi')
+                    const response = await axios.post(refreshTokenApi, {
+                        userRole: userRole
+                    }, {
                         withCredentials: true,
                     });
-                    console.log('USER')
+                    console.log("response data is here or not",response.data ,'USER')
                     const { accessToken, refreshToken: newRefreshToken } = response.data;
+                    console.log();
+                    
                     localStorage.setItem(accessTokenKey, accessToken);
                     localStorage.setItem(refreshTokenKey, newRefreshToken);
                     originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -73,5 +80,16 @@ export const userAxiosInstance = createAxiosInstance(
     USER_API_URL,
     "useraccessToken",
     "userrefreshToken",
-    clearUser
+    clearUser,
+    userName,
+  
 );
+
+export const adminAxiosInstance = createAxiosInstance(
+    ADMIN_API_URL,
+    "adminaccessToken",
+    "adminrefreshToken",
+    clearAdmin,
+    adminName,
+)
+

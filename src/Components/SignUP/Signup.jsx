@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   TextField,
@@ -6,7 +6,7 @@ import {
   Link,
   Button,
   Box,
-  Modal
+  Modal,
 } from "@mui/material";
 import { FaUser, FaLock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
@@ -14,11 +14,13 @@ import { makeStyles } from "@mui/styles";
 import login_icon from "../../Assets/login.png";
 import "./Signup.css";
 import { axiosUser } from "../../utils/api/baseUrl";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../utils/Redux/Slice/userSlice";
+
+
 
 const useStyles = makeStyles({
   label: {
@@ -26,7 +28,7 @@ const useStyles = makeStyles({
     fontSize: "5px",
     fontFamily: "Poppins ",
   },
-   modalContent: {
+  modalContent: {
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -39,7 +41,8 @@ const useStyles = makeStyles({
   },
 });
 
-const Signup = () => {
+const Signup = ({isInvited}) => {
+
   const SignuPrompt = () => {
     return (
       <div className="signup">
@@ -49,9 +52,8 @@ const Signup = () => {
           sx={{
             fontSize: 13.5,
             textAlign: "center",
-            // margin: "20px 0 15px",
-            marginTop:'12px',
-            marginBottom:"50px",
+            marginTop: "12px",
+            marginBottom: "50px",
             fontFamily: "Poppins ",
           }}
         >
@@ -68,14 +70,30 @@ const Signup = () => {
     );
   };
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+  // const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
-  const [OtpVerified, setOtpVerified] = useState(false);
-  const [openModal, setopenModal] = useState(false)
-  const [otp,setOtp] = useState("")
+  // const [OtpVerified, setOtpVerified] = useState(false);
+  const [openModal, setopenModal] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [workspaceId, setWorkspaceId] = useState(null);
   const dispatch = useDispatch();
+  const [otpExpired, setOtpExpired] = useState("");
+  const [timeLeft, setTimeLeft] = useState(300);
+
+  const [OtpVerified, setOtpVerified] = useState(location.state?.OtpVerified || false);
+const [email, setEmail] = useState(location.state?.email || "");
+
+
+
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const workspaceIdFromUrl = params.get("workspaceId");
+    setWorkspaceId(workspaceIdFromUrl);
+  }, [location]);
 
   const validateInput = () => {
     console.log("validation");
@@ -105,6 +123,18 @@ const Signup = () => {
       validationErros.password = "password must be atleast of 6 chararcters";
       toast.error("password must be atleast of 6 chararcters");
       isValid = false;
+    } else if (!/[a-z]/.test(password)) {
+      toast.error("password must include at least one lowercase letter");
+      isValid = false;
+    } else if (!/[A-Z]/.test(password)) {
+      toast.error("password must include at least one UPPERCASE character");
+      isValid = false;
+    } else if (!/\d/.test(password)) {
+      toast.error("password must include at least one number");
+      isValid = false;
+    } else if (!/[@$!%*?&]/.test(password)) {
+      toast.error("password must include at least one specail character");
+      isValid = false;
     } else {
       validationErros.password = "";
     }
@@ -119,205 +149,97 @@ const Signup = () => {
     return isValid;
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // if (validateInput()) {
-  //   //   console.log("form submitted");
 
-  //     axiosUser
-  //       .post(
-  //         "/otpgenerate" ,{email})
-  //       .then(function (response) {
-  //         if (response.status === 200) {
-  //           toast.success("registered successfully");
-  //           // navigate("/home");
-  //           setTimeout(() => {
-  //             navigate("/home");
-  //           }, 1000);
-  //           console.log(response.data);
-  //         }
-  //       })
-  //       .catch(function (error) {
-  //         console.log(error);
-  //       });
-  //   // }
-  // };
+  const startOtpTimer =()=>{
+    let countDown = 60
+    setTimeLeft(countDown)
+  
 
-  //og
-  // const handleGetOtp = () => {
-  //   if (validateInput()) {
-  //     axiosUser
-  //       .post("/otpgenerate", { email })
-  //       .then((response) => {
-  //         if (response.status === 200) {
-  //           const otp = window.prompt("Enter the OTP sent to your email:");
-  //           if (otp) {
-  //             axiosUser
-  //               .post("/otpverify", { email, otp })
-  //               .then((verifyResponse) => {
-  //                 console.log(verifyResponse);
-  //                 if (
-  //                   verifyResponse.status === 200 &&
-  //                   verifyResponse.data.message === "OTP verified"
-  //                 ) {
-  //                   toast.success("OTP verified successfully");
-  //                   setOtpVerified(true);
-  //                 } else {
-  //                   toast.error("Invalid OTP");
-  //                 }
-  //               })
-  //               .catch((error) => {
-  //                 console.log(error);
-  //                 toast.error("Error verifying OTP");
-  //               });
-  //           }
-  //         } else {
-  //           toast.error("otp input is empty");
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //         toast.error("Error generating OTP");
-  //       });
-  //   }
-  // };
+const interval = setInterval(() => {
+  countDown--
+  setTimeLeft(countDown)
+   if(countDown===0){
+    setOtpExpired(true)
+    clearInterval(interval)
+   }
 
-  const handleGetOtp = () => {
-    if (validateInput()) {
+  
+}, 1000);
+  }
+
+useEffect(()=>{
+  startOtpTimer()
+},[])
+
+  const handleResendOtp = () => {
+    setOtpExpired(false);
+    startOtpTimer()
+    console.log("otp resent");
+    axiosUser
+    .post("/otpgenerate", { email })
+    .then((response) => {
+      if (response.status === 200) {
+        setopenModal(true);
+      } else {
+        toast.error("otp generation failed");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      toast.error("Error generating OTP");
+    });
+  };
+
+  const handleSubmit =async()=>{
+    try {
+      const userData = { name ,email , password, workspaceId }
+      if(validateInput()){
+        const response = await axiosUser.post("/otpgenerate", { email  })
+        if(response.data){
+          toast.success('please verify your email',{
+            autoClose:1000
+          })
+          setTimeout(()=>{
+            navigate('/otp',{ state: {userData:userData,origin:'signup'} })
+          },2000)
+        }        
+      }
+    } catch (error) {
+      console.error(error,"error in response");
+      toast.error("Error generating OTP");
+      
+    }
+  }
+  
+  
+  const handleSubmitOtp = () => {
+    if (!otpExpired) {
       axiosUser
-        .post("/otpgenerate", { email })
-        .then((response) => {
-          if (response.status === 200) {
-            // const otp = window.prompt("Enter the OTP sent to your email:");
-            setopenModal(true)
-            // if (otp) {
-            //   axiosUser
-            //     .post("/otpverify", { email, otp })
-            //     .then((verifyResponse) => {
-            //       console.log(verifyResponse);
-            //       if (
-            //         verifyResponse.status === 200 &&
-            //         verifyResponse.data.message === "OTP verified"
-            //       ) {
-            //         toast.success("OTP verified successfully");
-            //         setOtpVerified(true);
-            //       } else {
-            //         toast.error("Invalid OTP");
-            //       }
-            //     })
-            //     .catch((error) => {
-            //       console.log(error);
-            //       toast.error("Error verifying OTP");
-            //     });
-            // }
+        .post("/otpverify", { email, otp,workspaceId })
+        .then((verifyResponse) => {
+          console.log(verifyResponse);
+          if (
+            verifyResponse.status === 200 &&
+            verifyResponse.data.message === "OTP verified"
+          ) {
+            toast.success("OTP verified successfully");
+            setOtpVerified(true);
+            setopenModal(false);
           } else {
-            toast.error("otp generation failed");
+            toast.error("Invalid OTP");
           }
         })
         .catch((error) => {
           console.log(error);
-          toast.error("Error generating OTP");
+          toast.error("Error verifying OTP");
         });
     }
   };
-
-  // const handleGetOtp =()=>{
-  //   e.preventDefault()
-  //   if(validateInput()){
-  //     axiosUser.post('/otpgenerate',{email})
-  //     .then(function (response){
-  //       if(response.status===200){
-  //         const otp = window.prompt('enter the otp here')
-  //        if(otp){
-  //         axiosUser.post('/otpverify',{email,otp})
-  //         .then((verifyResponse)=>{
-  //           if(verifyResponse.status===200){
-  //            toast.success('otp get')
-  //            handleSubmit()
-  //           }
-  //         }).catch((error)=>{
-  //           console.log(error)
-  //         })
-  //        }
-  //       }
-  //     })
-  //     .catch(()=>{
-  //       console.error(error)
-  //     })
-  //   }
-  // }
-
-
-  const handleSubmitOtp =()=>{
-               axiosUser
-                .post("/otpverify", { email, otp })
-                .then((verifyResponse) => {
-                  console.log(verifyResponse);
-                  if (
-                    verifyResponse.status === 200 &&
-                    verifyResponse.data.message === "OTP verified"
-                  ) {
-                    toast.success("OTP verified successfully");
-                    setOtpVerified(true);
-                    setopenModal(false)
-                  } else {
-                    toast.error("Invalid OTP");
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                  toast.error("Error verifying OTP");
-                });
-  }
-
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!OtpVerified) {
-      toast.error("please verify your otp");
-      return;
-    }
-
-    if (validateInput()) {
-      console.log("form submitted");
-
-      axiosUser
-        .post(
-          "/signup",
-          {
-            name: name,
-            email: email,
-            password: password,
-            confirmPassword: confirmpassword,
-          },
-          { withCredentials: true }
-        )
-        .then(function (response) {
-          if (response.status === 200) {
-            toast.success("registered successfully");
-            // navigate("/home");
-            dispatch(addUser(response.data));
-            localStorage.setItem("useraccessToken", response.data.accessToken);
-            localStorage.setItem(
-              "userrefreshToken",
-              response.data.refreshToken
-            );
-            setTimeout(() => {
-              navigate("/stepper");
-            }, 2000);
-            console.log(response.data);
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  };
-  const classes = useStyles();
+  
+  
   return (
     <Box className="signup-container">
-      <div className="wrapper" style={{width:'650px' ,height:'500px'}}>
+      <div className="wrapper" style={{ width: "650px", height: "500px" }}>
         <ToastContainer
           position="top-center"
           autoClose={3000}
@@ -340,19 +262,23 @@ const Signup = () => {
                 component="h1"
                 gutterBottom
                 justifyContent="center"
-                sx={{ fontFamily: "Poppins ", marginTop:'40px' , textAlign:"center"}}
+                sx={{
+                  fontFamily: "Poppins ",
+                  marginTop: "40px",
+                  textAlign: "center",
+                }}
               >
                 Signup
               </Typography>
             </Box>
-
+  
             <div className="input-box">
               <TextField
                 label="Username"
                 placeholder="Username"
                 required
                 value={name}
-                sx={{marginBottom:"5px"}}
+                sx={{ marginBottom: "5px" }}
                 onChange={(e) => setName(e.target.value)}
                 InputProps={{
                   endAdornment: (
@@ -413,27 +339,15 @@ const Signup = () => {
                 }}
               />
             </div>
-
+  
             <div className="remember-forgot"></div>
-            <Box display="flex" flexDirection='column' justifyContent="space-between" gap='10px'>
-            <Button  sx={{
-                  backgroundColor: "white",
-                  color: "grey",
-                  padding: "1px 25px",
-                  borderRadius: "5px",
-                  fontSize: "18px",
-                  fontWeight: "normal",
-                  width: "100%",
-                  maxHeight: "35px",
-                  boxShadow: "0 0 5PX",
-                  fontFamily: "Poppins ",
-                }} onClick={handleGetOtp}>get otp</Button>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              gap="10px"
+            >
               <Button
-                type="submit"
-                onClick={handleSubmit}
-                disabled={!OtpVerified}
-                variant="contained"
-                color="primary"
                 sx={{
                   backgroundColor: "white",
                   color: "grey",
@@ -446,9 +360,9 @@ const Signup = () => {
                   boxShadow: "0 0 5PX",
                   fontFamily: "Poppins ",
                 }}
+                onClick={handleSubmit}
               >
-                {" "}
-                Sign up
+                  Sign up
               </Button>
               
             </Box>
@@ -481,16 +395,307 @@ const Signup = () => {
               fullWidth
               margin="normal"
             />
+  
+            <Box marginTop={2}>
+              {otpExpired ? (
+                <Button
+                  onClick={handleResendOtp}
+                  variant="outlined"
+                  color="secondary"
+                >
+                  Resend OTP
+                </Button>
+              ) : (
+                <Typography variant="body2" color="textSecondary">
+                  Resend OTP in {timeLeft} seconds
+                </Typography>
+              )}
+            </Box>
             <Box display="flex" justifyContent="flex-end" marginTop={2}>
-              <Button onClick={handleSubmitOtp} variant="contained" color="primary">
+              <Button
+                onClick={handleSubmitOtp}
+                variant="contained"
+                color="primary"
+              >
                 Verify OTP
               </Button>
             </Box>
           </Box>
         </Modal>
       </div>
-      <img src=""/>
+      <img src="" />
     </Box>
   );
-};
-export default Signup;
+  };
+  export default Signup;
+
+
+
+
+
+
+
+{/* <Button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={!OtpVerified}
+                variant="contained"
+                color="primary"
+                sx={{
+                  backgroundColor: "white",
+                  color: "grey",
+                  padding: "1px 25px",
+                  borderRadius: "5px",
+                  fontSize: "18px",
+                  fontWeight: "normal",
+                  width: "100%",
+                  maxHeight: "35px",
+                  boxShadow: "0 0 5PX",
+                  fontFamily: "Poppins ",
+                }}
+              >
+                {" "}
+             
+              </Button> */}
+
+  // const handleGetOtp = () => {
+  //   if (validateInput()) {
+  //     axiosUser
+  //       .post("/otpgenerate", { email })
+  //       .then((response) => {
+  //         if (response.status === 200) {
+  //           setopenModal(true);
+  //         } else {
+  //           toast.error("otp generation failed");
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         toast.error("Error generating OTP");
+  //       });
+  //   }
+  // };
+
+  // const handleSubmitOtp = () => {
+  //   axiosUser
+  //     .post("/otpverify", { email, otp })
+  //     .then((verifyResponse) => {
+  //       console.log(verifyResponse);
+  //       if (
+  //         verifyResponse.status === 200 &&
+  //         verifyResponse.data.message === "OTP verified"
+  //       ) {
+  //         toast.success("OTP verified successfully");
+  //         setOtpVerified(true);
+  //         setopenModal(false);
+  //       } else {
+  //         toast.error("Invalid OTP");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       toast.error("Error verifying OTP");
+  //     });
+  // };
+
+
+
+  //OG IN REVIEW DAY CHANGING FOR OTP NEW PAGE
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     if (!OtpVerified) {
+  //       toast.error("please verify your otp");
+  //       return;
+  //     }
+  
+  //     if (validateInput()) {
+  //       console.log("form submitted");
+  
+  //       const signupData = {
+  //         name,
+  //         email,
+  //         password,
+  //         confirmpassword: confirmpassword,
+  //       };
+  //       if (!isInvited) {
+  //         signupData.name = name;
+  //       }
+        
+  //       if (workspaceId) {
+  //         signupData.workspaceId = workspaceId;
+  //       }
+  
+  //       const res = await axiosUser.post(
+  //         "/signup",
+  //         signupData,
+  //         // {
+  //         //   name: name,
+  //         //   email: email,
+  //         //   password: password,
+  //         //   confirmPassword: confirmpassword,
+  //         //   workspaceId,
+  //         // },
+  //         { withCredentials: true }
+  //       );
+  //       console.log(res.data, "res waitttttttt");
+  
+  //       if (res.data) {
+  //         if (res.status === 200) {
+  //           toast.success("registered successfully");
+  //           navigate("/stepper");
+  //           dispatch(addUser(res.data));
+  //           localStorage.setItem("useraccessToken", res.data.accessToken);
+  //           localStorage.setItem("userrefreshToken", res.data.refreshToken);
+  //           setTimeout(() => {
+  //             navigate("/home");
+  //           }, 2000);
+  //           console.log("res.data logged", res.data);
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error, "error in submit ");
+  //   }
+  // };
+  
+  
+  
+  //  ' const handleSubmit = async (e) => {
+  //     e.preventDefault();
+  
+  //     try {
+     
+  //       if (!OtpVerified) {
+  //         toast.error("Please verify your OTP");
+  //         return;
+  //       }
+  
+     
+  //       if (validateInput()) {
+  //         console.log("Form is being submitted");
+  
+  //         const signupData = {
+  //           name,
+  //           email,
+  //           password,
+  //         };
+  
+       
+  
+       
+  //         const response = await axiosUser.post("/signup", signupData, { withCredentials: true });
+  //         console.log("Server response:", response.data);
+  
+       
+  //         if ( response.status === 200) {
+  
+  //           navigate("/otp", {state: {response:response.data}});
+          
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Error during submission:", error);
+  //       toast.error("Error submitting form, please try again.");
+  //     }
+  //   };'
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+//CHANGED TODAY FOR NEW OTP PAGE
+  // const handleGetOtp = () => {
+  //   if (validateInput()) {
+  //     axiosUser
+  //       .post("/otpgenerate", { email })
+  //       .then((response) => {
+  //         if (response.status === 200) {
+  //           setopenModal(true);
+  //         } else {
+  //           toast.error("otp generation failed");
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         toast.error("Error generating OTP");
+  //       });
+  //   }
+  // };
+
+
+
+  
+  // const handleGetOtp = () => {
+  //   if (validateInput()) {
+  //     axiosUser
+  //       .post("/otpgenerate", { email })
+  //       .then((response) => {
+  //         if (response.status === 200) {
+  //           toast.success("OTP generated");
+  //           navigate("/otp", { state: { email, workspaceId ,name,password} });
+  //         } else {
+  //           toast.error("OTP generation failed");
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //         toast.error("Error generating OTP");
+  //       });
+  //   }
+  // };
+
+
+
+// <Modal
+// open={openModal}
+// onClose={() => setopenModal(false)}
+// aria-labelledby="modal-title"
+// aria-describedby="modal-description"
+// >
+
+// <Box
+//   sx={{
+//     width: 400,
+//     margin: "auto",
+//     padding: 2,
+//     backgroundColor: "white",
+//     borderRadius: 2,
+//     boxShadow: 3,
+//   }}
+// >
+//   <Typography variant="h6" id="modal-title">
+//     Enter OTP
+//   </Typography>
+//   <TextField
+//     label="Please enter your OTP here"
+//     value={otp}
+//     onChange={(e) => setOtp(e.target.value)}
+//     fullWidth
+//     margin="normal"
+//   />
+//   <Box display="flex" justifyContent="flex-end" marginTop={2}>
+//     <Button
+//       onClick={handleSubmitOtp}
+//       variant="contained"
+//       color="primary"
+//     >
+//       Verify OTP
+//     </Button>
+//   </Box>
+// </Box>
+// </Modal>

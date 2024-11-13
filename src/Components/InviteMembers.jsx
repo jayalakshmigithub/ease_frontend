@@ -89,34 +89,63 @@ import {
 import { userAxiosInstance } from '../utils/api/axiosInstance';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { PiUser } from "react-icons/pi";
 
-const InviteMembers = ({ open, onClose,workSpace }) => {
+const InviteMembers = ({workspace, open, onClose, }) => {
+ 
+  
   const navigate = useNavigate()
   const [email, setEmail] = useState('');
   const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const workspaceId = workSpace?.workspace?._id;
-  
-  const handleAddEmail = (e) => {
+
+
+ 
+
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleAddEmail = (e) => {   
     e.preventDefault();
+    if(validateEmail(email)){
     if (email && !emails.includes(email)) {
       setEmails([...emails, email]);
       setEmail('');
     }
+  }else{
+    setError(true)
+  }
   };
   const handleDeleteEmail = (emailToDelete) => {
     setEmails(emails.filter(email => email !== emailToDelete));
   };
-  console.log(email)
+ 
   const handleSubmit = async () => {
+    let updatedEmails = emails
+ 
+    if (email && !emails.includes(email)) {
+      updatedEmails = [...emails, email];
+      setEmails(updatedEmails);
+      setEmail('');  
+    }
+  
     setLoading(true);
     setError(null);
-    const formData = {emails,workspaceId}
-    console.log(formData,'h')
+   
+    const formData = { emails: updatedEmails,workspace}
     try {
-      const response = await userAxiosInstance.post('/invite', formData,{withCredentials:true});
-      console.log('Invitations sent:', response.data);
+      const response = await userAxiosInstance.post('/invite', formData);
+      if(response.status==200){
+        console.log('success')
+      }
+      if(response.error==400){
+        console.log('error')
+
+      }
       toast.success('Invitation sent');
       onClose(); 
       setTimeout(() => {

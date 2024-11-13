@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import login_icon from "../../Assets/login.png";
+import { addUser } from "../../utils/Redux/Slice/userSlice";
+import { useDispatch } from "react-redux";
 
 import {
   Typography,
@@ -19,9 +21,14 @@ import { FcGoogle } from "react-icons/fc";
 import { color, display, height, margin, width } from "@mui/system";
 import { makeStyles } from "@mui/styles";
 import { axiosUser } from "../../utils/api/baseUrl";
-import { toast } from "react-toastify";
+// import { toast } from "sonner";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import LoginGoogle from "./LoginGoogle";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Link as RouterLink } from 'react-router-dom';
+// import { addUser } from "../../utils/Redux/Slice/userSlice";
 
 const useStyles = makeStyles(() => ({
   separator: {
@@ -39,7 +46,7 @@ const useStyles = makeStyles(() => ({
   },
   span: {
     color: "grey",
-  },
+  }, 
 }));
 
 function OrSeparator() {
@@ -57,10 +64,33 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+
+  // const handleLogin = (e) => {
+  //   e.preventDefault();
+  //   console.log(email, password, "login");
+  //   axiosUser
+  //     .post("/signin", {
+  //       email: email,
+  //       password: password,
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         dispatch(addUser(response?.data))
+  //         toast.success("logged in succesfully");
+  //         console.log('naviagting to homee',response.status)
+  //         navigate("/home");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log(email, password, "lohin");
+    console.log(email, password, "login");
     axiosUser
       .post("/signin", {
         email: email,
@@ -68,11 +98,35 @@ const Login = () => {
       })
       .then((response) => {
         if (response.status === 200) {
+          dispatch(addUser(response?.data))
+          localStorage.setItem(
+            "useraccessToken",
+            response.data.accessToken
+        );
+        localStorage.setItem(
+            "userrefreshToken",
+            response.data.refreshToken
+        );
           toast.success("logged in succesfully");
+          console.log('naviagting to homee',response.status)
           navigate("/home");
         }
       })
       .catch((error) => {
+        console.log('Calling toast error');
+        if(error.response){
+          const status = error.response.status
+
+          if(status===403){
+            toast.error(error.response.data.message||"user is blocked , please contact admin ")
+          }else if ( status === 401){
+            toast.error(error.response.data.message || "Invalid email or password.");
+          }else{
+            toast.error(error.response.data.message || "An unexpected error occurred.");
+          }
+        }else{
+          toast.error("Internal server error, please try again later.");
+        }
         console.log(error);
       });
   };
@@ -132,20 +186,21 @@ const Login = () => {
                   ),
                 }}
               />
-              <Box display="flex" justifyContent="flex-end">
-                <Typography variant="body2" component="p">
-                  <Link
-                    href="#"
-                    underline="none"
-                    sx={{
-                      ":hover": { textDecoration: "underline" },
-                      fontFamily: "Poppins ",
-                    }}
-                  >
-                    Forgot Password?
-                  </Link>
-                </Typography>
-              </Box>
+             <Box display="flex" justifyContent="flex-end">
+        <Typography variant="body2" component="p">
+          <Link
+            component={RouterLink}
+            to="/forgotpassword"
+            underline="none"
+            sx={{
+              ":hover": { textDecoration: "underline" },
+              fontFamily: "Poppins",
+            }}
+          >
+            Forgot Password?
+          </Link>
+        </Typography>
+      </Box>
             </div>
             <div className="remember-forgot"></div>
             <Box display="flex" justifyContent="center">

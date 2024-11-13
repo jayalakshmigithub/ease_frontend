@@ -20,13 +20,10 @@ const AddMembers = ({open , onClose, handleSelect ,nextStep ,workSpace}) => {
     const [selectedOption,setSelectedOption] =useState('')
     const handleMembers=(e)=>{
         setSelectedOption(e.target.value)
-        console.log('e.target.value',e.target.value)
     }
 
     useEffect(()=>{
 const fetchData = async ()=>{
-    console.log(workSpace)
-    
 }
 if(workSpace !== null)fetchData()
     },[workSpace])

@@ -8,6 +8,7 @@ import AddMembers from "../AddMembers";
 import { Bounce,toast,ToastContainer } from "react-toastify";
 import InviteMembers from "../InviteMembers";
 import { Container } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 
 const FormsStepper = () => {
@@ -15,6 +16,7 @@ const FormsStepper = () => {
   const [openDialog, setOpenDialog] = useState(false);
 const [workSpace , setWorkSpace] = useState(null)
   const handleCloseDialog = () => setOpenDialog(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     setTimeout(() => {
@@ -23,17 +25,26 @@ const [workSpace , setWorkSpace] = useState(null)
   }, [activeStep]);
 
   const nextStep = () => {
-    if (activeStep < 2) setActivestep((currentStep) => currentStep + 1);
-  };
+    if (activeStep < 1) {
+      setActivestep((currentStep) => currentStep + 1);
+    }else{
+      navigate('/home')
+    }
+     
+  }
 
   const previousStep = () => {
     if (activeStep !== 0) setActivestep((currentStep) => currentStep - 1);
-  };
-  const handleSelect=(selectOption)=>{
-    console.log('selectedOption',selectOption)
   }
 
-  const steps = ['Create Workspace', 'Number of Members to Invite', 'Invite Members'];
+ 
+  // const handleSelect=(selectOption)=>{
+  //   console.log('selectedOption',selectOption)
+  // }
+
+  const steps = ['Create Workspace', 'Invite Members'];
+
+
 
   return (
     <>
@@ -75,10 +86,8 @@ const [workSpace , setWorkSpace] = useState(null)
           {activeStep === 0 && (
             <CreateWorkspace open={openDialog} onClose={handleCloseDialog} setWorkSpace={setWorkSpace} nextStep={nextStep} />
           )}
-           {activeStep === 1 && (
-          <AddMembers open={openDialog} onClose={handleCloseDialog} handleSelect={handleSelect} nextStep ={nextStep} workSpace={workSpace} />
-        )}
-         {activeStep === 2&& (
+          
+         {activeStep === 1&& (
           // <AddMembers open={openDialog} onClose={handleCloseDialog} handleSelect={handleSelect} nextStep ={nextStep} />
           <InviteMembers open={openDialog} onClose={handleCloseDialog} setWorkSpace={setWorkSpace} workSpace={workSpace}/>
         )}
@@ -112,3 +121,9 @@ const [workSpace , setWorkSpace] = useState(null)
 };
 
 export default FormsStepper;
+
+
+ {/* {activeStep === 1 && (
+          <AddMembers open={openDialog} onClose={handleCloseDialog} handleSelect={handleSelect} nextStep ={nextStep} workSpace={workSpace} />
+        )} */}
+  // , 'Number of Members to Invite'
