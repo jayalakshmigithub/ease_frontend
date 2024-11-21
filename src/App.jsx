@@ -16,17 +16,7 @@ function App() {
           <Route path="/admin/*" element={<AdminRouter/>}/>
         </Routes>
       </Router>
-      <ToastContainer
-        position="top-right"     
-        autoClose={4000}         
-        hideProgressBar={false} 
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer/>
      
       
     </div>
