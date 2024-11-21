@@ -13,6 +13,7 @@ import {
   import AddIcon from '@mui/icons-material/Add';
 import Toggle from '../Toggle';
 import InviteMembers from '../InviteMembers';
+import logo from '../../Assets/logo2.png'
 
 
 
@@ -276,87 +277,192 @@ const Navbar = () => {
   const isWorkspacesPage = location.pathname ==='/workspace'
 
   return (
-    <nav className='navClass'>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <NavLink className="nav-link" to='/about'>About</NavLink>
-        <NavLink className="nav-link" to='/blog'>Blog</NavLink>
-        <NavLink className="nav-link" to='/features'>Features</NavLink>
-        <NavLink className="nav-link" to='/contact'>Contact</NavLink>
+//     <nav className='navClass'>
+      
+//       <div className="navbar-logo-container">
+//   <Box
+//     component="img"
+//     src={logo}
+//     alt="Logo"
+//     sx={{
+//       height: { xs: '50px', sm: '60px', md: '180px',marginTop:'8px' }, 
+//       maxWidth: '200px', 
+//       objectFit: 'contain',
+//     }}
+//   />
+// </div>
 
-        {isLandingPage ? (
-          <>
-            <Button
-              onClick={handleClick}
-              sx={{
-                fontSize: '20px',
-                color: '#333',
-                fontFamily: 'Poppins',
-                fontWeight: 600
-              }}
-            >
-              Login
-            </Button>
-            <VerticalLine />
-            <Button
-              onClick={handleSignupClick}
-              sx={{
-                backgroundColor: 'white',
-                fontSize: '15px',
-                fontFamily: 'Poppins',
-                fontWeight: 600,
-                color: '#3982b8',
-                borderRadius: '20px',
-                padding: '12px'
-              }}
-            >
-              Get started
-            </Button>
-          </>
-        ) : (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        
-          {/* {isWorkspacesPage && (
-            <Button
-              sx={{
-                display: 'flex',
-                backgroundColor: '#357793',
-                alignItems: 'center',
-                fontFamily: 'inherit',
-                fontWeight: 500,
-                fontSize: '15px',
-                padding: '9px 14.5px',
-                color: 'white',
-              }}
-              onClick={handleOpenInviteDialog}
-            >
-              <AddIcon />
-              Invite
-            </Button>
-          )} */}
-          
-          {!isLandingPage &&  (
-            <StyledButton onClick={handleNewProject}>
-              <AddIcon />
-              New Project
-            </StyledButton>
-          )}
-        </Box>
-        )}
-      </div>
 
+
+
+//       <div  style={{ display: "flex", justifyContent: "space-between" }}>
      
-      {openInviteDialog && (
-        <InviteMembers
-          open={openInviteDialog}
-          onClose={handleCloseInviteDialog}
+//         <NavLink className="nav-link" to='/about'>About</NavLink>
+//         <NavLink className="nav-link" to='/blog'>Blog</NavLink>
+//         <NavLink className="nav-link" to='/features'>Features</NavLink>
+//         <NavLink className="nav-link" to='/contact'>Contact</NavLink>
+
+//         {isLandingPage ? (
+//           <>
+//             <Button
+//               onClick={handleClick}
+//               sx={{
+//                 fontSize: '20px',
+//                 color: '#333',
+//                 fontFamily: 'Poppins',
+//                 fontWeight: 600
+//               }}
+//             >
+//               Login
+//             </Button>
+//             <VerticalLine />
+//             <Button
+//               onClick={handleSignupClick}
+//               sx={{
+//                 backgroundColor: 'white',
+//                 fontSize: '15px',
+//                 fontFamily: 'Poppins',
+//                 fontWeight: 600,
+//                 color: '#3982b8',
+//                 borderRadius: '20px',
+//                 padding: '12px'
+//               }}
+//             >
+//               Get started
+//             </Button>
+//           </>
+//         ) : (
+//           <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        
+         
+          
+//           {!isLandingPage &&  (
+//             <StyledButton onClick={handleNewProject}>
+//               <AddIcon />
+//               New Project
+//             </StyledButton>
+//           )}
+//         </Box>
+//         )}
+//       </div>
+//       <div className="right-dot"></div>
+     
+//       {openInviteDialog && (
+//         <InviteMembers
+//           open={openInviteDialog}
+//           onClose={handleCloseInviteDialog}
        
-        />
-      )}
-    </nav>
+//         />
+//       )}
+//     </nav>
+
+
+<nav className={`navClass ${isLandingPage ? 'landing-navbar' : ''}`}>
+  <div className="navbar-logo-container">
+    <Box
+      component="img"
+      src={logo}
+      alt="Logo"
+      sx={{
+        height: { xs: '50px', sm: '60px', md: '180px', marginTop: '8px' },
+        maxWidth: '200px',
+        objectFit: 'contain',
+      }}
+    />
+  </div>
+
+  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <NavLink className="nav-link" to="/about">
+      About
+    </NavLink>
+    <NavLink className="nav-link" to="/blog">
+      Blog
+    </NavLink>
+    <NavLink className="nav-link" to="/features">
+      Features
+    </NavLink>
+    <NavLink className="nav-link" to="/contact">
+      Contact
+    </NavLink>
+
+    {isLandingPage ? (
+      <>
+        <Button
+          onClick={handleClick}
+          sx={{
+            fontSize: '20px',
+            color: '#333',
+            fontFamily: 'Poppins',
+            fontWeight: 600,
+          }}
+        >
+          Login
+        </Button>
+        <VerticalLine />
+        <Button
+          onClick={handleSignupClick}
+          sx={{
+            backgroundColor: 'white',
+            fontSize: '15px',
+            fontFamily: 'Poppins',
+            fontWeight: 600,
+            color: '#3982b8',
+            borderRadius: '20px',
+            padding: '12px',
+          }}
+        >
+          Get started
+        </Button>
+      </>
+    ) : (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        {!isLandingPage && (
+          <StyledButton onClick={handleNewProject}>
+            <AddIcon />
+            New Project
+          </StyledButton>
+        )}
+      </Box>
+    )}
+  </div>
+
+  {isLandingPage && (
+    <>
+      {/* Add left dot */}
+      <div className="left-dot"></div>
+      {/* Add right dot */}
+      <div className="right-dot"></div>
+    </>
+  )}
+
+  {openInviteDialog && (
+    <InviteMembers open={openInviteDialog} onClose={handleCloseInviteDialog} />
+  )}
+</nav>
+
   );
 }
 
 export default Navbar;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -302,7 +302,7 @@ const Home = () => {
         <Navbar />
         </Hidden>
         
-        <Box sx={{ borderBottom: "dotted", borderColor: "#A2CFFE" }}></Box>
+        {/* <Box sx={{ borderBottom: "dotted", borderColor: "#A2CFFE" }}></Box> */}
         <Box
           sx={{
             display: "flex",

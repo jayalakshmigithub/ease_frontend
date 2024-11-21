@@ -16,7 +16,7 @@ const useStyles = makeStyles(()=>({
     borderRadius: '15px',
     color: '#212121',
     zIndex: 1,
-    backgroundColor: '#e8e8e8',
+    backgroundColor: '#3982b8',
     position: 'relative',
     fontWeight: 1000,
     fontSize: '20px',
@@ -86,6 +86,51 @@ const useStyles = makeStyles(()=>({
 //   );
 // };
 
+//OOOOOOOOGGGGGGGGGGGGGGG
+// const LandingPage = () => {
+//   const navigate = useNavigate()
+//   const handleSignupClick=()=>{
+//    navigate('/signup')
+//   }
+//    const buttOnClasses = useStyles()
+//    return (
+//      <div className="landing" style={{
+//        backgroundImage: `
+//          radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
+//          radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
+//        `
+//        ,
+//        width:'100vw',
+//        height:'100vh'
+//      }}>
+//        <Navbar />
+//        {/* <Box sx={{ borderBottom: "dotted", borderColor: "#A2CFFE" }}></Box> */}
+ 
+//        <div className="heading" >
+//          <Typography sx={{textAlign:'center',fontFamily:'Poppins',fontSize:'35px',marginTop:'60px', color:'black',fontWeight:'bold',display:'block'}}>
+//          Seamlessly synchronize teams, tasks & projects with EASE. <br/>
+//        "Project management, personalized for you"
+//        <p style={{fontSize:'15px', fontWeight:'lighter'}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt <br/>ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut </p>
+     
+//       <Button className={buttOnClasses.CustomButton} onClick={handleSignupClick} sx={{fontFamily:'poppins',fontSize:'18px', backgroundColor:'#fff', color:'#3982b8',padding:'10px',borderRadius:'18px',marginTop:'15px',fontWeight:500}}>Get started</Button>
+//          </Typography>
+      
+//        </div>
+//        {/* <div>
+//          <Box sx={{ width:'80%',height:'500px', backgroundColor:'white', alignItems:'center',justifyContent:'center',margin:'40px auto', display:'flex'}}>
+         
+//          </Box>
+//        </div> */}
+//      </div>
+//    );
+//  };
+
+// export default LandingPage;
+
+
+
+
+
 
 const LandingPage = () => {
   const navigate = useNavigate()
@@ -104,15 +149,15 @@ const LandingPage = () => {
        height:'100vh'
      }}>
        <Navbar />
-       <Box sx={{ borderBottom: "dotted", borderColor: "#A2CFFE" }}></Box>
+       {/* <Box sx={{ borderBottom: "dotted", borderColor: "#A2CFFE" }}></Box> */}
  
        <div className="heading" >
          <Typography sx={{textAlign:'center',fontFamily:'Poppins',fontSize:'35px',marginTop:'60px', color:'black',fontWeight:'bold',display:'block'}}>
-         Seamlessly synchronize teams, tasks & projects with EASE. <br/>
+         Seamlessly synchronize teams, tasks & projects with planIt. <br/>
        "Project management, personalized for you"
        <p style={{fontSize:'15px', fontWeight:'lighter'}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt <br/>ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut </p>
      
-      <Button className={buttOnClasses.CustomButton} onClick={handleSignupClick} sx={{fontFamily:'poppins',fontSize:'20px', backgroundColor:'#fff', color:'#3982b8',padding:'12px',borderRadius:'18px',marginTop:'15px'}}>Get started</Button>
+      <Button className={buttOnClasses.CustomButton} onClick={handleSignupClick} sx={{fontFamily:'poppins',fontSize:'18px', backgroundColor:'#fff', color:'#3982b8',padding:'10px',borderRadius:'18px',marginTop:'15px',fontWeight:500}}>Get started</Button>
          </Typography>
       
        </div>
@@ -126,6 +171,54 @@ const LandingPage = () => {
  };
 
 export default LandingPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // const linkStyles = {
 //   ':hover':{textDecoration:'underline'},

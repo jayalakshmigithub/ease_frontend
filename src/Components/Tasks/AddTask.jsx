@@ -52,11 +52,11 @@
 //     const handleNext = () => {
 //       if (stepper < steps.length - 1) setStepper(stepper + 1);
 //     };
-  
+
 //     const handleBack = () => {
 //       if (stepper > 0) setStepper(stepper - 1);
 //     };
-  
+
 //     const handleChange = (e) => {
 //       setTaskData({
 //         ...taskData,
@@ -74,17 +74,16 @@
 //       } catch (error) {
 //         toast.error('task creation failed')
 //         console.error(error,'error');
-        
-        
+
 //       }
 //     }
 //     useEffect(()=>{
 //       CreateTask()
 //     })
-  
+
 //     return (
 //       <div>
-       
+
 //         <Modal open={open} onClose={onClose}
 //           aria-labelledby="modal-title"
 //          aria-describedby="modal-description"
@@ -114,7 +113,7 @@
 //                     variant="outlined"
 //                     fullWidth
 //                     value={taskData.name}
-                
+
 //                     onChange={handleChange}
 //                   />
 //                   <FormControl fullWidth variant="outlined">
@@ -137,7 +136,7 @@
 //                     name="description"
 //                     value={taskData.description}
 //                     onChange={handleChange}
-                  
+
 //                   />
 
 //                   {/* <TextField
@@ -148,7 +147,7 @@
 //                    value={task.description}
 //                    onChange={handleChange}
 //                   /> */}
-                  
+
 //                   <Box display="flex" gap={2}>
 //                     <TextField
 //                       label="From"
@@ -171,28 +170,28 @@
 //                   </Box>
 //                 </Box>
 //               )}
-//               {/* {stepper === 1 && (
-//                 <Box display="flex" flexDirection="column" gap={2}>
-//                   <Typography variant="body1">Add Task Images</Typography>
-//                   <Button variant="contained" component="label">
-//                     Upload Images
-//                     <input type="file" hidden multiple onChange={() => {}} />
-//                   </Button>
-//                 </Box>
-//               )} */}
-//               {stepper === 2 && (
-//                 <Box display="flex" flexDirection="column" gap={2}>
-//                   <Typography variant="body1">Assign task to Members</Typography>
-//                   <FormControlLabel
-//                     control={<Checkbox />}
-//                     label="John Doe - johndoe@example.com"
-//                   />
-//                   <FormControlLabel
-//                     control={<Checkbox />}
-//                     label="Jane Smith - janesmith@example.com"
-//                   />
-//                 </Box>
-//               )}
+// {/* {stepper === 1 && (
+//   <Box display="flex" flexDirection="column" gap={2}>
+//     <Typography variant="body1">Add Task Images</Typography>
+//     <Button variant="contained" component="label">
+//       Upload Images
+//       <input type="file" hidden multiple onChange={() => {}} />
+//     </Button>
+//   </Box>
+// )} */}
+// {stepper === 2 && (
+//   <Box display="flex" flexDirection="column" gap={2}>
+//     <Typography variant="body1">Assign task to Members</Typography>
+//     <FormControlLabel
+//       control={<Checkbox />}
+//       label="John Doe - johndoe@example.com"
+//     />
+//     <FormControlLabel
+//       control={<Checkbox />}
+//       label="Jane Smith - janesmith@example.com"
+//     />
+//   </Box>
+// )}
 //             </Box>
 //             <Box display="flex" justifyContent="flex-end" mt={3} gap={2}>
 //               {stepper > 0 && (
@@ -218,9 +217,7 @@
 
 // export default AddTask
 
-
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -234,53 +231,72 @@ import {
   TextareaAutosize,
   IconButton,
   Checkbox,
-  FormControlLabel
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import { GrLinkNext, GrLinkPrevious } from 'react-icons/gr';
-import { userAxiosInstance } from '../../utils/api/axiosInstance';
-import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+  FormControlLabel,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
+import { userAxiosInstance } from "../../utils/api/axiosInstance";
+import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
-const steps = ['Task Details', , 'Assign Members'];
-// 'Task Images'
+
+const steps = ["Task Details", "Add Task Images", "Assign Members"];
+
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 600,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
   borderRadius: 2,
 };
 
 const AddTask = ({ open, onClose, fetchTasks }) => {
-  {console.log('hiiiiiiiii')}
+  
   const { projectId } = useParams();
   const today = dayjs();
   const [stepper, setStepper] = useState(0);
-  const [members,setMembers] = useState([])
+  const [members, setMembers] = useState([]);
   const [taskData, setTaskData] = useState({
-    name: '',
-    priority: '',
-    description: '',
+    name: "",
+    priority: "",
+    description: "",
     // fromDate: dayjs(),
     // toDate: dayjs().add(1, "day"),
     projectId: projectId,
-    assignee: []
+    assignee: [],
   });
- 
+  const validateFields = () => {
+    if (!taskData.name) {
+      toast.error("Name is required!");
+      return false;
+    }
+    if (!taskData.priority) {
+      toast.error("Priority is required!");
+      return false;
+    }
+    if (!taskData.description) {
+      toast.error("Description is required!");
+      return false;
+    }
+    return true;
+  }
 
   const handleNext = () => {
+    if (stepper === 0 && !validateFields()) {
+      return; 
+    }
+    
     if (stepper < steps.length - 1) setStepper(stepper + 1);
   };
 
@@ -291,37 +307,33 @@ const AddTask = ({ open, onClose, fetchTasks }) => {
   const handleChange = (e) => {
     setTaskData({
       ...taskData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
-    
-  const fetchProjectMembers = async()=>{
+
+  const fetchProjectMembers = async () => {
     try {
-      if(!projectId)throw new Error("project id is missing")
-        const response = await userAxiosInstance.get(`/projects/${projectId}`)
-      if(response.data.project){
-        console.log('fetchedmembers',response.data.project)
-        setMembers(response.data.project.members)
-        console.log('members',response.data.project.members)
-      }else{
-        console.warn('no members found');
-        
+      if (!projectId) throw new Error("project id is missing");
+      const response = await userAxiosInstance.get(`/projects/${projectId}`);
+      if (response.data.project) {
+        console.log("fetchedmembers", response.data.project);
+        setMembers(response.data.project.members);
+        console.log("members", response.data.project.members);
+      } else {
+        console.warn("no members found");
       }
     } catch (error) {
-      console.error('error fetching project',error);
-      
-      
+      console.error("error fetching project", error);
     }
-  }
+  };
   useEffect(() => {
- fetchProjectMembers();
-}, [projectId]);
+    fetchProjectMembers();
+  }, [projectId]);
 
-useEffect(() => {
-  console.log("Component re-rendered, members:", members);
-}, [members]);
+  useEffect(() => {
+    console.log("Component re-rendered, members:", members);
+  }, [members]);
 
-  
   // const handleAssigneeChange = (e) => {
   //   const value = e.target.value;
   //   setTaskData((prevData) => ({
@@ -333,43 +345,58 @@ useEffect(() => {
   // };
   const handleAssigneeChange = (e, members) => {
     const { _id, email } = members;
-    
+
     setTaskData((prevData) => {
       const alreadySelected = prevData.assignee.find(
         (selected) => selected.id === _id
       );
-  
+
       return {
         ...prevData,
         assignee: alreadySelected
-          ? prevData.assignee.filter((selected) => selected.id !== _id) 
-          : [...prevData.assignee, { id: _id, email }], 
+          ? prevData.assignee.filter((selected) => selected.id !== _id)
+          : [...prevData.assignee, { id: _id, email }],
       };
     });
   };
-
-
+ 
   const createTask = async () => {
     try {
-      console.log('taskData before sending:', taskData);
-      const response = await userAxiosInstance.post('/tasks', taskData);
-      console.log('responsee in createtask', response.data);
+      if(!validateFields()){
+        return
+      }
+      console.log("taskData before sending:", taskData);
+      const response = await userAxiosInstance.post("/tasks", taskData);
+      console.log("responsee in createtask", response.data);
       if (response.status === 200) {
         toast.success("Task created successfully");
-        onClose(); 
-        fetchTasks()
+        onClose();
+        fetchTasks();
       }
     } catch (error) {
-      toast.error('Task creation failed');
-      console.error('Error:', error);
+      toast.error("Task creation failed");
+      console.error("Error:", error);
     }
   };
-
+  ;
+ 
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
+    >
       <Box sx={style}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography id="modal-title" variant="h6">Add Task</Typography>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <Typography id="modal-title" variant="h6">
+            Add Task
+          </Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -408,7 +435,7 @@ useEffect(() => {
               <TextareaAutosize
                 minRows={3}
                 placeholder="Task Description"
-                style={{ width: '100%', padding: '8px' }}
+                style={{ width: "100%", padding: "8px" }}
                 name="description"
                 value={taskData.description}
                 onChange={handleChange}
@@ -435,35 +462,48 @@ useEffect(() => {
               </Box> */}
             </Box>
           )}
-          {stepper === 1 && (
-    <Box display="flex" flexDirection="column" gap={2}>
-    <Typography variant="body1">Assign task to Members</Typography>
-    {members && members.length > 0 ? (
-    members.map((member) => {
-        console.log("Rendering member:", member);
-        return (
-            <FormControlLabel
-                key={member._id}
-                control={
-                    <Checkbox
-                        value={member._id}
-                        checked={taskData.assignee.some(
-                            (assignee) => assignee.id === member._id
-                        )}
-                        onChange={(e) => handleAssigneeChange(e, member)}
-                    />
-                }
-                label={<Typography color="black">{member.email}</Typography>}
-            />
-        );
-    })
-) : (
-    <Typography>No members found.</Typography>
-)}
 
-</Box>
-  
-         
+          {stepper === 1 && (
+            <Box display="flex" flexDirection="column" gap={2}>
+              <Typography variant="body1" color="textPrimary">
+                Add Task Images (if any)
+              </Typography>
+
+              <Button variant="contained" component="label">
+                Upload Images
+                <input type="file" hidden multiple onChange={() => {}} />
+              </Button>
+            </Box>
+          )}
+
+          {stepper === 2 && (
+            <Box display="flex" flexDirection="column" gap={2}>
+              <Typography variant="body1">Assign task to Members</Typography>
+              {members && members.length > 0 ? (
+                members.map((member) => {
+                  console.log("Rendering member:", member);
+                  return (
+                    <FormControlLabel
+                      key={member._id}
+                      control={
+                        <Checkbox
+                          value={member._id}
+                          checked={taskData.assignee.some(
+                            (assignee) => assignee.id === member._id
+                          )}
+                          onChange={(e) => handleAssigneeChange(e, member)}
+                        />
+                      }
+                      label={
+                        <Typography color="black">{member.email}</Typography>
+                      }
+                    />
+                  );
+                })
+              ) : (
+                <Typography>No members found.</Typography>
+              )}
+            </Box>
           )}
         </Box>
         <Box display="flex" justifyContent="flex-end" mt={3} gap={2}>
@@ -485,6 +525,8 @@ useEffect(() => {
       </Box>
     </Modal>
   );
-};
+ }
+ 
+;
 
 export default AddTask;
