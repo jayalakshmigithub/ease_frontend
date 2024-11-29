@@ -13,7 +13,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { makeStyles } from '@mui/styles';
 import Navbar from "../Navbar/Navbar";
 import { useEffect } from "react";
 import SideBar from "../SideBar";
