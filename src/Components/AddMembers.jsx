@@ -43,11 +43,7 @@ if(workSpace !== null)fetchData()
      }
     
      
-    //  useEffect(()=>{
-    //     console.log('owner',ownerId)
-    //     const response =  userAxiosInstance.get('/getworks',ownerId,{withCredentials:true})
-    //     console.log(response.data,'workspoacceeeee')
-    //  },[ownerId])
+   
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
         <DialogTitle>Select Number of members</DialogTitle>

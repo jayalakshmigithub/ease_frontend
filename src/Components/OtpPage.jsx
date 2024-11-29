@@ -211,7 +211,7 @@ useEffect(()=>{
  
  
   const handleSubmitOtp = async() => {
-    // toast.error("Testing toast visibility on function call");
+    
   
     if (otpExpired) {
       toast.error("OTP expired, please resend OTP");

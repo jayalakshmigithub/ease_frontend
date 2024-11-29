@@ -1,6 +1,8 @@
 import React from "react";
 import "./LandingPage.css";
 import background_img from '../../Assets/download.jpeg'
+import group from '../../Assets/group.png'
+// C:\Users\laksh\Desktop\EASE1\ease_frontend\src\Assets\groupChat.png
 import {useNavigate} from 'react-router-dom'
 import {
   Box,
@@ -149,23 +151,26 @@ const LandingPage = () => {
        height:'100vh'
      }}>
        <Navbar />
-       {/* <Box sx={{ borderBottom: "dotted", borderColor: "#A2CFFE" }}></Box> */}
+      
  
        <div className="heading" >
-         <Typography sx={{textAlign:'center',fontFamily:'Poppins',fontSize:'35px',marginTop:'60px', color:'black',fontWeight:'bold',display:'block'}}>
-         Seamlessly synchronize teams, tasks & projects with planIt. <br/>
-       "Project management, personalized for you"
-       <p style={{fontSize:'15px', fontWeight:'lighter'}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt <br/>ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut </p>
+        
+        <Box sx={{display:'flex',justifyContent:'space-between',marginLeft:'40px',marginRight:'60px'}}>
+  
+         <Typography sx={{textAlign:'center',fontFamily:'Poppins',fontSize:'35px', color:'black',fontWeight:'bold',marginTop:'130px'}}>
+         Seamlessly synchronize teams, <br/>tasks & projects with planIt. <br/>
+       "Project management,Tailored for you"
+       <p style={{fontSize:'15px', fontWeight:'lighter'}}>PlanIt helps you streamline workflows, track progress, and collaborate effortlessly, ensuring your team stays aligned and productive." </p>
      
       <Button className={buttOnClasses.CustomButton} onClick={handleSignupClick} sx={{fontFamily:'poppins',fontSize:'18px', backgroundColor:'#fff', color:'#3982b8',padding:'10px',borderRadius:'18px',marginTop:'15px',fontWeight:500}}>Get started</Button>
          </Typography>
+         <img src={group} alt="groupChat" className="groupChat"  style={{ width: '42%', height: "42%", objectFit: "cover" ,marginTop:"40px"}}  />
+        
+         </Box>
+        
+        
       
        </div>
-       {/* <div>
-         <Box sx={{ width:'80%',height:'500px', backgroundColor:'white', alignItems:'center',justifyContent:'center',margin:'40px auto', display:'flex'}}>
-         
-         </Box>
-       </div> */}
      </div>
    );
  };

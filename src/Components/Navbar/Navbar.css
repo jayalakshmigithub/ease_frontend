@@ -9,10 +9,11 @@
   padding: 0 20px;
   box-sizing: border-box;
   position: relative;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 
-.landing-navbar::after {
+/* .landing-navbar::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -41,7 +42,7 @@
   height: 10px;
   background-color: #3982b8;
   border-radius: 50%;
-}
+} */
 
 
 .navbar-logo-container {

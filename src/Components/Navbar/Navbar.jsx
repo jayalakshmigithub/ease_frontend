@@ -261,7 +261,8 @@ const Navbar = () => {
       display: 'inline-block',
       margin: '0 10px',
       borderLeft: '2px solid #949494',
-      verticalAlign: 'middle'
+      verticalAlign: 'middle',
+     
     },
   }));
 
@@ -372,7 +373,7 @@ const Navbar = () => {
   </div>
 
   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-    <NavLink className="nav-link" to="/about">
+    {/* <NavLink className="nav-link" to="/about">
       About
     </NavLink>
     <NavLink className="nav-link" to="/blog">
@@ -383,7 +384,7 @@ const Navbar = () => {
     </NavLink>
     <NavLink className="nav-link" to="/contact">
       Contact
-    </NavLink>
+    </NavLink> */}
 
     {isLandingPage ? (
       <>
@@ -394,6 +395,7 @@ const Navbar = () => {
             color: '#333',
             fontFamily: 'Poppins',
             fontWeight: 600,
+          
           }}
         >
           Login
@@ -408,7 +410,8 @@ const Navbar = () => {
             fontWeight: 600,
             color: '#3982b8',
             borderRadius: '20px',
-            padding: '12px',
+            padding: '10px',
+             marginRight:'100px'
           }}
         >
           Get started
@@ -428,9 +431,9 @@ const Navbar = () => {
 
   {isLandingPage && (
     <>
-      {/* Add left dot */}
+    
       <div className="left-dot"></div>
-      {/* Add right dot */}
+    
       <div className="right-dot"></div>
     </>
   )}

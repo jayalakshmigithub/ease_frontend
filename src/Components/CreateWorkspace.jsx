@@ -144,13 +144,11 @@ const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorksp
         setWorkSpace(res.data);
         fetchWorkspaces(); 
         toast.success('Workspace created');
-        // if (refreshWorkspaces) {
-        //   refreshWorkspaces();
-        // }
+        
 
         setTimeout(() => {
           onClose();
-          nextStep(); // Call nextStep after onClose
+          nextStep(); 
         }, 1000);
       }
     } catch (error) {

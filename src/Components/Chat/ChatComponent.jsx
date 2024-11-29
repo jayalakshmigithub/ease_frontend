@@ -19,9 +19,11 @@ import SideBar from "../SideBar";
 import groupChat from "../../Assets/groupChat.png";
 import { userAxiosInstance } from "../../utils/api/axiosInstance";
 import { useSelector } from "react-redux";
+import io from "socket.io-client";
+import config from "../../config/config";
 
 const ChatComponent = () => {
-  const user = useSelector((state) => state.user.userInfo.user);
+  const user = useSelector((state) => state.user.userInfo?.user);
 
   const theme = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -41,6 +43,8 @@ const ChatComponent = () => {
   const [chatRoom, setChatRoom] = useState(null);
   const [open, setOpen] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [currentChatRoomId, setCurrentChatRoomId] = useState("")
+  const socket = io(config.API_URL);
 
   const handleWorkspaceChange = (event) => {
     const selectedWorkspaceId = event.target.value;
@@ -84,6 +88,20 @@ const ChatComponent = () => {
   };
 
   useEffect(() => {
+    if (socket) {
+      socket.emit("join-chat", currentChatRoomId);
+
+      socket.on("receive-message", (message) => {
+        setMessages((prevMessages) => [...prevMessages, message]);  
+      });
+
+      return () => {
+        socket.off("receive-message");
+      };
+    }
+  }, [socket]);
+
+  useEffect(() => {
     if ((selectedWorkspace || selectedSharedWorkspace) && selectedProject) {
       checkChatRoomExistence();
       console.log("Selected Workspace:", selectedWorkspace);
@@ -104,16 +122,21 @@ const ChatComponent = () => {
       read: false,
     };
 
+    setCurrentChatRoomId(chatRoom._id)
+
     try {
       const response = await userAxiosInstance.post("/messages", message);
 
       if (response.data && response.data.message) {
         setMessages((prevMessages) => [...prevMessages, response.data.message]);
-        setNewMessage(""); // Clear input field after sending
+        console.log(response.data.message,'messages')
+        const message = response.data.message
+        setNewMessage("");
+        socket.emit("send-message", {message
+        });
       }
     } catch (error) {
       console.error("Failed to send message:", error);
-      // Optional: Add user feedback, e.g., alert or UI message
     }
   };
 
@@ -242,7 +265,7 @@ const ChatComponent = () => {
         <SideBar />
       </Box>
 
-      {/* Workspace and Project Selection  */}
+     
       <Box
         sx={{
           display: { xs: "none", md: "block" },
@@ -327,7 +350,7 @@ const ChatComponent = () => {
           <Typography variant="h6">{selectedProject.projectName}</Typography>
         </Box>
 
-        {/* messages ares */}
+       
         <Box
           sx={{
             flexGrow: 1,
@@ -377,7 +400,7 @@ const ChatComponent = () => {
                     key={index}
                     display="flex"
                     justifyContent={
-                      msg.senderId === user._id ? "flex-end" : "flex-start"
+                      msg.senderId?._id === user._id ? "flex-end" : "flex-start"
                     }
                     mb={2}
                     sx={{
@@ -392,11 +415,11 @@ const ChatComponent = () => {
                         borderRadius: "12px",
                         maxWidth: "70%",
                         bgcolor:
-                          msg.senderId === user._id
+                          msg.senderId?._id === user._id
                             ? "primary.light"
                             : "grey.300",
                         color:
-                          msg.senderId === user._id
+                          msg.senderId?._id === user._id
                             ? "primary.contrastText"
                             : "text.primary",
                       }}
@@ -407,12 +430,12 @@ const ChatComponent = () => {
                           sx={{
                             fontSize: "0.75rem",
                             color:
-                              messages.senderId === user._id
+                              messages.senderId?._id === user._id
                                 ? "white"
                                 : "textSecondary",
                           }}
                         >
-                          {messages.senderId === user._id
+                          {messages.senderId?._id === user._id
                             ? user.name
                             : msg?.senderId?.name}
                         </Typography>

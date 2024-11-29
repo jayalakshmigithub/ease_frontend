@@ -66,26 +66,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
-  // const handleLogin = (e) => {
-  //   e.preventDefault();
-  //   console.log(email, password, "login");
-  //   axiosUser
-  //     .post("/signin", {
-  //       email: email,
-  //       password: password,
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         dispatch(addUser(response?.data))
-  //         toast.success("logged in succesfully");
-  //         console.log('naviagting to homee',response.status)
-  //         navigate("/home");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
+ 
 
 
   const handleLogin = (e) => {

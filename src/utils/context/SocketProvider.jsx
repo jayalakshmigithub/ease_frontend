@@ -1,50 +1,42 @@
-// import React, { createContext, useContext, useEffect, useState } from "react";
-// // import io from "socket.io-client";
-// import { useSelector } from "react-redux";
-// import config from "../../config/config";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import io from "socket.io-client";
+import { useSelector } from "react-redux";
+import config from "../../config/config";
 
-// const SocketContext = createContext({
-//   socket: null,
-//   onlineUsers: new Set(),
-// });
+const SocketContext = createContext({
+  socket: null,
+  onlineUsers: [],
+});
 
-// export const useSocket = () => useContext(SocketContext);
+export const useSocket = () => useContext(SocketContext);
 
-// export const SocketProvider = ({ children }) => {
-//   const [socket, setSocket] = useState(null);
-//   const userId = useSelector((state) => state.user.userInfo?.user?._id || "");
-//   const [onlineUsers, setOnlineUsers] = useState(new Set());
+export const SocketProvider = ({ children }) => {
+  const [socket, setSocket] = useState(null);
+  const userId = useSelector((state) => state.user.userInfo?.user?._id || "");
+  console.log(userId,"in socket context");
 
-//   useEffect(() => {
-//     const newSocket = io(config.API_BACKEND);
+  useEffect(() => {
+    if (!userId) return;
 
-//     if (userId) {
-//       newSocket.emit("register", userId);
-//     }
+    const newSocket = io(config.API_URL_SOCKET);
 
-//     newSocket.on("user-status", (data) => {
-//       setOnlineUsers((prev) => {
-//         const updatedUsers = new Set(prev);
-//         if (data.status === "online") {
-//           updatedUsers.add(data.userId);
-//         } else {
-//           updatedUsers.delete(data.userId);
-//         }
-//         return updatedUsers;
-//       });
-//     });
+    setSocket(newSocket);
 
-//     setSocket(newSocket);
+    return () => {
+      if (newSocket) {
+        newSocket.off();
+        newSocket.disconnect();
+      }
+    };
+  }, [userId]);
 
-//     return () => {
-//       newSocket.disconnect();
-//       newSocket.off("user-status");
-//     };
-//   }, [userId]);
+  if (!socket) {
+    return null; 
+  }
 
-//   return (
-//     <SocketContext.Provider value={{ socket, onlineUsers }}>
-//       {children}
-//     </SocketContext.Provider>
-//   );
-// };
+  return (
+    <SocketContext.Provider value={{ socket }}>
+      {children}
+    </SocketContext.Provider>
+  );
+};

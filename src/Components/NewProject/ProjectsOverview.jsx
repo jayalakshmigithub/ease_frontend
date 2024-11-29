@@ -698,7 +698,7 @@ const ProjectsOverview = () => {
                         "&:hover": { bgcolor: "blue.600" },
                         "&:active": { outline: "none", boxShadow: "none" },
                         "&:focus-visible": { outline: "none" },
-                        "&:hover": { bgcolor: "blue.200" },
+                        // "&:hover": { bgcolor: "blue.200" },
                         borderRadius: 1,
                       }}
                       onClick={() => {
@@ -726,7 +726,7 @@ const ProjectsOverview = () => {
                         borderRadius: 1,
 
                         "&:focus": { outline: "none" },
-                        "&:hover": { bgcolor: "blue.600" },
+                        // "&:hover": { bgcolor: "blue.600" },
                         "&:active": { outline: "none", boxShadow: "none" },
                         "&:focus-visible": { outline: "none" },
                         "&:hover": { bgcolor: "blue.600" },
@@ -744,40 +744,7 @@ const ProjectsOverview = () => {
             </Container>
           </Box>
 
-          {/* <Box sx={{ width: "100%", mt: 3, p: { xs: 2, md: 3 } }}>
-            {nav === "overview" ? (
-               <><Box
-                sx={{
-                  maxWidth: "45%",
-                  height:'55vh',
-                  backgroundColor: "transparent",
-                  backdropFilter: "blur(10px)",
-                  padding: "20px",
-                  borderRadius: "8px",
-                  boxShadow: "0px 0px 20px rgba(0,0,0,0.1)",
-                  marginTop: { xs: "20px", md: "8px" },
-                }}
-              >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-
-                <Typography variant="h6">Project Progress</Typography>
-
-                </Box>
-
-
-          
-
-      <ProgressionChart/>
-     
-    </Box>
-    
-    
-    </>
-            ) : (
-              // <Task projectId={projectId} tasks={tasks} />
-              <Typography>hii</Typography>
-            )}
-          </Box> */}
+        
 
 <Box sx={{ width: "100%", mt: 3, p: { xs: 2, md: 3 } }}>
   {nav === "overview" ? (

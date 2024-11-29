@@ -1,7 +1,7 @@
 import React ,{ useState, useEffect }from 'react'
 import { Button, Card, Box, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, CardContent, TextField } from '@mui/material';
 
-//list project with workspace name also 
+
 const ProjectsList = () => {
   return (
     <Box sx={{ padding: '20px' }}>
