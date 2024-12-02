@@ -3,7 +3,7 @@ import { store } from "../Redux/store.js";
 import { clearUser, userName } from "../Redux/Slice/userSlice.js";
 import { adminName,clearAdmin } from "../Redux/Slice/adminSlice.js";
 import { refreshTokenApi } from "./api.js";
-import config from "../../config/config.js";
+import config from "../../config/config";
 
 const API_URL = config.API_URL;
 const USER_API_URL = config.USER_API_URL;
