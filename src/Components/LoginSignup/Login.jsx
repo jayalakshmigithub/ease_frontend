@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import login_icon from "../../Assets/login.png";
 import { addUser } from "../../utils/Redux/Slice/userSlice";
 import { useDispatch } from "react-redux";
+import config from "../../config/config";
 
 import {
   Typography,
@@ -226,7 +227,7 @@ const Login = () => {
                   Sign in with google
                 </Button> */}
                 <GoogleOAuthProvider
-                  clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+                  clientId={config.GOOGLE_CLIENT_ID}
                 >
                   <LoginGoogle />
                 </GoogleOAuthProvider>
