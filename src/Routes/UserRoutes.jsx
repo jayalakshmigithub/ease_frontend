@@ -17,11 +17,11 @@ import WorkspacePanel from '../Components/WorkspacePanel/WorkspacePanel';
 import UserProfile from '../Components/UserProfile/UserProfile';
 
 import OtpPage from '../Components/OtpPage';
-import ResponsiveComponent from '../Components/ResponsiveComponent';
+
 import InviteMembers from '../Components/InviteMembers';
 
 import TaskPage from '../Components/Tasks/TaskPage'
-import ProjectPanel from '../Components/ProjectPanel/ProjectPanel';
+// import ProjectPanel from '../Components/ProjectPanel/ProjectPanel';
 import ProjectsOverview from '../Components/NewProject/ProjectsOverview';
 import AddTask from '../Components/Tasks/AddTask';
 import ChatComponent from '../Components/Chat/ChatComponent';
@@ -56,7 +56,7 @@ const UserRoutes = () => {
          <Route path='/forgotpassword'element={<ForgotPassword/>}/>
          
 
-         <Route path='/responsive' element={<ResponsiveComponent/>}/>
+      
 
          
        </Routes>
