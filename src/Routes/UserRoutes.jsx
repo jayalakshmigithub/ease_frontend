@@ -38,7 +38,7 @@ const UserRoutes = () => {
          <Route path='/signin' element={<PublicRoute><Login/></PublicRoute> }/>
          <Route path='/signingoogle' element={<LoginGoogle/>}/>
          <Route path='/signup' element={<PublicRoute><Signup/></PublicRoute>}/>
-         <Route path='/otp' element={<PublicRoute><OtpPage/></PublicRoute>}/>
+         <Route path='/otp' element={<OtpPage/>}/>
          <Route path='/reset-password' element={<NewPassword/>}/>
          <Route path='/home' element={ <PrivateRoute><ProSidebarProvider><Home/></ProSidebarProvider></PrivateRoute> }/>
          <Route path='/stepper' element={ <PrivateRoute><FormsStepper/></PrivateRoute>}/>
