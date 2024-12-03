@@ -15,6 +15,7 @@ const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAct
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
     });
+    console.log('baseUrl',baseURL)
 
     instance.interceptors.request.use(
         (config) => {

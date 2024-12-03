@@ -6,7 +6,7 @@ console.log('API URL:', BASE_URL);
 
 console.log('api',config.API_URL)
 const createAxiosInstance=(baseURL)=>{
-    console.log('baseurl',baseURL)
+    console.log('baseurllllllllllll',baseURL)
     return axios.create({
         baseURL,
         headers : {'Content-Type':'application/json'},
