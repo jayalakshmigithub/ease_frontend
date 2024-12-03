@@ -1,12 +1,12 @@
 import axios from 'axios'
 import config from '../../config/config'
 
-const BASE_URL = import.meta.env.VITE_API_URL;
-console.log('API URL:', BASE_URL);
+const BASE_URL =config.API_URL
+console.log('API URL:', config.API_URL);
 
 console.log('api',config.API_URL)
 const createAxiosInstance=(baseURL)=>{
-    console.log('baseurllllllllllll',baseURL)
+    console.log('baseurl',baseURL)
     return axios.create({
         baseURL,
         headers : {'Content-Type':'application/json'},
