@@ -36,10 +36,7 @@ const Projects = () => {
   
       const fetchProjectInAdmin = async () => {
         try {
-          console.log('in fetcworkspaceDMIN FN')
           const response = await adminAxiosInstance.get("/projectlist");
-          console.log('hiii admin fetch projectlist')
-          console.log('response data of fetching projectlist',response.data);
           return response.data
         } catch (error) {
           console.log("error in projectlist ", error);

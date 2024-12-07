@@ -21,53 +21,32 @@ import { userAxiosInstance } from "../../utils/api/axiosInstance";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import config from "../../config/config";
+import DoneIcon from '@mui/icons-material/Done';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+
+
+import { format } from "date-fns";
 
 const ChatComponent = () => {
-  const user = useSelector((state) => state.user.userInfo?.user);
-
-  const theme = useTheme();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [error, setError] = useState("");
+  const user = useSelector((state) => state.user?.userInfo?.user);
   const [workspaces, setWorkspaces] = useState([]);
-  const [members, setMembers] = useState([]);
   const [sharedWorkspaces, setSharedWorkspaces] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [members,setMembers] = useState([])
   const [messages, setMessages] = useState([]);
-  useEffect(() => {
-    console.log(messages, "????");
-  }, [messages]);
-
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
   const [selectedSharedWorkspace, setSelectedSharedWorkspace] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
   const [chatRoom, setChatRoom] = useState(null);
   const [open, setOpen] = useState(false);
   const [newMessage, setNewMessage] = useState("");
-  const [currentChatRoomId, setCurrentChatRoomId] = useState("")
-  const socket = io(config.API_URL);
-
-  const handleWorkspaceChange = (event) => {
-    const selectedWorkspaceId = event.target.value;
-
-    console.log("Selected Workspace ID:", selectedWorkspaceId);
-
-    if (workspaces.some((workspace) => workspace._id === selectedWorkspaceId)) {
-      setSelectedWorkspace(selectedWorkspaceId);
-      setSelectedSharedWorkspace("");
-    } else if (
-      sharedWorkspaces.some(
-        (sharedWorkspace) => sharedWorkspace._id === selectedWorkspaceId
-      )
-    ) {
-      setSelectedSharedWorkspace(selectedWorkspaceId);
-      setSelectedWorkspace("");
-    }
-  };
-
+  const [currentChatRoomId, setCurrentChatRoomId] = useState("");
+  const socket = io(config.API_URL_SOCKET);
+  
   const checkChatRoomExistence = async () => {
     const workspaceId = selectedWorkspace || selectedSharedWorkspace;
     const projectId = selectedProject;
-
+    
     if (workspaceId && projectId) {
       try {
         const response = await userAxiosInstance.get("/chat", {
@@ -86,73 +65,66 @@ const ChatComponent = () => {
       }
     }
   };
-
+  
   useEffect(() => {
     if (socket) {
       socket.emit("join-chat", currentChatRoomId);
-
+      
       socket.on("receive-message", (message) => {
-        setMessages((prevMessages) => [...prevMessages, message]);  
+        setMessages((prevMessages) => [...prevMessages, message]);
       });
-
+      
       return () => {
         socket.off("receive-message");
       };
     }
   }, [socket]);
-
+  
   useEffect(() => {
     if ((selectedWorkspace || selectedSharedWorkspace) && selectedProject) {
       checkChatRoomExistence();
-      console.log("Selected Workspace:", selectedWorkspace);
-      console.log("Selected Shared Workspace:", selectedSharedWorkspace);
     }
   }, [selectedWorkspace, selectedSharedWorkspace, selectedProject]);
-
+  
   const handleSendMessage = async () => {
     if (newMessage.trim() === "") {
-      console.log("Cannot send an empty message.");
       return;
     }
-
+    
     const message = {
-      senderId: user._id,
+      senderId: user?._id,
       message: newMessage.trim(),
       chatId: chatRoom._id,
       read: false,
+      date: new Date().toISOString(),
     };
-
-    setCurrentChatRoomId(chatRoom._id)
-
+    
+    setCurrentChatRoomId(chatRoom._id);
+    
     try {
       const response = await userAxiosInstance.post("/messages", message);
-
+      
       if (response.data && response.data.message) {
-        setMessages((prevMessages) => [...prevMessages, response.data.message]);
-        console.log(response.data.message,'messages')
-        const message = response.data.message
+        if (typeof response.data.message.senderId === "string") {
+          response.data.message.senderId = { _id: response.data.message.senderId };
+        }
+        setMessages((prevMessages) => [...prevMessages, message]);
+        const message = response.data.message;
         setNewMessage("");
-        socket.emit("send-message", {message
-        });
+        socket.emit("send-message", { message });
       }
     } catch (error) {
       console.error("Failed to send message:", error);
     }
   };
-
+  
   const fetchWorkspaces = async () => {
     try {
       const response = await userAxiosInstance.get("/workspaces", {
         withCredentials: true,
       });
-      console.log("responseee", response.data);
       const userWorkspaces = response.data.workspace || [];
       const userSharedWorkspace = response.data.sharedWorkspace || [];
-
-      console.log("userSharedWorkspaces", userSharedWorkspace);
-      console.log("Workspaces:", userWorkspaces);
-      console.log("Shared Workspaces:", userSharedWorkspace);
-
       setSharedWorkspaces(userSharedWorkspace);
       setWorkspaces(userWorkspaces);
     } catch (error) {
@@ -162,27 +134,35 @@ const ChatComponent = () => {
   useEffect(() => {
     fetchWorkspaces();
   }, []);
-
+  
   const fetchProjects = async (workspaceId) => {
     try {
       const response = await userAxiosInstance.get(
         `/workspaces/${workspaceId}/projects`
       );
-      console.log("response from projects", response);
       setProjects(response.data.projects);
-      console.log("response.data.projects", response.data.projects);
       setMembers(response.data.members);
     } catch (error) {
       console.error("error fetching projects", error);
       setError("failed to fetch projects");
     }
   };
-
-  // useEffect(() => {
-  //   if (selectedWorkspace) {
-  //     fetchProjects(selectedWorkspace);
-  //   }
-  // }, [selectedWorkspace]);
+  
+    const handleWorkspaceChange = (event) => {
+      const selectedWorkspaceId = event.target.value;
+      if (workspaces.some((workspace) => workspace._id === selectedWorkspaceId)) {
+        setSelectedWorkspace(selectedWorkspaceId);
+        setSelectedSharedWorkspace("");
+      } else if (
+        sharedWorkspaces.some(
+          (sharedWorkspace) => sharedWorkspace._id === selectedWorkspaceId
+        )
+      ) {
+        setSelectedSharedWorkspace(selectedWorkspaceId);
+        setSelectedWorkspace("");
+      }
+    };
+  
   useEffect(() => {
     if (selectedWorkspace) {
       setProjects([]);
@@ -192,14 +172,12 @@ const ChatComponent = () => {
 
   const createChatRoom = async (workspaceId, projectId) => {
     try {
-      console.log("workspaceId, projectId, members", workspaceId, projectId);
       const response = await userAxiosInstance.post("/chat", {
         workspaceId,
         projectId,
       });
       const newChatRoom = response.data.chatRoom;
       setChatRoom(newChatRoom);
-      console.log("Chat room created successfully:", newChatRoom);
       return newChatRoom;
     } catch (error) {
       console.error("Error creating chat room:", error);
@@ -209,8 +187,6 @@ const ChatComponent = () => {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      console.log(chatRoom, "chatRoom");
-
       try {
         const res = await userAxiosInstance.get(
           `/messages?chatId=${chatRoom._id}`
@@ -243,10 +219,54 @@ const ChatComponent = () => {
   useEffect(() => {
     const workspaceId = selectedWorkspace || selectedSharedWorkspace;
     if (workspaceId) {
-      console.log("Fetching projects for workspace:", workspaceId);
       fetchProjects(workspaceId);
     }
   }, [selectedWorkspace, selectedSharedWorkspace]);
+
+  
+  useEffect(() => {
+
+    if (chatRoom && messages.length > 0) {
+      const unreadMessageIds = messages
+        .filter((msg) => !msg.read && msg.senderId?._id !== user?._id)
+        .map((msg) => msg._id);
+
+      if (unreadMessageIds.length > 0) {
+        socket.emit("mark-as-read", { messageIds: unreadMessageIds, userId: user._id });
+      }
+    }
+  }, [chatRoom, messages]);
+  
+  useEffect(() => {
+    if (socket) {
+        socket.on("message-read", (data) => {
+            console.log("Message read payload received:", data);
+            
+            if (!data || (!Array.isArray(data.messageIds) && !data.messageId) || !data.readerId) {
+                console.error("Invalid payload:", data);
+                return;
+            }
+
+            const messageIds = data.messageIds || [data.messageId]; 
+
+            setMessages((prevMessages) => {
+                const updatedMessages = prevMessages.map((msg) =>
+                    messageIds.includes(msg._id)
+                        ? { ...msg, read: true, readBy: [...(msg.readBy || []), data.readerId] }
+                        : msg
+                );
+                console.log("Updated messages:", updatedMessages);
+                return updatedMessages;
+            });
+        });
+    }
+}, [socket]);
+
+
+
+
+  
+    
 
   return (
     <Box
@@ -265,7 +285,6 @@ const ChatComponent = () => {
         <SideBar />
       </Box>
 
-     
       <Box
         sx={{
           display: { xs: "none", md: "block" },
@@ -350,7 +369,6 @@ const ChatComponent = () => {
           <Typography variant="h6">{selectedProject.projectName}</Typography>
         </Box>
 
-       
         <Box
           sx={{
             flexGrow: 1,
@@ -387,77 +405,85 @@ const ChatComponent = () => {
           ) : (
             <>
               {/* Display Messages */}
+
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "column",
+                  overflowY:'auto',
+                  maxHeight: "calc(100vh - 300px)", 
                   width: "100%",
                   height: "auto",
                 }}
               >
-                {messages.map((msg, index) => (
-                  <Box
-                    key={index}
-                    display="flex"
-                    justifyContent={
-                      msg.senderId?._id === user._id ? "flex-end" : "flex-start"
-                    }
-                    mb={2}
-                    sx={{
-                      "&:last-child": { mb: 0 },
-                      px: 2,
-                    }}
-                  >
-                    <Paper
-                      elevation={1}
-                      sx={{
-                        p: 2,
-                        borderRadius: "12px",
-                        maxWidth: "70%",
-                        bgcolor:
-                          msg.senderId?._id === user._id
-                            ? "primary.light"
-                            : "grey.300",
-                        color:
-                          msg.senderId?._id === user._id
-                            ? "primary.contrastText"
-                            : "text.primary",
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontSize: "0.75rem",
-                            color:
-                              messages.senderId?._id === user._id
-                                ? "white"
-                                : "textSecondary",
-                          }}
-                        >
-                          {messages.senderId?._id === user._id
-                            ? user.name
-                            : msg?.senderId?.name}
-                        </Typography>
+               {messages.map((msg, index) => (
+                
+  <Box
+    key={index}
+    display="flex"
+    justifyContent={msg.senderId?._id === user?._id ? "flex-end" : "flex-start"}
+    mb={2}
+    sx={{ "&:last-child": { mb: 0 }, px: 2 }}
+  >
+    <Paper
+      elevation={1}
+      sx={{
+        p: 2,
+        borderRadius: "12px",
+        maxWidth: "70%",
+        bgcolor: msg.senderId?._id === user?._id ? "primary.light" : "grey.300",
+        color: msg.senderId?._id === user?._id ? "primary.contrastText" : "text.primary",
+      }}
+    >
+      <Box>
+        <Typography
+          variant="body2"
+          sx={{
+            fontSize: "0.75rem",
+            color: msg.senderId?._id === user?._id ? "white" : "textSecondary",
+          }}
+        >
+          {msg.senderId?._id === user?._id ? user?.name : msg?.senderId?.name}
+        </Typography>
 
-                        <Typography
-                          variant="body1"
-                          sx={{ wordBreak: "break-word" }}
-                        >
-                          {msg.content}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          display="block"
-                          textAlign="right"
-                          color="textSecondary"
-                        >
-                          {msg.time}
-                        </Typography>
-                      </Box>
-                    </Paper>
-                  </Box>
-                ))}
+        <Typography variant="body1" sx={{ wordBreak: "break-word" }}>
+          {msg.content}
+        </Typography>
+
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "textSecondary" }}>
+  {msg.createdAt
+    ? (() => {
+        const parsedDate = new Date(msg.createdAt);
+        if (isNaN(parsedDate.getTime())) return "Invalid Date";
+        return parsedDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      })()
+    : "Invalid Date"}
+</Typography>
+
+
+          <Box ml={1}>
+            {msg.senderId?._id === user?._id ? (
+              msg.readBy?.length > 0 ? (
+                <DoneAllIcon sx={{ fontSize: "1rem", color: "blue" }} />
+              ) : (
+                <DoneIcon sx={{ fontSize: "1rem", color: "gray" }} />
+              )
+            ) : null}
+          </Box>
+        </Box>
+      </Box>
+    </Paper>
+  </Box>
+))}
+
+
+
+
+
               </Box>
 
               {/* Message Box */}
@@ -505,26 +531,3 @@ const ChatComponent = () => {
 
 export default ChatComponent;
 
-// useEffect(() => {
-//   const createChatRoom = async () => {
-//     try {
-//       console.log(
-//         "workspaceId, projectId, members",
-//         selectedWorkspace,
-//         selectedProject
-//       );
-//       const response = await userAxiosInstance.get("/chat", {
-//         selectedWorkspace,
-//         selectedProject,
-//       });
-//       const newChatRoom = response.data.chatRoom;
-//       setChatRoom(newChatRoom);
-//       console.log("Chat room created successfully:", newChatRoom);
-//       return newChatRoom;
-//     } catch (error) {
-//       console.error("Error creating chat room:", error);
-//       setError("Failed to create chat room");
-//     }
-//   };
-//   createChatRoom();
-// }, [selectedProject]);

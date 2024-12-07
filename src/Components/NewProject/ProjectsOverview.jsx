@@ -457,7 +457,7 @@ const ProjectsOverview = () => {
 
   useEffect(() => {
     fetchProject();
-  }, []);
+  }, [projectId]);
 
   const fetchTasks = async()=>{
     try {
@@ -474,12 +474,12 @@ const ProjectsOverview = () => {
     fetchTasks()
   },[projectId,tasks])
  const calculateProgress = () => {
-  if (!tasks.length) return { completed: 0, inProgress: 0 };
+  if (!tasks.length) return { completed: 0, inProgress: 0 ,pending:0 };
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(task => task.status === 'Completed').length;
   const inProgressTasks = tasks.filter(task => task.status === 'ongoing').length;
-  const pendingTasks = tasks.filter(task => task.status === 'Pending').length;
+  const pendingTasks = tasks.filter(task => task.status === 'pending').length;
 
   return {
     completed: (completedTasks / totalTasks) * 100,

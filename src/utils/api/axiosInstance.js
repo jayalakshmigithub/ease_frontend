@@ -40,14 +40,11 @@ const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAct
             if (error.response && error.response.status === 401 && !originalRequest._retry) {
                 originalRequest._retry = true;
                 try {
-                    
-                    console.log(refreshTokenApi,'refreshTokenApi')
                     const response = await axios.post(refreshTokenApi, {
                         userRole: userRole
                     }, {
                         withCredentials: true,
                     });
-                    console.log("response data is here or not",response.data ,'USER')
                     const { accessToken, refreshToken: newRefreshToken } = response.data;
                     console.log();
                     

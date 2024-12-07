@@ -2,6 +2,10 @@ import React from "react";
 import "./LandingPage.css";
 import background_img from '../../Assets/download.jpeg'
 import group from '../../Assets/group.png'
+import landingUI from '../../Assets/landingUI.png'
+import landing1 from '../../Assets/landing1.png'
+import landing2 from '../../Assets/landing2.png'
+import landing3 from '../../Assets/landing3.png'
 // C:\Users\laksh\Desktop\EASE1\ease_frontend\src\Assets\groupChat.png
 import {useNavigate} from 'react-router-dom'
 import {
@@ -147,8 +151,8 @@ const LandingPage = () => {
          radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
        `
        ,
-       width:'100vw',
-       height:'100vh'
+       minWidth:'auto',
+       minHeight:'auto'
      }}>
        <Navbar />
       
@@ -167,6 +171,10 @@ const LandingPage = () => {
          <img src={group} alt="groupChat" className="groupChat"  style={{ width: '42%', height: "42%", objectFit: "cover" ,marginTop:"40px"}}  />
         
          </Box>
+
+        <Box>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#C0CFFA" fill-opacity="1" d="M0,128L34.3,154.7C68.6,181,137,235,206,218.7C274.3,203,343,117,411,117.3C480,117,549,203,617,224C685.7,245,754,203,823,165.3C891.4,128,960,96,1029,101.3C1097.1,107,1166,149,1234,170.7C1302.9,192,1371,192,1406,192L1440,192L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"></path></svg>
+        </Box>
         
         
       

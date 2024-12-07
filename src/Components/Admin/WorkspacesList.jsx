@@ -39,8 +39,6 @@ const WorkspaceList = () => {
       try {
         console.log('in fetcworkspaceDMIN FN')
         const response = await adminAxiosInstance.get("/workspacelist");
-        console.log('hiii admin fetch workspzce')
-        console.log('response data of fetching workspace',response.data);
         return response.data
       } catch (error) {
         console.log("error in workspace list", error);

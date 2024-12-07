@@ -146,9 +146,9 @@ const SideBar = () => {
                 <MenuItem icon={<MenuOpenIcon onClick={toggleDrawer} sx={iconStyle} />} />
                 <MenuItem icon={<HomeIcon sx={iconStyle} />} onClick={() => handleMenuClick('/home')}> Home </MenuItem>
                 <MenuItem icon={<WorkspacesIcon sx={iconStyle} />} onClick={() => handleMenuClick('/workspace')}> Workspaces </MenuItem>
-                <MenuItem icon={<AssignmentIcon sx={iconStyle} />} onClick={() => handleMenuClick('/projects')}> Projects </MenuItem>
+              
                 <MenuItem icon={<AccountBoxIcon sx={iconStyle} />} onClick={() => handleMenuClick('/profile')}> Profile </MenuItem>
-                <MenuItem icon={<MessageIcon sx={iconStyle} />}> Messages </MenuItem>
+                <MenuItem icon={<MessageIcon sx={iconStyle} /> } onClick={() => handleMenuClick('/messages')}> Messages </MenuItem>
                 <MenuItem icon={<LogoutIcon sx={iconStyle} />} onClick={handleLogout}> Logout </MenuItem>
               </Menu>
             </Box>

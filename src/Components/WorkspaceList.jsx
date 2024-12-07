@@ -282,7 +282,7 @@ const WorkspaceList = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={3} align="center">
-                      No workspace found
+                      No your own workspace is found
                     </TableCell>
                   </TableRow>
                 )}

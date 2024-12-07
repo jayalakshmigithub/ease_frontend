@@ -1,77 +1,6 @@
 
 
-// const InviteMembers = ({open,onClose}) => {
-//   const [email,setEmail] = useState('');
-//   const [emails,setEmails] = useState([])
-   
-//   const handleAddEmail =(e)=>{
-//     e.preventDefault()
-//     if(email !== emails.includes(email)){
-//       setEmails([...emails,email])
-//       setEmail('')
-//     }
-//   }
-//   const DeleteEmail=(emailToDelete)=>{
-//     setEmails(emails.filter(email=>email!==emailToDelete))
-//   }
-//     const handleDeleteEmail =(emailToDelete)=>{
-//       DeleteEmail(emailToDelete)
-      
-//     }
 
-//     const handleClick=()=>{
-//       console.log('chip clicked')
-//     }
-
-//     const handleSubmit=()=>{
-//       console.log({emails})
-//     }
-//   return (
-//     <Dialog open={open} onClose ={onClose} fullWidth maxWidth="sm"> 
-//     <DialogTitle>Invite Members</DialogTitle>
-//     <DialogContent>
-//       <Box 
-//       component='form'
-//       sx={{display:'flex',flexDirection:'column',gap:2}}
-//       autoComplete='off'
-//       onSubmit={handleAddEmail}>
-//          <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-//           {emails.map((email, index) => (
-//             <Chip
-//               key={index}
-//               label={email}
-//               onClick={handleClick}
-//               onDelete={() => handleDeleteEmail(email)}
-//             />
-//           ))}
-//         </Stack>
-//         <TextField 
-//         fullWidth 
-//         label="enter emails" 
-//         id="fullWidth"
-//         value={email}
-//         onChange={(e)=>setEmail(e.target.value)}
-//         onKeyPress={(e)=>{
-//           if(e.key===enter){
-//           handleAddEmail(e)
-//           }
-//         }} >
-//           enter email id
-//         </TextField>
-       
-//       </Box>
-//     </DialogContent>
-//     <DialogActions>
-//       <Button onClick={onClose}>
-//          skip
-//       </Button>
-//       <Button onClick={handleSubmit}>
-//          submit
-//       </Button>
-//     </DialogActions>      
-//     </Dialog>
-//   )
-// }
 
 import React, { useState ,useEffect} from 'react';
 import {
@@ -219,4 +148,79 @@ const InviteMembers = ({workspace, open, onClose, }) => {
 };
 
 export default InviteMembers;
+
+
+
+// const InviteMembers = ({open,onClose}) => {
+//   const [email,setEmail] = useState('');
+//   const [emails,setEmails] = useState([])
+   
+//   const handleAddEmail =(e)=>{
+//     e.preventDefault()
+//     if(email !== emails.includes(email)){
+//       setEmails([...emails,email])
+//       setEmail('')
+//     }
+//   }
+//   const DeleteEmail=(emailToDelete)=>{
+//     setEmails(emails.filter(email=>email!==emailToDelete))
+//   }
+//     const handleDeleteEmail =(emailToDelete)=>{
+//       DeleteEmail(emailToDelete)
+      
+//     }
+
+//     const handleClick=()=>{
+//       console.log('chip clicked')
+//     }
+
+//     const handleSubmit=()=>{
+//       console.log({emails})
+//     }
+//   return (
+//     <Dialog open={open} onClose ={onClose} fullWidth maxWidth="sm"> 
+//     <DialogTitle>Invite Members</DialogTitle>
+//     <DialogContent>
+//       <Box 
+//       component='form'
+//       sx={{display:'flex',flexDirection:'column',gap:2}}
+//       autoComplete='off'
+//       onSubmit={handleAddEmail}>
+//          <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
+//           {emails.map((email, index) => (
+//             <Chip
+//               key={index}
+//               label={email}
+//               onClick={handleClick}
+//               onDelete={() => handleDeleteEmail(email)}
+//             />
+//           ))}
+//         </Stack>
+//         <TextField 
+//         fullWidth 
+//         label="enter emails" 
+//         id="fullWidth"
+//         value={email}
+//         onChange={(e)=>setEmail(e.target.value)}
+//         onKeyPress={(e)=>{
+//           if(e.key===enter){
+//           handleAddEmail(e)
+//           }
+//         }} >
+//           enter email id
+//         </TextField>
+       
+//       </Box>
+//     </DialogContent>
+//     <DialogActions>
+//       <Button onClick={onClose}>
+//          skip
+//       </Button>
+//       <Button onClick={handleSubmit}>
+//          submit
+//       </Button>
+//     </DialogActions>      
+//     </Dialog>
+//   )
+// }
 
