@@ -23,6 +23,7 @@ const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorksp
  
   const userInfo = useSelector((state) => state?.user?.userInfo?.user);
   const userId = userInfo?._id;
+  console.log('hiii userId',userId)
 
   const handleSubmit = async (e) => {
   

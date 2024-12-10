@@ -32,6 +32,7 @@ const Workspace = () => {
   const fetchWorkspaces = async () => {
     try {
       const response = await userAxiosInstance.get('/workspaces', { withCredentials: true });
+      console.log('response in')
   
       const userWorkspaces = response.data.workspace || [];  
       const userSharedWorkspace = response.data.sharedWorkspace || [];

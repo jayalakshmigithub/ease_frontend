@@ -88,7 +88,6 @@ const [workSpace , setWorkSpace] = useState(null)
           )}
           
          {activeStep === 1&& (
-          // <AddMembers open={openDialog} onClose={handleCloseDialog} handleSelect={handleSelect} nextStep ={nextStep} />
           <InviteMembers open={openDialog} onClose={handleCloseDialog} setWorkSpace={setWorkSpace} workSpace={workSpace}/>
         )}
          
@@ -114,7 +113,7 @@ const [workSpace , setWorkSpace] = useState(null)
           </Button>
         </Box>
         </Container>
-        <ToastContainer/>
+        {/* <ToastContainer/> */}
       </Box>
     </>
   );

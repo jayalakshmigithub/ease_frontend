@@ -223,7 +223,7 @@ useEffect(()=>{
   return (
     <Box className="signup-container">
       <div className="wrapper" style={{ width: "650px", height: "500px" }}>
-        <ToastContainer
+        {/* <ToastContainer
           position="top-center"
           autoClose={3000}
           hideProgressBar={false}
@@ -235,7 +235,7 @@ useEffect(()=>{
           pauseOnHover
           theme="light"
           transition={Bounce}
-        />
+        /> */}
         <img src={login_icon} alt="Login Image" className="login-image" />
         <div className="form-box login">
           <form action="">
