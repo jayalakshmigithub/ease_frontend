@@ -84,7 +84,7 @@ const [workSpace , setWorkSpace] = useState(null)
 
         <Box >
           {activeStep === 0 && (
-            <CreateWorkspace open={openDialog} onClose={handleCloseDialog} setWorkSpace={setWorkSpace} nextStep={nextStep} />
+            <CreateWorkspace open={openDialog} onClose={handleCloseDialog} setWorkSpace={setWorkSpace} nextStep={nextStep} fromStepper={true} />
           )}
           
          {activeStep === 1&& (

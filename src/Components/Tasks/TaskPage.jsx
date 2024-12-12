@@ -25,6 +25,8 @@ import { MdCheckCircle } from "react-icons/md";
 import { userAxiosInstance } from '../../utils/api/axiosInstance';
 import AddTask from './AddTask';
 import { MdPendingActions } from "react-icons/md";
+import TaskDetails from './TaskDetails';
+import { useSelector } from 'react-redux';
 
 
 
@@ -34,14 +36,17 @@ const TaskPage = () => {
   const [tasks, setTasks] = useState([]);
   const [activeTab, setActiveTab] = useState("ALL TASKS");
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isTaskDetailsModalOpen, setTaskDetailsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [currentPage,setCurrentPage] = useState(1)
   const { projectId } = useParams();
 
   const ITEMS_PER_PAGE = 2;
+  const navigate = useNavigate()
 
  
-
+  const { userInfo } = useSelector((state) => state.user);
+const currentUser = userInfo?.userId;
   const fetchTasks = async () => {
     try {
       if (!projectId) throw new Error("Project not found");
@@ -51,19 +56,41 @@ const TaskPage = () => {
       console.error("Error fetching tasks:", error);
     }
   };
+  const handleDeleteTask = async (taskId) => {
+    try {
+      // await userAxiosInstance.delete(`/tasks/${taskId}`);
+      // fetchTasks();
+      // setModalOpen(false);
+      console.log('clciked deleet')
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
+  const handleEditTask = (task) => {
+
+    console.log("Editing task:", task);
+  
+    setModalOpen(false);
+    setTaskDetailsModalOpen(true);
+  };
+
 
   const handleAddNewTask = () => {
     setModalOpen(true);
+    setTaskDetailsModalOpen(false); 
   };
 
   const handleCloseModal = () => {
     setModalOpen(false);
+    setTaskDetailsModalOpen(false);
     fetchTasks(); 
   };
 
   const handleOpenModal = (task) => {
     setSelectedTask(task);
-    setModalOpen(true);
+    setModalOpen(false);
+    setTaskDetailsModalOpen(true);
   };
 
   const handleStatusChange = async (taskId, newStatus) => {
@@ -248,7 +275,6 @@ const TaskPage = () => {
   };
 
 
-
   return (
 
 <>
@@ -300,6 +326,7 @@ const TaskPage = () => {
     icon={<FaTasks style={{ marginRight: "8px" }} />}
     iconPosition="start"
     value="ALL TASKS"
+   
   />
   <Tab
     label="Ongoing"
@@ -374,7 +401,10 @@ const TaskPage = () => {
     </Box>
 
     {isModalOpen && <AddTask open={isModalOpen} onClose={handleCloseModal} fetchTasks={fetchTasks} />}
+    {isTaskDetailsModalOpen && <TaskDetails open={isTaskDetailsModalOpen} task={selectedTask} onClose={handleCloseModal} onDelete={handleDeleteTask} onEdit={handleEditTask} currentUser={currentUser} />}
+
   </Container>
+ 
   </>
   );
 };

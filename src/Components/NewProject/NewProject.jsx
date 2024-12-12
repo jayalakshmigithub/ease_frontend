@@ -195,7 +195,7 @@ console.log('projectDetails',projectDetails)
         <Box sx={{ borderBottom: "dotted", borderColor: "#A2CFFE" }}></Box>
         <Container sx={{ marginTop: "20px" }}>
           <Typography variant="h4" align="center" gutterBottom>
-            Streamline Your Project: Plan and Execute with EASE
+            Streamline Your Project: Plan and Execute with planIt
           </Typography>
           <Paper elevation={3} sx={{ padding: 2 }}>
             <Tabs

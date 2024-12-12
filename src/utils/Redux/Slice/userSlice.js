@@ -33,18 +33,18 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-// Safely get userInfo from localStorage
+
 const userInfoString = localStorage.getItem('userInfo');
 let userInfo = null;
 
 try {
-  // Only parse if the string is not null or empty
+
   if (userInfoString) {
     userInfo = JSON.parse(userInfoString);
   }
 } catch (error) {
   console.error("Failed to parse userInfo from localStorage:", error);
-  // If there's an error parsing, reset userInfo to null
+
   userInfo = null;
 }
 
@@ -56,11 +56,10 @@ const userSlice = createSlice({
   },
   reducers: {
     addUser: (state, action) => {
-      // Only store valid user data
+      
       if (action.payload) {
         state.userInfo = action.payload;
         state.isAuthenticated = true;
-        // Safely store the userInfo in localStorage
         localStorage.setItem('userInfo', JSON.stringify(state.userInfo));
       }
     },

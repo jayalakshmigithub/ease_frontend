@@ -15,7 +15,7 @@ import { ToastContainer,toast } from 'react-toastify';
 
 
 
-const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorkspaces,existingWorkspaceNames}) => {
+const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorkspaces,existingWorkspaceNames,fromStepper=false}) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +27,7 @@ const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorksp
 
   const handleSubmit = async (e) => {
   
-    if (existingWorkspaceNames.includes(name.trim())) {
+    if (!fromStepper&&existingWorkspaceNames.includes(name.trim())) {
       toast.error("Workspace name already exists. Please choose a different name.");
       return;
     }

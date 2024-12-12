@@ -358,7 +358,7 @@ const Home = () => {
                         color: "text.secondary",
                       }}
                     >
-                      Ease provides a comprehensive set of tools and features to
+                      planIt provides a comprehensive set of tools and features to
                       streamline your project management process.
                     </Typography>
                   </motion.div>

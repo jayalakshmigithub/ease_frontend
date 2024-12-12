@@ -1,20 +1,12 @@
-
-
-
-
-
-
-
-
-import React from "react";
-import { Box, Button, Modal, Typography, IconButton, Divider, Grid, Paper, Select, MenuItem } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
-import NotesIcon from '@mui/icons-material/Notes';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import PersonIcon from '@mui/icons-material/Person';
-import StatusOnlineIcon from '@mui/icons-material/OnlinePrediction';
+// import React from "react";
+// import { Box, Button, Modal, Typography, IconButton, Divider, Grid, Paper, Select, MenuItem } from "@mui/material";
+// import CloseIcon from '@mui/icons-material/Close';
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
+// import NotesIcon from '@mui/icons-material/Notes';
+// import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+// import PersonIcon from '@mui/icons-material/Person';
+// import StatusOnlineIcon from '@mui/icons-material/OnlinePrediction';
 
 // const TaskDetails = ({ data, handleModalClose, handleChangeStatus, handleShowDetails, showDetails }) => {
 //   return (
@@ -133,4 +125,111 @@ import StatusOnlineIcon from '@mui/icons-material/OnlinePrediction';
 // };
 
 // export default TaskDetails;
+
+
+
+import React from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Button,
+  Box,
+} from "@mui/material";
+import { useSelector } from "react-redux";
+
+// const TaskDetails = ({ open, task, onClose, onDelete, onEdit, currentUser }) => {
+//   if (!task) return null;
+
+//   const isOwner = currentUser === task.owner; 
+//   console.log('isowner',isOwner)
+
+//   return (
+//     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+//       <DialogTitle>{task.name}</DialogTitle>
+//       <DialogContent>
+//         <Typography variant="body1" gutterBottom>
+//           <strong>Description:</strong> {task.Description}
+//         </Typography>
+//         <Typography variant="body1" gutterBottom>
+//           <strong>Priority:</strong> {task.priority}
+//         </Typography>
+//         <Typography variant="body1" gutterBottom>
+//           <strong>Status:</strong> {task.status}
+//         </Typography>
+//       </DialogContent>
+//       <DialogActions>
+//         {isOwner && (
+//           <>
+//             <Button
+//               color="primary"
+//               variant="outlined"
+//               onClick={() => onEdit(task)}
+//             >
+//               Edit
+//             </Button>
+//             <Button
+//               color="secondary"
+//               variant="contained"
+//               onClick={() => onDelete(task._id)}
+//             >
+//               Delete
+//             </Button>
+//           </>
+//         )}
+//         <Button onClick={onClose}>Close</Button>
+//       </DialogActions>
+//     </Dialog>
+//   );
+// };
+const TaskDetails = ({ open, task, onClose, onDelete, onEdit, currentUser }) => {
+    if (!task) return null;
+  
+    const { userInfo } = useSelector((state) => state.user);
+const currentUserId = userInfo?.userId;
+ console.log('currentUserId',currentUserId)
+  
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+        <DialogTitle>{task.name}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            <strong>Description:</strong> {task.Description}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            <strong>Priority:</strong> {task.priority}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            <strong>Status:</strong> {task.status}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          {currentUserId && (
+            <>
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={() => onEdit(task)}
+              >
+                Edit
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => onDelete(task._id)}
+              >
+                Delete
+              </Button>
+            </>
+          )}
+          <Button onClick={onClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+  
+
+export default TaskDetails;
 

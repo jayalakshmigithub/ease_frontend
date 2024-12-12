@@ -35,7 +35,7 @@ const AdminHome = () => {
               flexGrow: 1,
               padding: "15px",
               display: "flex",
-              flexDirection: "column",  // Aligns items vertically
+              flexDirection: "column",  
               justifyContent: "flex-start",
               alignItems: "center",
               backgroundColor: "transparent",

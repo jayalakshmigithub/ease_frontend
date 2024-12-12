@@ -28,6 +28,7 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
 
 
 const steps = ["Task Details",  "Assign Members"];
@@ -45,6 +46,8 @@ const style = {
 };
 
 const AddTask = ({ open, onClose, fetchTasks }) => {
+  const { userInfo } = useSelector((state) => state.user);
+const currentUserId = userInfo?.userId;
   
   const { projectId } = useParams();
   const today = dayjs();
@@ -58,7 +61,9 @@ const AddTask = ({ open, onClose, fetchTasks }) => {
     // toDate: dayjs().add(1, "day"),
     projectId: projectId,
     assignee: [],
+    ownerId : currentUserId
   });
+  console.log('ownerIdddd',taskData.ownerId)
   const validateFields = () => {
     if (!taskData.name) {
       toast.error("Name is required!");
@@ -153,7 +158,7 @@ const AddTask = ({ open, onClose, fetchTasks }) => {
       console.error("Error:", error);
     }
   };
-  ;
+  
  
   return (
     <Modal
