@@ -63,7 +63,7 @@ const currentUserId = userInfo?.userId;
     assignee: [],
     ownerId : currentUserId
   });
-  console.log('ownerIdddd',taskData.ownerId)
+ 
   const validateFields = () => {
     if (!taskData.name) {
       toast.error("Name is required!");
@@ -104,7 +104,7 @@ const currentUserId = userInfo?.userId;
       if (!projectId) throw new Error("project id is missing");
       const response = await userAxiosInstance.get(`/projects/${projectId}`);
       if (response.data.project) {
-        console.log("fetchedmembers", response.data.project);
+        // console.log("fetchedmembers", response.data.project);
         setMembers(response.data.project.members);
         console.log("members", response.data.project.members);
       } else {
@@ -115,12 +115,11 @@ const currentUserId = userInfo?.userId;
     }
   };
   useEffect(() => {
+    if(!projectId)return
     fetchProjectMembers();
   }, [projectId]);
 
-  useEffect(() => {
-    console.log("Component re-rendered, members:", members);
-  }, [members]);
+
 
  
   const handleAssigneeChange = (e, members) => {

@@ -20,7 +20,7 @@ const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAct
     instance.interceptors.request.use(
         (config) => {
             const accessToken = localStorage.getItem(accessTokenKey);
-            console.log(accessToken, 'accessToken in axios interceptor request');
+            // console.log(accessToken, 'accessToken in axios interceptor request');
             if (accessToken) {
                 config.headers = config.headers || {};
                 config.headers["Authorization"] = `Bearer ${accessToken}`;

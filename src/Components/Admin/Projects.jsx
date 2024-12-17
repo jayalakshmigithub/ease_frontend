@@ -99,8 +99,10 @@ const Projects = () => {
       ),
       renderCell: (params) => (
         <Typography>
-          {params.row.members.length > 0 ? params.row.members.join(", ") : "No members"}
-        </Typography>
+        {params.row.members.length > 0
+          ? params.row.members.map((member) => member.email || "Unknown").join(", ")
+          : "No members"}
+      </Typography>
       ),
     },
   ];

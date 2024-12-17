@@ -107,78 +107,9 @@ const currentUser = userInfo?.userId;
   };
 
   useEffect(() => {
+    
     fetchTasks();
-  }, [projectId,tasks]);
-
-  // const renderTasks = (filterStatus) => {
-  //   const filteredTasks = filterStatus
-  //     ? tasks.filter((task) => task.status === filterStatus)
-  //     : tasks; 
-
-  //   return filteredTasks.length > 0 ? (
-  //     filteredTasks.map((task) => (
-  //       <Box
-  //         key={task._id}
-  //         sx={{
-  //           backgroundColor: "white",
-  //           borderRadius: 1,
-  //           boxShadow: 1,
-  //           padding: 2,
-  //           display: "flex",
-  //           justifyContent: "space-between",
-  //           alignItems: "center",
-  //           mb: 1,
-  //           cursor: "pointer",
-  //         }}
-  //         onClick={() => handleOpenModal(task)}
-  //       >
-        
-  //         <Typography>{task.name}</Typography>
-
-        
-  //         <Typography
-  //           sx={{
-  //             color:
-  //               task.priority === "High"
-  //                 ? "red"
-  //                 : task.priority === "Medium"
-  //                 ? "orange"
-  //                 : task.priority === "Low"
-  //                 ? "blue"
-  //                 : "black",
-  //           }}
-  //         >
-  //           {task.priority}
-  //         </Typography>
-
-  //         {/* Task Status */}
-  //         <FormControl
-  //           size="small"
-  //           disabled={task.status === "Completed"}
-  //           onClick={(e) => e.stopPropagation()} 
-  //         >
-  //           <InputLabel>Status</InputLabel>
-  //           <Select
-  //             value={task.status || "ongoing"}
-  //             onChange={(e) => {
-  //               e.stopPropagation();
-  //               handleStatusChange(task._id, e.target.value);
-  //             }}
-  //           >
-  //             {task.status !== "Completed" && (
-  //               <>
-  //                 <MenuItem value="ongoing">Ongoing</MenuItem>
-  //               </>
-  //             )}
-  //             <MenuItem value="Completed">Completed</MenuItem>
-  //           </Select>
-  //         </FormControl>
-  //       </Box>
-  //     ))
-  //   ) : (
-  //     <Typography>No tasks available</Typography>
-  //   );
-  // };
+  }, [projectId]);
 
     
   const paginateTasks = (allTasks) => {
@@ -412,67 +343,6 @@ const currentUser = userInfo?.userId;
 
 
 export default TaskPage
-
-
-
-
-
-
-    // <Container>
-    //   <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
-    //     <Button variant="contained" onClick={handleAddNewTask}>
-    //       New Task
-    //     </Button>
-    //   </Box>
-    //   <Tabs
-    //     value={activeTab}
-    //     onChange={(e, newValue) => setActiveTab(newValue)}
-    //     centered
-    //     variant="fullWidth"
-    //     sx={{
-    //       "& .MuiTab-root": { textTransform: "none" },
-    //       "& .Mui-selected": { color: "#1976d2" },
-    //     }}
-    //   >
-    //     <Tab label="All Tasks" icon={<FaTasks />} value="ALL TASKS" />
-    //     <Tab label="Ongoing" icon={<GiProgression />} value="ongoing" />
-    //     <Tab label="Completed" icon={<MdCheckCircle />} value="Completed" />
-    //   </Tabs>
-    //   <Box sx={{ mt: 3 }}>
-    //     {activeTab === "ALL TASKS" && (
-    //       <Card sx={{ p: 3 }}>
-    //         <CardContent>
-    //           <Typography variant="h5">All Tasks</Typography>
-    //           {renderTasks()} 
-    //         </CardContent>
-    //       </Card>
-    //     )}
-    //     {activeTab === "ongoing" && (
-    //       <Card sx={{ p: 3 }}>
-    //         <CardContent>
-    //           <Typography variant="h5">Ongoing Tasks</Typography>
-    //           {renderTasks("ongoing")}
-    //         </CardContent>
-    //       </Card>
-    //     )}
-    //     {activeTab === "Completed" && (
-    //       <Card sx={{ p: 3 }}>
-    //         <CardContent>
-    //           <Typography variant="h5">Completed Tasks</Typography>
-    //           {renderTasks("Completed")}
-    //         </CardContent>
-    //       </Card>
-    //     )}
-    //   </Box>
-    //   {isModalOpen && <AddTask open={isModalOpen} onClose={handleCloseModal} fetchTasks={fetchTasks} />}
-    // </Container>
-
-
-
-
-
-
-
 
 
 
