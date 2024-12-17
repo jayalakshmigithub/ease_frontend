@@ -12,27 +12,28 @@ import {
   Avatar,
   Paper,
   TextField,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useTheme } from "@mui/material/styles";
 import SideBar from "../SideBar";
 import groupChat from "../../Assets/groupChat.png";
 import { userAxiosInstance } from "../../utils/api/axiosInstance";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import config from "../../config/config";
-import DoneIcon from '@mui/icons-material/Done';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import DoneIcon from "@mui/icons-material/Done";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 
-import { format } from "date-fns";
 
 const ChatComponent = () => {
   const user = useSelector((state) => state.user?.userInfo?.user);
   const [workspaces, setWorkspaces] = useState([]);
   const [sharedWorkspaces, setSharedWorkspaces] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [members,setMembers] = useState([])
+  const [members, setMembers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
   const [selectedSharedWorkspace, setSelectedSharedWorkspace] = useState("");
@@ -41,12 +42,24 @@ const ChatComponent = () => {
   const [open, setOpen] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [currentChatRoomId, setCurrentChatRoomId] = useState("");
+  const [existingChatRooms, setExistingChatRooms] = useState([]);
   const socket = io(config.API_URL_SOCKET);
-  
+
+  const fetchChatRooms = async (workspaceId) => {
+    try {
+      const response = await userAxiosInstance.get(`/chatrooms/${workspaceId}`);
+      console.log("resposnse.data", response.data);
+      setExistingChatRooms(response.data);
+    } catch (error) {
+      console.error("Error fetching chatooms:", error);
+      throw error;
+    }
+  };
+
   const checkChatRoomExistence = async () => {
     const workspaceId = selectedWorkspace || selectedSharedWorkspace;
     const projectId = selectedProject;
-    
+
     if (workspaceId && projectId) {
       try {
         const response = await userAxiosInstance.get("/chat", {
@@ -65,32 +78,32 @@ const ChatComponent = () => {
       }
     }
   };
-  
+
   useEffect(() => {
     if (socket) {
       socket.emit("join-chat", currentChatRoomId);
-      
+
       socket.on("receive-message", (message) => {
         setMessages((prevMessages) => [...prevMessages, message]);
       });
-      
+
       return () => {
         socket.off("receive-message");
       };
     }
   }, [socket]);
-  
+
   useEffect(() => {
     if ((selectedWorkspace || selectedSharedWorkspace) && selectedProject) {
       checkChatRoomExistence();
     }
   }, [selectedWorkspace, selectedSharedWorkspace, selectedProject]);
-  
+
   const handleSendMessage = async () => {
     if (newMessage.trim() === "") {
       return;
     }
-    
+
     const message = {
       senderId: user?._id,
       message: newMessage.trim(),
@@ -98,15 +111,17 @@ const ChatComponent = () => {
       read: false,
       date: new Date().toISOString(),
     };
-    
+
     setCurrentChatRoomId(chatRoom._id);
-    
+
     try {
       const response = await userAxiosInstance.post("/messages", message);
-      
+
       if (response.data && response.data.message) {
         if (typeof response.data.message.senderId === "string") {
-          response.data.message.senderId = { _id: response.data.message.senderId };
+          response.data.message.senderId = {
+            _id: response.data.message.senderId,
+          };
         }
         setMessages((prevMessages) => [...prevMessages, message]);
         const message = response.data.message;
@@ -117,7 +132,7 @@ const ChatComponent = () => {
       console.error("Failed to send message:", error);
     }
   };
-  
+
   const fetchWorkspaces = async () => {
     try {
       const response = await userAxiosInstance.get("/workspaces", {
@@ -134,7 +149,7 @@ const ChatComponent = () => {
   useEffect(() => {
     fetchWorkspaces();
   }, []);
-  
+
   const fetchProjects = async (workspaceId) => {
     try {
       const response = await userAxiosInstance.get(
@@ -147,28 +162,30 @@ const ChatComponent = () => {
       setError("failed to fetch projects");
     }
   };
-  
-    const handleWorkspaceChange = (event) => {
-      const selectedWorkspaceId = event.target.value;
-      if (workspaces.some((workspace) => workspace._id === selectedWorkspaceId)) {
-        setSelectedWorkspace(selectedWorkspaceId);
-        setSelectedSharedWorkspace("");
-      } else if (
-        sharedWorkspaces.some(
-          (sharedWorkspace) => sharedWorkspace._id === selectedWorkspaceId
-        )
-      ) {
-        setSelectedSharedWorkspace(selectedWorkspaceId);
-        setSelectedWorkspace("");
-      }
-    };
-  
-  useEffect(() => {
-    if (selectedWorkspace) {
-      setProjects([]);
-      fetchProjects(selectedWorkspace);
+
+  const handleWorkspaceChange = (event) => {
+    const selectedWorkspaceId = event.target.value;
+    if (workspaces.some((workspace) => workspace._id === selectedWorkspaceId)) {
+      setSelectedWorkspace(selectedWorkspaceId);
+      setSelectedSharedWorkspace("");
+    } else if (
+      sharedWorkspaces.some(
+        (sharedWorkspace) => sharedWorkspace._id === selectedWorkspaceId
+      )
+    ) {
+      setSelectedSharedWorkspace(selectedWorkspaceId);
+      setSelectedWorkspace("");
     }
-  }, [selectedWorkspace]);
+  };
+
+  useEffect(() => {
+    if (selectedWorkspace || selectedSharedWorkspace) {
+      let workspace = selectedWorkspace || selectedSharedWorkspace;
+      setProjects([]);
+      fetchProjects(workspace);
+      fetchChatRooms(workspace);
+    }
+  }, [selectedWorkspace, selectedSharedWorkspace]);
 
   const createChatRoom = async (workspaceId, projectId) => {
     try {
@@ -223,50 +240,53 @@ const ChatComponent = () => {
     }
   }, [selectedWorkspace, selectedSharedWorkspace]);
 
-  
   useEffect(() => {
-
     if (chatRoom && messages.length > 0) {
       const unreadMessageIds = messages
         .filter((msg) => !msg.read && msg.senderId?._id !== user?._id)
         .map((msg) => msg._id);
 
       if (unreadMessageIds.length > 0) {
-        socket.emit("mark-as-read", { messageIds: unreadMessageIds, userId: user._id });
+        socket.emit("mark-as-read", {
+          messageIds: unreadMessageIds,
+          userId: user?._id,
+        });
       }
     }
   }, [chatRoom, messages]);
-  
+
   useEffect(() => {
     if (socket) {
-        socket.on("message-read", (data) => {
-            console.log("Message read payload received:", data);
-            
-            if (!data || (!Array.isArray(data.messageIds) && !data.messageId) || !data.readerId) {
-                console.error("Invalid payload:", data);
-                return;
-            }
+      socket.on("message-read", (data) => {
+        console.log("Message read payload received:", data);
 
-            const messageIds = data.messageIds || [data.messageId]; 
+        if (
+          !data ||
+          (!Array.isArray(data.messageIds) && !data.messageId) ||
+          !data.readerId
+        ) {
+          console.error("Invalid payload:", data);
+          return;
+        }
 
-            setMessages((prevMessages) => {
-                const updatedMessages = prevMessages.map((msg) =>
-                    messageIds.includes(msg._id)
-                        ? { ...msg, read: true, readBy: [...(msg.readBy || []), data.readerId] }
-                        : msg
-                );
-                console.log("Updated messages:", updatedMessages);
-                return updatedMessages;
-            });
+        const messageIds = data.messageIds || [data.messageId];
+
+        setMessages((prevMessages) => {
+          const updatedMessages = prevMessages.map((msg) =>
+            messageIds.includes(msg._id)
+              ? {
+                  ...msg,
+                  read: true,
+                  readBy: [...(msg.readBy || []), data.readerId],
+                }
+              : msg
+          );
+          console.log("Updated messages:", updatedMessages);
+          return updatedMessages;
         });
+      });
     }
-}, [socket]);
-
-
-
-
-  
-    
+  }, [socket]);
 
   return (
     <Box
@@ -350,6 +370,43 @@ const ChatComponent = () => {
         >
           {chatRoom ? "Open" : "Create Chat Room"}
         </Button>
+        <Typography variant="h6" sx={{ mt: 3 }}>
+          Chat Rooms
+        </Typography>
+        {existingChatRooms && existingChatRooms.chatRooms?.length > 0 ? (
+          <List>
+            {existingChatRooms.chatRooms.map((chatRoom) => (
+              <ListItem
+                key={chatRoom._id}
+                sx={{
+                  bgcolor: "#fff",
+                  mb: 1,
+                  boxShadow: 1,
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  "&:hover": { bgcolor: "#f5f5f5" },
+                }}
+                onClick={() => {
+                  createChatRoom(
+                    chatRoom.workspaceId,
+                    chatRoom.projectId,
+                    setOpen(true)
+                  );
+                }}
+              >
+                <ListItemText
+                  sx={{ color: "black" }}
+                  primary={`Project: ${chatRoom.projectId.projectName}`}
+                  secondary={`Members: ${chatRoom.members.length}`}
+                />
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Typography variant="body2" sx={{ color: "#999" }}>
+            No chat rooms available.
+          </Typography>
+        )}
       </Box>
 
       <Box
@@ -410,80 +467,103 @@ const ChatComponent = () => {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  overflowY:'auto',
-                  maxHeight: "calc(100vh - 300px)", 
+                  overflowY: "auto",
+                  maxHeight: "calc(100vh - 300px)",
                   width: "100%",
                   height: "auto",
                 }}
               >
-               {messages.map((msg, index) => (
-                
-  <Box
-    key={index}
-    display="flex"
-    justifyContent={msg.senderId?._id === user?._id ? "flex-end" : "flex-start"}
-    mb={2}
-    sx={{ "&:last-child": { mb: 0 }, px: 2 }}
-  >
-    <Paper
-      elevation={1}
-      sx={{
-        p: 2,
-        borderRadius: "12px",
-        maxWidth: "70%",
-        bgcolor: msg.senderId?._id === user?._id ? "primary.light" : "grey.300",
-        color: msg.senderId?._id === user?._id ? "primary.contrastText" : "text.primary",
-      }}
-    >
-      <Box>
-        <Typography
-          variant="body2"
-          sx={{
-            fontSize: "0.75rem",
-            color: msg.senderId?._id === user?._id ? "white" : "textSecondary",
-          }}
-        >
-          {msg.senderId?._id === user?._id ? user?.name : msg?.senderId?.name}
-        </Typography>
+                {messages.map((msg, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    justifyContent={
+                      msg.senderId?._id === user?._id
+                        ? "flex-end"
+                        : "flex-start"
+                    }
+                    mb={2}
+                    sx={{ "&:last-child": { mb: 0 }, px: 2 }}
+                  >
+                    <Paper
+                      elevation={1}
+                      sx={{
+                        p: 2,
+                        borderRadius: "12px",
+                        maxWidth: "70%",
+                        bgcolor:
+                          msg.senderId?._id === user?._id
+                            ? "primary.light"
+                            : "grey.300",
+                        color:
+                          msg.senderId?._id === user?._id
+                            ? "primary.contrastText"
+                            : "text.primary",
+                      }}
+                    >
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontSize: "0.75rem",
+                            color:
+                              msg.senderId?._id === user?._id
+                                ? "white"
+                                : "textSecondary",
+                          }}
+                        >
+                          {msg.senderId?._id === user?._id
+                            ? user?.name
+                            : msg?.senderId?.name}
+                        </Typography>
 
-        <Typography variant="body1" sx={{ wordBreak: "break-word" }}>
-          {msg.content}
-        </Typography>
+                        <Typography
+                          variant="body1"
+                          sx={{ wordBreak: "break-word" }}
+                        >
+                          {msg.content}
+                        </Typography>
 
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="body2" sx={{ fontSize: "0.75rem", color: "textSecondary" }}>
-  {msg.createdAt
-    ? (() => {
-        const parsedDate = new Date(msg.createdAt);
-        if (isNaN(parsedDate.getTime())) return "Invalid Date";
-        return parsedDate.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-      })()
-    : "Invalid Date"}
-</Typography>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{ fontSize: "0.75rem", color: "textSecondary" }}
+                          >
+                            {msg.createdAt
+                              ? (() => {
+                                  const parsedDate = new Date(msg.createdAt);
+                                  if (isNaN(parsedDate.getTime()))
+                                    return "Invalid Date";
+                                  return parsedDate.toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  });
+                                })()
+                              : "Invalid Date"}
+                          </Typography>
 
-
-          <Box ml={1}>
-            {msg.senderId?._id === user?._id ? (
-              msg.readBy?.length > 0 ? (
-                <DoneAllIcon sx={{ fontSize: "1rem", color: "blue" }} />
-              ) : (
-                <DoneIcon sx={{ fontSize: "1rem", color: "gray" }} />
-              )
-            ) : null}
-          </Box>
-        </Box>
-      </Box>
-    </Paper>
-  </Box>
-))}
-
-
-
-
-
+                          <Box ml={1}>
+                            {msg.senderId?._id === user?._id ? (
+                              msg.readBy?.length > 0 ? (
+                                <DoneAllIcon
+                                  sx={{ fontSize: "1rem", color: "blue" }}
+                                />
+                              ) : (
+                                <DoneIcon
+                                  sx={{ fontSize: "1rem", color: "gray" }}
+                                />
+                              )
+                            ) : null}
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Paper>
+                  </Box>
+                ))}
               </Box>
 
               {/* Message Box */}
@@ -530,4 +610,3 @@ const ChatComponent = () => {
 };
 
 export default ChatComponent;
-

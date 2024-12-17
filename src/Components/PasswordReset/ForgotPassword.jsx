@@ -25,17 +25,16 @@ function ForgotPassword() {
     }
     try {
       const response = await axiosUser.post("/verify-email",{email:email});
+      
       if(response.status==200){
-        const res = await axiosUser.post("/otpgenerate", { email  })
-        if(res.data){
-          toast.success('please verify your email',{
+        // const email = response.data?.user?.email;
+        toast.success('please verify your email',{
             autoClose:1000
           })
           setTimeout(()=>{
-            console.log(res.data,'fa')
-            navigate('/otp',{ state: {userData:email} })
+            navigate('/otp',{ state: {response:response.data} })
           },2000)
-        }  
+
       }   
     } catch (error) {
       if (error.response && error.response.status == 404) {

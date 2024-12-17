@@ -18,6 +18,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { addUser } from "../../utils/Redux/Slice/userSlice";
 
 
@@ -65,6 +66,11 @@ const Signup = () => {
   const dispatch = useDispatch();
   const [otpExpired, setOtpExpired] = useState("");
   const [timeLeft, setTimeLeft] = useState(300);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const [OtpVerified, setOtpVerified] = useState(location.state?.OtpVerified || false);
 const [email, setEmail] = useState(location.state?.email || "");
@@ -154,36 +160,37 @@ useEffect(()=>{
   startOtpTimer()
 },[])
 
-  const handleResendOtp = () => {
-    setOtpExpired(false);
-    startOtpTimer()
-    console.log("otp resent");
-    axiosUser
-    .post("/otpgenerate", { email })
-    .then((response) => {
-      if (response.status === 200) {
-        setopenModal(true);
-      } else {
-        toast.error("otp generation failed");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      toast.error("Error generating OTP");
-    });
-  };
+  // const handleResendOtp = () => {
+  //   setOtpExpired(false);
+  //   startOtpTimer()
+  //   console.log("otp resent");
+  //   axiosUser
+  //   .post("/otpgenerate", { email })
+  //   .then((response) => {
+  //     if (response.status === 200) {
+  //       setopenModal(true);
+  //     } else {
+  //       toast.error("otp generation failed");
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //     toast.error("Error generating OTP");
+  //   });
+  // };
 
   const handleSubmit =async()=>{
     try {
       const userData = { name ,email , password, workspaceId }
       if(validateInput()){
-        const response = await axiosUser.post("/otpgenerate", { email  })
+        const response = await axiosUser.post("/signup", { userData  })
+        console.log(response,'respomse')
         if(response.data){
           toast.success('please verify your email',{
             autoClose:1000
           })
           setTimeout(()=>{
-            navigate('/otp',{ state: {userData:userData,origin:'signup'} })
+            navigate('/otp',{ state: {response:response.data,origin:'signup'} })
           },2000)
         }        
       }
@@ -289,38 +296,44 @@ useEffect(()=>{
               />
             </div>
             <div className="input-box">
-              <TextField
-                label="Password"
-                placeholder="Password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <FaLock className="icon" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+            <TextField
+          label="Password"
+          placeholder="Password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type={showPassword ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                {/* <FaLock className="icon" /> */}
+                <span onClick={togglePasswordVisibility} style={{ cursor: "pointer", marginLeft: "5px" }}>
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </InputAdornment>
+            ),
+          }}
+        />
             </div>
             <div className="input-box">
-              <TextField
-                label="Confirm Password"
-                placeholder="Confirm Password"
-                required
-                value={confirmpassword}
-                onChange={(e) => setConfirmpassword(e.target.value)}
-                type="password"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <FaLock className="icon" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+            <TextField
+          label="Confirm Password"
+          placeholder="Confirm Password"
+          required
+          value={confirmpassword}
+          onChange={(e) => setConfirmpassword(e.target.value)}
+          type={showPassword ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                {/* <FaLock className="icon" /> */}
+                <span onClick={togglePasswordVisibility} style={{ cursor: "pointer", marginLeft: "5px" }}>
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </InputAdornment>
+            ),
+          }}
+        />
             </div>
   
             <div className="remember-forgot"></div>
@@ -382,7 +395,7 @@ useEffect(()=>{
             <Box marginTop={2}>
               {otpExpired ? (
                 <Button
-                  onClick={handleResendOtp}
+                
                   variant="outlined"
                   color="secondary"
                 >
@@ -436,84 +449,4 @@ useEffect(()=>{
 
 
   
-//CHANGED TODAY FOR NEW OTP PAGE
-  // const handleGetOtp = () => {
-  //   if (validateInput()) {
-  //     axiosUser
-  //       .post("/otpgenerate", { email })
-  //       .then((response) => {
-  //         if (response.status === 200) {
-  //           setopenModal(true);
-  //         } else {
-  //           toast.error("otp generation failed");
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //         toast.error("Error generating OTP");
-  //       });
-  //   }
-  // };
 
-
-
-  
-  // const handleGetOtp = () => {
-  //   if (validateInput()) {
-  //     axiosUser
-  //       .post("/otpgenerate", { email })
-  //       .then((response) => {
-  //         if (response.status === 200) {
-  //           toast.success("OTP generated");
-  //           navigate("/otp", { state: { email, workspaceId ,name,password} });
-  //         } else {
-  //           toast.error("OTP generation failed");
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //         toast.error("Error generating OTP");
-  //       });
-  //   }
-  // };
-
-
-
-// <Modal
-// open={openModal}
-// onClose={() => setopenModal(false)}
-// aria-labelledby="modal-title"
-// aria-describedby="modal-description"
-// >
-
-// <Box
-//   sx={{
-//     width: 400,
-//     margin: "auto",
-//     padding: 2,
-//     backgroundColor: "white",
-//     borderRadius: 2,
-//     boxShadow: 3,
-//   }}
-// >
-//   <Typography variant="h6" id="modal-title">
-//     Enter OTP
-//   </Typography>
-//   <TextField
-//     label="Please enter your OTP here"
-//     value={otp}
-//     onChange={(e) => setOtp(e.target.value)}
-//     fullWidth
-//     margin="normal"
-//   />
-//   <Box display="flex" justifyContent="flex-end" marginTop={2}>
-//     <Button
-//       onClick={handleSubmitOtp}
-//       variant="contained"
-//       color="primary"
-//     >
-//       Verify OTP
-//     </Button>
-//   </Box>
-// </Box>
-// </Modal>

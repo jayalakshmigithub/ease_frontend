@@ -74,30 +74,7 @@ const NewProject = (workSpace) => {
     fetchWorkspaces();
   }, []);
 
-  // const handleWorkspaceChange = (workspaceId) => {
-  //   const selectedWorkspace = workspaces.find((ws) => ws._id === workspaceId);
-  //   if (selectedWorkspace) {
-  //     const memberEmails = selectedWorkspace.members.map(
-  //       (member) => member.email
-  //     );
-  //     setEmails(memberEmails); 
-  //     setProjectDetails({ ...projectDetails, workspaceName: workspaceId });
-  //   }
-  // };
-//   const handleWorkspaceChange = (workspaceId) => {
-//     const selectedWorkspace = workspaces.find((ws) => ws._id === workspaceId);
-//     if (selectedWorkspace) {
-       
-//         const memberDetails = selectedWorkspace.members.map((member) => ({
-//             _id: member._id,
-//             email: member.email 
-//         }));
-//         console.log('memberDetails',memberDetails)
-        
-//         setEmails(memberDetails.map(member => member.email));
-//         setProjectDetails({ ...projectDetails, workspaceName: workspaceId, members: memberDetails });
-//     }
-// };
+  
 const handleWorkspaceChange = (workspaceId) => {
   const selectedWorkspace = workspaces.find((ws) => ws._id === workspaceId);
   if (selectedWorkspace) {

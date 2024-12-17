@@ -22,10 +22,12 @@ const OtpPage = () => {
   const [otp, setOtp] = useState("");
   const [timeLeft, setTimeLeft] = useState(60);
   const [otpExpired, setOtpExpired] = useState(false);
+  const [openModal, setopenModal] = useState(false);
   const [OtpVerified, setOtpVerified] = useState(location.state?.OtpVerified || false);
   const [workspaceId,setWorkspaceId] = useState(null)
+  const response = location.state?.response?.user || "";
  
-
+console.log(response,'response')
      const { userData} = location.state || location.state
      const {origin} = location.state
     
@@ -38,7 +40,7 @@ const OtpPage = () => {
   
  
   
-// for get the workspace 
+
 
 useEffect(()=>{
   const params = new URLSearchParams(location.search)
@@ -84,19 +86,22 @@ useEffect(()=>{
 },[])
 
   const handleResendOtp = () => {
+    
     setOtpExpired(false);
     startOtpTimer()
     axiosUser
-    .post("/otpgenerate", { email:userData.email })
+    .post("/otpgenerate", { email:response.email,userId:response._id })
     .then((response) => {
       if (response.status === 200) {
         setopenModal(true);
+        console.log('hii modal')
       } else {
         toast.error("otp generation failed");
       }
     })
     .catch((error) => {
-      console.log(error);
+      console.log(error,'errorrrrr');
+
       toast.error("Error generating OTP");
     });
   };
@@ -114,7 +119,7 @@ useEffect(()=>{
     }
   
     try {
-      const res = await axiosUser.post("/verify-otp", { userData, origin,otp });
+      const res = await axiosUser.post("/verify-otp", { userData:response, origin,otp });
 
      if(origin=="signup"){
       if (res.data && res.data.message === "registration success") {
@@ -232,63 +237,4 @@ useEffect(()=>{
 
   
 
-// const handleSubmitOtp = () => {
-//     if (otpExpired) {
-//       toast.error("OTP expired, please resend OTP");
-//       return;
-//     }
 
-//     axiosUser.post("/otpverify", { email, otp })
-//       .then((response)=>{
-//         // const {user} = response.data
-//         if (response.data && response.status === 200 && response.data.message === "OTP verified") {
-            
-//             dispatch(addUser(response.data));
-//             localStorage.setItem("useraccessToken", response.data.accessToken);
-//             localStorage.setItem("userrefreshToken", response.data.refreshToken);
-//             navigate("/stepper");
-         
-         
-//             dispatch(addUser(response.data));
-  
-         
-//             navigate("/stepper");
-
-  
-//             console.log("res.data logged", response.data);
-  
-//           } else {
-//             toast.error("Invalid OTP, please try again");
-//           }
-     
-       
-
-//       })
-//       .catch(error => {
-//         console.error("Error verifying OTP", error);
-//         toast.error("Error verifying OTP");
-//       });
-
-          
-         
-
-       
-          
-
-       
-       
-
-        
-// //           setTimeout(() => {
-// //             navigate("/home");
-// //           }, 2000);
-
-// //           console.log("res.data logged", response.data);
-
-// //         } else {
-// //           toast.error("Invalid OTP, please try again");
-// //         }
-// //       })
-      
-// //   };
-// }

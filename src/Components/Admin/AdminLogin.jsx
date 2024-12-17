@@ -113,20 +113,7 @@ const AdminLogin = () => {
                 ),
               }}
             />
-            {/* <Box display="flex" justifyContent="flex-end">
-              <Typography variant="body2" component="p">
-                <Link
-                  href="#"
-                  underline="none"
-                  sx={{
-                    ":hover": { textDecoration: "underline" },
-                    fontFamily: "Poppins ",
-                  }}
-                >
-                  Forgot Password?
-                </Link>
-              </Typography>
-            </Box> */}
+           
           </div>
           <div className="remember-forgot"></div>
           <Box display="flex" justifyContent="center">
