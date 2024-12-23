@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Grid,
@@ -26,8 +26,6 @@ import config from "../../config/config";
 import DoneIcon from "@mui/icons-material/Done";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 
-
-
 const ChatComponent = () => {
   const user = useSelector((state) => state.user?.userInfo?.user);
   const [workspaces, setWorkspaces] = useState([]);
@@ -44,7 +42,7 @@ const ChatComponent = () => {
   const [currentChatRoomId, setCurrentChatRoomId] = useState("");
   const [existingChatRooms, setExistingChatRooms] = useState([]);
   const socket = io(config.API_URL_SOCKET);
-
+  const messageEndRef = useRef(null);
   const fetchChatRooms = async (workspaceId) => {
     try {
       const response = await userAxiosInstance.get(`/chatrooms/${workspaceId}`);
@@ -86,7 +84,8 @@ const ChatComponent = () => {
       socket.on("receive-message", (message) => {
         setMessages((prevMessages) => [...prevMessages, message]);
       });
-
+      console.log('message in socket',messages)
+      
       return () => {
         socket.off("receive-message");
       };
@@ -111,6 +110,7 @@ const ChatComponent = () => {
       read: false,
       date: new Date().toISOString(),
     };
+    console.log('messageeee',message)
 
     setCurrentChatRoomId(chatRoom._id);
 
@@ -118,13 +118,16 @@ const ChatComponent = () => {
       const response = await userAxiosInstance.post("/messages", message);
 
       if (response.data && response.data.message) {
+
         if (typeof response.data.message.senderId === "string") {
           response.data.message.senderId = {
             _id: response.data.message.senderId,
           };
         }
+        console.log('response.data.message.senderId',response.data.message.senderId?.name)
         setMessages((prevMessages) => [...prevMessages, message]);
         const message = response.data.message;
+        console.log(message,'message socket to send m=founcion')
         setNewMessage("");
         socket.emit("send-message", { message });
       }
@@ -258,8 +261,6 @@ const ChatComponent = () => {
   useEffect(() => {
     if (socket) {
       socket.on("message-read", (data) => {
-        console.log("Message read payload received:", data);
-
         if (
           !data ||
           (!Array.isArray(data.messageIds) && !data.messageId) ||
@@ -281,12 +282,28 @@ const ChatComponent = () => {
                 }
               : msg
           );
-          console.log("Updated messages:", updatedMessages);
+
           return updatedMessages;
         });
       });
     }
   }, [socket]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const timeout = setTimeout(() => {
+        scrollToDown();
+      }, 100);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [messages]);
+
+  const scrollToDown = useCallback(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   return (
     <Box
@@ -510,7 +527,9 @@ const ChatComponent = () => {
                               msg.senderId?._id === user?._id
                                 ? "white"
                                 : "textSecondary",
+                               
                           }}
+                         
                         >
                           {msg.senderId?._id === user?._id
                             ? user?.name
@@ -564,6 +583,7 @@ const ChatComponent = () => {
                     </Paper>
                   </Box>
                 ))}
+                <Box ref={messageEndRef} sx={{ height: 1 }} />
               </Box>
 
               {/* Message Box */}

@@ -39,9 +39,9 @@ const UserRoutes = () => {
          <Route path='/signingoogle' element={<LoginGoogle/>}/>
          <Route path='/signup' element={<PublicRoute><Signup/></PublicRoute>}/>
          <Route path='/otp' element={<OtpPage/>}/>
+         <Route path='/stepper' element={ <PrivateRoute><FormsStepper/></PrivateRoute>}/>
          <Route path='/reset-password' element={<NewPassword/>}/>
          <Route path='/home' element={ <PrivateRoute><ProSidebarProvider><Home/></ProSidebarProvider></PrivateRoute> }/>
-         <Route path='/stepper' element={ <PrivateRoute><FormsStepper/></PrivateRoute>}/>
          <Route path='/invite' element={<InviteMembers open={true} onClose={() => navigate('/home')} />} />
          <Route path='/workspace' element={<PrivateRoute><ProSidebarProvider><Workspace/></ProSidebarProvider></PrivateRoute>}/>
          <Route path='/newproject' element={<PrivateRoute><LocalizationProvider><NewProject/></LocalizationProvider></PrivateRoute>}/>
@@ -56,9 +56,9 @@ const UserRoutes = () => {
          <Route path='/forgotpassword'element={<ForgotPassword/>}/>
          
 
-      
 
-         
+
+
        </Routes>
     </div>
   )

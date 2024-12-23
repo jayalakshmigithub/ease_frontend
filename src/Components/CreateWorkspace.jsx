@@ -31,6 +31,11 @@ const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorksp
       toast.error("Workspace name already exists. Please choose a different name.");
       return;
     }
+    if (name.trim() === "" || description.trim() === "") {
+      toast.error("Name and description are required.");
+      return;
+    }
+    
    
 
     try {

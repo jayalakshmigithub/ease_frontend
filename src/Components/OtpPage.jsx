@@ -128,7 +128,7 @@ useEffect(()=>{
         dispatch(addUser(res.data));
         localStorage.setItem("useraccessToken", res.data.accessToken);
         localStorage.setItem("userrefreshToken", res.data.refreshToken);
-        navigate("/stepper");
+        navigate("/stepper",{ replace: true });
       }
      }else{
           toast.success("Otp verified successfully");

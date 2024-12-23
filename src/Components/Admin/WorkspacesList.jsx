@@ -3,6 +3,7 @@ import {
   Box,
   CircularProgress,
   Container,
+  TextField,
   Typography,
   useMediaQuery,
   useTheme
@@ -21,6 +22,8 @@ const WorkspaceList = () => {
   const [workspace, setWorkspace] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [originalWorkspace, setOriginalWorkspace] = useState([]); 
 
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md")); 
@@ -35,11 +38,14 @@ const WorkspaceList = () => {
     }
   };
 
+ 
+
   useEffect(() => {
     const getWorkspaces = async () => {
       try {
         setLoading(true);
         const workspaceData = await fetchWorkspaceInAdmin();
+        setOriginalWorkspace(workspaceData); 
         setWorkspace(workspaceData);
         setLoading(false);
       } catch (error) {
@@ -50,6 +56,24 @@ const WorkspaceList = () => {
     };
     getWorkspaces();
   }, []);
+  
+ 
+  const handleSearch = (event) => {
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
+  
+ 
+    if (term === "") {
+      setWorkspace(originalWorkspace);
+    } else {
+      
+      const filteredWorkspaces = originalWorkspace.filter((workspace) =>
+        workspace.name.toLowerCase().includes(term)
+      );
+      setWorkspace(filteredWorkspaces); 
+    }
+  };
+  
 
   const columns = [
     {
@@ -150,6 +174,14 @@ const WorkspaceList = () => {
           >
             Workspace Management
           </Typography>
+          <TextField
+           label="Search workspace"
+           variant="outlined"
+           fullWidth
+           margin="normal"
+           value={searchTerm}
+           onChange={handleSearch}
+          />
 
           <Box style={{ height: isSmDown ? 300 : 400, width: "100%" }}>
             {loading ? (
@@ -197,3 +229,40 @@ const WorkspaceList = () => {
 };
 
 export default WorkspaceList;
+
+
+
+
+
+
+
+
+
+
+
+
+ // useEffect(() => {
+  //   const getWorkspaces = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const workspaceData = await fetchWorkspaceInAdmin();
+  //       setWorkspace(workspaceData);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       setError("Failed to load workspaces. Please try again later.");
+  //       setLoading(false);
+  //       toast.error(error.message || "Error fetching workspaces");
+  //     }
+  //   };
+  //   getWorkspaces();
+  // }, []);
+  // const handleSearch = (event) => {
+  //   const term = event.target.value.toLowerCase();
+  //   setSearchTerm(term);
+  
+   
+  //   const filteredWorkspaces = workspace.filter((workspace) =>
+  //     workspace.name.toLowerCase().includes(term)
+  //   );
+  //   setWorkspace(filteredWorkspaces); 
+  // };
