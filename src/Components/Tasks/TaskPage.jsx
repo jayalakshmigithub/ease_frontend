@@ -109,7 +109,7 @@ const currentUser = userInfo?.userId;
   useEffect(() => {
     
     fetchTasks();
-  }, [projectId]);
+  }, [projectId,currentPage]);
 
     
   const paginateTasks = (allTasks) => {
@@ -206,138 +206,383 @@ const currentUser = userInfo?.userId;
   };
 
 
-  return (
+//   return (
 
-<>
+// <>
 
-<Box sx={{ display: "flex", justifyContent: "flex-end", mb: 0 }}>
-      <Button variant="contained" onClick={handleAddNewTask} sx={{marginRight:'65px',marginBottom:'20px'}}>
-        New Task
-      </Button>
-    </Box>
-    <Container>
+// <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 0 }}>
+//       <Button variant="contained" onClick={handleAddNewTask} sx={{marginRight:'65px',marginBottom:'20px'}}>
+//         New Task
+//       </Button>
+//     </Box>
+//     <Container>
     
-    <Tabs
-  value={activeTab}
-  onChange={(e, newValue) => {
-    setActiveTab(newValue);
-    setCurrentPage(1);
-  }}
-  centered
-  variant="fullWidth"
-  sx={{
-    mb: 3,
-    "& .MuiTab-root": {
-      textTransform: "capitalize",
-      fontSize: "1.1rem",
-      fontWeight: "bold",
-      color: '#357793',
-      transition: "all 0.3s ease",
-      minWidth: "80px", 
-      padding: "8px 16px", 
-    },
-    "& .Mui-selected": {
-      color: '#357793',
-      fontWeight: "bold",
-      backgroundColor: "#f0f4ff",
-      borderRadius: "8px",
-    },
-    "& .MuiTabs-indicator": {
-      backgroundColor: "#1976d2",
-      height: "1px",
-      borderRadius: "2px",
-    },
-    "& .MuiTab-root:hover": {
-      color: '#357793',
-    },
-  }}
->
-  <Tab
-    label="All Tasks"
-    icon={<FaTasks style={{ marginRight: "8px" }} />}
-    iconPosition="start"
-    value="ALL TASKS"
+//     <Tabs
+//   value={activeTab}
+//   onChange={(e, newValue) => {
+//     setActiveTab(newValue);
+//     setCurrentPage(1);
+//   }}
+//   centered
+//   variant="fullWidth"
+//   sx={{
+//     mb: 3,
+//     "& .MuiTab-root": {
+//       textTransform: "capitalize",
+//       fontSize: "1.1rem",
+//       fontWeight: "bold",
+//       color: '#357793',
+//       transition: "all 0.3s ease",
+//       minWidth: "80px", 
+//       padding: "8px 16px", 
+//     },
+//     "& .Mui-selected": {
+//       color: '#357793',
+//       fontWeight: "bold",
+//       backgroundColor: "#f0f4ff",
+//       borderRadius: "8px",
+//     },
+//     "& .MuiTabs-indicator": {
+//       backgroundColor: "#1976d2",
+//       height: "1px",
+//       borderRadius: "2px",
+//     },
+//     "& .MuiTab-root:hover": {
+//       color: '#357793',
+//     },
+//   }}
+// >
+//   <Tab
+//     label="All Tasks"
+//     icon={<FaTasks style={{ marginRight: "8px" }} />}
+//     iconPosition="start"
+//     value="ALL TASKS"
    
-  />
-  <Tab
-    label="Ongoing"
-    icon={<GiProgression style={{ marginRight: "8px" }} />}
-    iconPosition="start"
-    value="ongoing"
-  />
-   <Tab
-    label="Pending"
-    icon={<MdPendingActions style={{ marginRight: "8px" }} />}
-    iconPosition="start"
-    value="pending"
-  />
-  <Tab
-    label="Completed"
-    icon={<MdCheckCircle style={{ marginRight: "8px" }} />}
-    iconPosition="start"
-    value="Completed"
-  />
-</Tabs>
+//   />
+//   <Tab
+//     label="Ongoing"
+//     icon={<GiProgression style={{ marginRight: "8px" }} />}
+//     iconPosition="start"
+//     value="ongoing"
+//   />
+//    <Tab
+//     label="Pending"
+//     icon={<MdPendingActions style={{ marginRight: "8px" }} />}
+//     iconPosition="start"
+//     value="pending"
+//   />
+//   <Tab
+//     label="Completed"
+//     icon={<MdCheckCircle style={{ marginRight: "8px" }} />}
+//     iconPosition="start"
+//     value="Completed"
+//   />
+// </Tabs>
 
 
-    <Box sx={{ mt: 3 }}>
-      {activeTab === "ALL TASKS" && (
-        <Card sx={{ p: 1 }}>
-          <CardContent>
-            <Typography variant="h5">All Tasks</Typography>
-            {renderTasks()} 
-          </CardContent>
-        </Card>
-      )}
-      {activeTab === "ongoing" && (
-        <Card sx={{ p: 1 }}>
-          <CardContent>
-            <Typography variant="h5">Ongoing Tasks</Typography>
-            {renderTasks("ongoing")}
-          </CardContent>
-        </Card>
-      )}
-       {activeTab === "pending" && (
-        <Card sx={{ p: 1 }}>
-          <CardContent>
-            <Typography variant="h5">Pending Tasks</Typography>
-            {renderTasks("pending")}
-          </CardContent>
-        </Card>
-      )}
-      {activeTab === "Completed" && (
-        <Card sx={{ p: 1 }}>
-          <CardContent>
-            <Typography variant="h5">Completed Tasks</Typography>
-            {renderTasks("Completed")}
-          </CardContent>
-        </Card>
-      )}
-    </Box>
+//     <Box sx={{ mt: 3 }}>
+//       {activeTab === "ALL TASKS" && (
+//         <Card sx={{ p: 1 }}>
+//           <CardContent>
+//             <Typography variant="h5">All Tasks</Typography>
+//             {renderTasks()} 
+//           </CardContent>
+//         </Card>
+//       )}
+//       {activeTab === "ongoing" && (
+//         <Card sx={{ p: 1 }}>
+//           <CardContent>
+//             <Typography variant="h5">Ongoing Tasks</Typography>
+//             {renderTasks("ongoing")}
+//           </CardContent>
+//         </Card>
+//       )}
+//        {activeTab === "pending" && (
+//         <Card sx={{ p: 1 }}>
+//           <CardContent>
+//             <Typography variant="h5">Pending Tasks</Typography>
+//             {renderTasks("pending")}
+//           </CardContent>
+//         </Card>
+//       )}
+//       {activeTab === "Completed" && (
+//         <Card sx={{ p: 1 }}>
+//           <CardContent>
+//             <Typography variant="h5">Completed Tasks</Typography>
+//             {renderTasks("Completed")}
+//           </CardContent>
+//         </Card>
+//       )}
+//     </Box>
 
   
-    <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
-      <Pagination
-        count={Math.ceil(
-          tasks.filter(
-            (task) =>
-              activeTab === "ALL TASKS" ||
-              task.status === activeTab
-          ).length / ITEMS_PER_PAGE
-        )}
-        page={currentPage}
-        onChange={handlePageChange}
-        color="primary"
-      />
+//     <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+//       <Pagination
+//         count={Math.ceil(
+//           tasks.filter(
+//             (task) =>
+//               activeTab === "ALL TASKS" ||
+//               task.status === activeTab
+//           ).length / ITEMS_PER_PAGE
+//         )}
+//         page={currentPage}
+//         onChange={handlePageChange}
+//         color="primary"
+//       />
+//     </Box>
+
+//     {isModalOpen && <AddTask open={isModalOpen} onClose={handleCloseModal} fetchTasks={fetchTasks} />}
+//     {isTaskDetailsModalOpen && <TaskDetails open={isTaskDetailsModalOpen} task={selectedTask} onClose={handleCloseModal} onDelete={handleDeleteTask} onEdit={handleEditTask} currentUser={currentUser} />}
+
+//   </Container>
+ 
+//   </>
+//   );
+
+return (
+  <>
+  
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        mb: 0,
+      }}
+    >
+      <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
+        
+      </Typography>
+      <Button
+        variant="contained"
+        onClick={handleAddNewTask}
+        sx={{
+          backgroundColor: "#1976d2",
+          fontWeight: "bold",
+          padding: "10px 20px",
+          marginRight:'30px',
+          ":hover": { backgroundColor: "#115293" },
+        }}
+      >
+        + New Task
+      </Button>
     </Box>
 
-    {isModalOpen && <AddTask open={isModalOpen} onClose={handleCloseModal} fetchTasks={fetchTasks} />}
-    {isTaskDetailsModalOpen && <TaskDetails open={isTaskDetailsModalOpen} task={selectedTask} onClose={handleCloseModal} onDelete={handleDeleteTask} onEdit={handleEditTask} currentUser={currentUser} />}
+    <Container>
+     
+      <Tabs
+        value={activeTab}
+        onChange={(e, newValue) => {
+          setActiveTab(newValue);
+          setCurrentPage(1);
+        }}
+        // centered
+        variant="scrollable"
+        allowScrollButtonsMobile
+        sx={{
+          mb: 3,
+          "& .MuiTab-root": {
+            textTransform: "capitalize",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            color: "#555",
+            padding: "10px 16px",
+            borderRadius: "8px",
+            transition: "all 0.3s ease",
+          },
+          "& .Mui-selected": {
+            color: "#1976d2",
+            backgroundColor: "#f0f4ff",
+            boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
+          },
+          "& .MuiTab-root:hover": {
+            color: "#115293",
+          },
+          "& .MuiTabs-indicator": {
+            display: "none", 
+          },
+        }}
+      >
+        <Tab
+          label="All Tasks"
+          icon={<FaTasks style={{ marginRight: "8px" }} />}
+          iconPosition="start"
+          value="ALL TASKS"
+        />
+        <Tab
+          label="Ongoing"
+          icon={<GiProgression style={{ marginRight: "8px" }} />}
+          iconPosition="start"
+          value="ongoing"
+        />
+        <Tab
+          label="Pending"
+          icon={<MdPendingActions style={{ marginRight: "8px" }} />}
+          iconPosition="start"
+          value="pending"
+        />
+        <Tab
+          label="Completed"
+          icon={<MdCheckCircle style={{ marginRight: "8px" }} />}
+          iconPosition="start"
+          value="Completed"
+        />
+      </Tabs>
 
-  </Container>
- 
+      {/* Task Content */}
+      <Box sx={{ mt: 3 }}>
+        {activeTab === "ALL TASKS" && (
+          <Card
+            sx={{
+              mb: 3,
+              p: 3,
+              boxShadow: "0px 3px 6px rgba(244, 230, 230, 0.95)",
+              borderRadius: "10px",
+              backgroundColor: "#fff",
+            }}
+          >
+            <CardContent>
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                  color: "#333",
+                  borderBottom: "2px solid #1976d2",
+                  display: "inline-block",
+                  paddingBottom: "4px",
+                }}
+              >
+                All Tasks
+              </Typography>
+              {renderTasks()}
+            </CardContent>
+          </Card>
+        )}
+        {activeTab === "ongoing" && (
+          <Card
+            sx={{
+              mb: 3,
+              p: 3,
+              boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
+              borderRadius: "10px",
+              backgroundColor: "#fff",
+            }}
+          >
+            <CardContent>
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                  color: "#333",
+                  borderBottom: "2px solid #1976d2",
+                  display: "inline-block",
+                  paddingBottom: "4px",
+                }}
+              >
+                Ongoing Tasks
+              </Typography>
+              {renderTasks("ongoing")}
+            </CardContent>
+          </Card>
+        )}
+        {activeTab === "pending" && (
+          <Card
+            sx={{
+              mb: 3,
+              p: 3,
+              boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
+              borderRadius: "10px",
+              backgroundColor: "#fff",
+            }}
+          >
+            <CardContent>
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                  color: "#333",
+                  borderBottom: "2px solid #1976d2",
+                  display: "inline-block",
+                  paddingBottom: "4px",
+                }}
+              >
+                Pending Tasks
+              </Typography>
+              {renderTasks("pending")}
+            </CardContent>
+          </Card>
+        )}
+        {activeTab === "Completed" && (
+          <Card
+            sx={{
+              mb: 3,
+              p: 3,
+              boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
+              borderRadius: "10px",
+              backgroundColor: "#fff",
+            }}
+          >
+            <CardContent>
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                  color: "#333",
+                  borderBottom: "2px solid #1976d2",
+                  display: "inline-block",
+                  paddingBottom: "4px",
+                }}
+              >
+                Completed Tasks
+              </Typography>
+              {renderTasks("Completed")}
+            </CardContent>
+          </Card>
+        )}
+      </Box>
+
+      {/* Pagination */}
+      <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+        <Pagination
+          count={Math.ceil(
+            tasks.filter(
+              (task) =>
+                activeTab === "ALL TASKS" || task.status === activeTab
+            ).length / ITEMS_PER_PAGE
+          )}
+          page={currentPage}
+          onChange={handlePageChange}
+          color="primary"
+          sx={{
+            "& .MuiPaginationItem-root": {
+              fontWeight: "bold",
+            },
+          }}
+        />
+      </Box>
+
+      {/* Modals */}
+      {isModalOpen && (
+        <AddTask open={isModalOpen} onClose={handleCloseModal} fetchTasks={fetchTasks} />
+      )}
+      {isTaskDetailsModalOpen && (
+        <TaskDetails
+          open={isTaskDetailsModalOpen}
+          task={selectedTask}
+          onClose={handleCloseModal}
+          onDelete={handleDeleteTask}
+          onEdit={handleEditTask}
+          currentUser={currentUser}
+        />
+      )}
+    </Container>
   </>
-  );
+);
+
 };
 
 

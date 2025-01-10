@@ -25,6 +25,7 @@ import io from "socket.io-client";
 import config from "../../config/config";
 import DoneIcon from "@mui/icons-material/Done";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
+import { CgAttachment } from "react-icons/cg";
 
 const ChatComponent = () => {
   const user = useSelector((state) => state.user?.userInfo?.user);
@@ -600,6 +601,7 @@ const ChatComponent = () => {
                   borderRadius: "0 0 12px 12px",
                 }}
               >
+              <CgAttachment/>
                 <TextField
                   variant="outlined"
                   label="Type a message"

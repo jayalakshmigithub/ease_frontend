@@ -28,6 +28,8 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { io, Socket } from "socket.io-client";
+import config from "../../config/config";
 
 const NewProject = (workSpace) => {
   const navigate = useNavigate();
@@ -42,6 +44,7 @@ const NewProject = (workSpace) => {
   const [workspaces, setWorkspaces] = useState([]);
   const [members, setMembers] = useState([]);
   const [emails, setEmails] = useState([]);
+  const socket = io(config.API_URL_SOCKET)
   const [projectDetails, setProjectDetails] = useState({
     workspaceName: "",
     projectName: "",
@@ -126,7 +129,10 @@ const handleWorkspaceChange = (workspaceId) => {
   // };
   
   
-  const handleToggle = (email) => {
+
+// OG
+  
+const handleToggle = (email) => {
     setProjectDetails((prevDetails) => {
         const selectedMember = prevDetails.members.find(member => member.email === email);
         
@@ -152,6 +158,85 @@ const handleWorkspaceChange = (workspaceId) => {
         };
     });
 };
+
+
+
+//   const handleToggle = (email) => {
+//     setProjectDetails((prevDetails) => {
+//         const selectedMember = prevDetails.members.find(member => member.email === email);
+        
+//         let updatedMembers;
+//         if (selectedMember) {
+        
+//             updatedMembers = prevDetails.members.filter(member => member.email !== email);
+//         } else {
+            
+//             const newMember = emails.find(member => member.email === email);
+//             if (newMember) {
+               
+//                 updatedMembers = [...prevDetails.members, newMember];
+
+//                 socket.emit("send-notification",{
+//                   userId:newMember._id,
+//                   message:`you have been added to the project: ${prevDetails.projectName}`
+//                 });
+//                 console.log(`Notification sent to ${newMember.email}`);
+//             } else {
+//                 updatedMembers = prevDetails.members;
+//             }
+//         }
+
+//         console.log("Updated Members List:", updatedMembers);
+//         return {
+//             ...prevDetails,
+//             members: updatedMembers, 
+//         };
+//     });
+// };
+
+
+//changed for notification
+// const handleToggle = (email) => {
+  
+//   setProjectDetails((prevDetails) => {
+//       const selectedMember = prevDetails.members.find(member => member.email === email);
+
+//       let updatedMembers;
+//       if (selectedMember) {
+
+//           updatedMembers = prevDetails.members.filter(member => member.email !== email);
+//       } else {
+        
+//           const newMember = emails.find(member => member.email === email);
+//           if (newMember) {
+//               updatedMembers = [...prevDetails.members, newMember];
+
+//               socket.emit("add-member", {
+//                   email: newMember.email,
+//                   projectId: prevDetails._id, 
+//                   projectName: prevDetails.projectName,
+//               });
+
+         
+//               socket.emit("send-notification", {
+//                   userId: newMember._id,
+//                   message: `You have been added to the project: ${prevDetails.projectName}`,
+//               });
+
+//               console.log(`Notification sent to ${newMember.email}`);
+//           } else {
+//               updatedMembers = prevDetails.members;
+//           }
+//       }
+
+//       console.log("Updated Members List:", updatedMembers);
+//       return {
+//           ...prevDetails,
+//           members: updatedMembers,
+//       };
+//   });
+// };
+
 
 console.log('projectDetails',projectDetails)
 

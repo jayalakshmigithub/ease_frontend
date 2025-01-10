@@ -13,6 +13,7 @@ import {
   import AddIcon from '@mui/icons-material/Add';
 import Toggle from '../Toggle';
 import InviteMembers from '../InviteMembers';
+import { IoNotificationsSharp } from "react-icons/io5";
 import logo from '../../Assets/logo2.png'
 
 
@@ -49,7 +50,7 @@ const Navbar = () => {
     alignItems: 'center',
     fontFamily: 'inherit',
     fontWeight: 500,
-    fontSize: '15px',
+    fontSize: '12px',
     padding: '9px 14.5px',
     color: 'white',
     backgroundColor: '#357793',
@@ -60,6 +61,7 @@ const Navbar = () => {
     cursor: 'pointer',
     position: 'relative',
     overflow: 'hidden',
+    marginRight:'30px',
     '&:hover': {
       backgroundColor: 'rgb(103, 92, 156)',
       boxShadow: '0 0.5em 1.5em -0.5em rgba(88, 71, 116, 0.627)',
@@ -76,8 +78,8 @@ const Navbar = () => {
       transition: 'all 0.2s',
     },
     '&::before': {
-      borderTopRightRadius: '5px',
-      borderBottomRightRadius: '5px',
+      borderTopRightRadius: '4px',
+      borderBottomRightRadius: '4px',
       left: 0,
     },
     '&::after': {
@@ -86,11 +88,11 @@ const Navbar = () => {
       right: 0,
     },
     '&:hover::before, &:hover::after': {
-      height: '60%',
+      height: '50%',
     },
     '& svg': {
       marginRight: '8px',
-      width: '25px',
+      width: '15px',
     },
   });
 
@@ -117,6 +119,10 @@ const Navbar = () => {
   const location = useLocation();
   const isLandingPage = location.pathname === '/' || location.pathname === '/landing';
   const isWorkspacesPage = location.pathname ==='/workspace'
+
+  const handleNotificationClick = async()=>{
+    console.log('Notification clicked')
+  }
 
   return (
 
@@ -183,12 +189,30 @@ const Navbar = () => {
       </>
     ) : (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <Button
+  sx={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '10px',
+    borderRadius: '50%',
+    // backgroundColor: '#f5f5f5', 
+    color: '#357793',
+    cursor: 'pointer',
+    fontSize: '25px',
+  }}
+  onClick={handleNotificationClick} 
+>
+  <IoNotificationsSharp />
+</Button>
         {!isLandingPage && (
+          
           <StyledButton onClick={handleNewProject}>
             <AddIcon />
             New Project
           </StyledButton>
         )}
+
       </Box>
     )}
   </div>

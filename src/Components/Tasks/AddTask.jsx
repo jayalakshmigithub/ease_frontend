@@ -31,7 +31,7 @@ import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 
 
-const steps = ["Task Details",  "Assign Members"];
+const steps = ["Task Details", "Add images", "Assign Members"];
 
 const style = {
   position: "absolute",
@@ -61,7 +61,8 @@ const currentUserId = userInfo?.userId;
     // toDate: dayjs().add(1, "day"),
     projectId: projectId,
     assignee: [],
-    ownerId : currentUserId
+    ownerId : currentUserId,
+    images : []
   });
  
   const validateFields = () => {
@@ -138,15 +139,87 @@ const currentUserId = userInfo?.userId;
       };
     });
   };
- 
+
+  // const handleImageUpload = (e) => {
+  //   const files = Array.from(e.target.files); 
+  //   const updatedImages = files.map((file) => ({
+  //     file,
+  //     preview: URL.createObjectURL(file),
+  //   }));
+  //   setTaskData((prevData) => ({
+  //     ...prevData,
+  //     images: [...(prevData.images || []), ...updatedImages], 
+  //   }));
+  // };
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setTaskData((prevData) => ({
+      ...prevData,
+      images: [...(prevData.images || []), ...files], 
+    }));
+  };
+  
+  const handleRemoveImage = (index) => {
+    setTaskData((prevData) => ({
+      ...prevData,
+      images: prevData.images.filter((_, i) => i !== index), 
+    }));
+  };
+
+
+  // const createTask = async () => {
+  //   try {
+  //     if(!validateFields()){
+  //       return
+  //     }
+  //     console.log("taskData before sending:", taskData);
+  //     const response = await userAxiosInstance.post("/tasks", taskData);
+  //     console.log("responsee in createtask", response.data);
+  //     if (response.status === 200) {
+  //       toast.success("Task created successfully");
+  //       onClose();
+  //       fetchTasks();
+  //     }
+  //   } catch (error) {
+  //     toast.error("Task creation failed");
+  //     console.error("Error:", error);
+  //   }
+  // };
+
+
   const createTask = async () => {
+    if (!validateFields()) {
+      return;
+    }
+  
     try {
-      if(!validateFields()){
-        return
+    
+      const formData = new FormData();
+  
+  
+      formData.append("name", taskData.name);
+      formData.append("priority", taskData.priority);
+      formData.append("description", taskData.description);
+      formData.append("projectId", taskData.projectId);
+      formData.append("assignee", taskData.assignee);
+      formData.append("ownerId", taskData.ownerId);
+  
+ 
+      if (taskData.images && taskData.images.length > 0) {
+        taskData.images.forEach((image) => {
+          formData.append("images", image); 
+        });
       }
-      console.log("taskData before sending:", taskData);
-      const response = await userAxiosInstance.post("/tasks", taskData);
-      console.log("responsee in createtask", response.data);
+      console.log(taskData.images,'imagesss')
+  
+      
+      const response = await userAxiosInstance.post("/tasks", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
       if (response.status === 200) {
         toast.success("Task created successfully");
         onClose();
@@ -157,6 +230,10 @@ const currentUserId = userInfo?.userId;
       console.error("Error:", error);
     }
   };
+  
+
+ 
+
   
  
   return (
@@ -242,9 +319,43 @@ const currentUserId = userInfo?.userId;
             </Box>
           )}
 
+
+{stepper === 1 && (
+  <Box display="flex" flexDirection="column" gap={2}>
+    <Typography variant="body1">Add images related to task</Typography>
+    <input
+      accept="images/*"
+      type="file"
+      name="file"
+      multiple
+      onChange={handleImageUpload}
+    />
+    {taskData.images && taskData.images.length > 0 && (
+      <Box mt={2} display="flex" flexWrap="wrap" gap={2}>
+        {taskData.images.map((image, index) => (
+          <Box key={index} display="flex" flexDirection="column" alignItems="center">
+            <img
+              src={image.preview}
+              alt={`Uploaded ${index + 1}`}
+              style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "4px" }}
+            />
+            <Button
+              variant="text"
+              color="error"
+              onClick={() => handleRemoveImage(index)}
+            >
+              Remove
+            </Button>
+          </Box>
+        ))}
+      </Box>
+    )}
+  </Box>
+)}
+
           
 
-          {stepper === 1 && (
+          {stepper === 2 && (
             <Box display="flex" flexDirection="column" gap={2}>
               <Typography variant="body1">Assign task to Members</Typography>
               {members && members.length > 0 ? (

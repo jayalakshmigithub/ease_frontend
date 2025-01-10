@@ -73,7 +73,7 @@ const ProjectsOverview = () => {
   }
   useEffect(()=>{
     fetchTasks()
-  },[projectId,tasks])
+  },[projectId])
  const calculateProgress = () => {
   if (!tasks.length) return { completed: 0, inProgress: 0 ,pending:0 };
 

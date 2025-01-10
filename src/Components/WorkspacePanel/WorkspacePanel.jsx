@@ -41,6 +41,11 @@ const WorkspacePanel = () => {
   const [error, setError] = useState(null);
   const [openInvite, setOpenInvite] = useState(false);
   const [OwnerId, setOwnerId] = useState(null);
+  const [members,setMembers] = useState([])
+  const [workspaceMembers, setWorkspaceMembers] = useState([]);
+const [projectMembers, setProjectMembers] = useState([]);
+const [availableMembers, setAvailableMembers] = useState([]);
+const [showMembers, setShowMembers] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(0);
   const projectsPerPage = 4;
@@ -87,6 +92,8 @@ const WorkspacePanel = () => {
 
       setWorkspace(response.data.workspace);
       setOwnerId(response.data.workspace.OwnerId);
+      setWorkspaceMembers(response.data.workspace.members)
+      console.log('response.data.workspace.members',response.data.workspace.members)
 
       console.log("Workspace data:", response.data.workspace);
     } catch (error) {
@@ -156,7 +163,22 @@ const WorkspacePanel = () => {
   const handleProject = (projectId) => {
     navigate(`/projects/${projectId}`);
   };
-
+  useEffect(() => {
+    if (workspace && projects) {
+      const projectMembers = new Set();
+      projects.forEach((project) =>
+        project.members.forEach((member) => projectMembers.add(member._id))
+      );
+  
+      const availableMembers = workspace.members.filter(
+        (member) => !projectMembers.has(member._id)
+      );
+  
+      setAvailableMembers(availableMembers); 
+    }
+  }, [workspace, projects]);
+  
+  
 
   const StyledButton = styled(Button)(({ theme }) => ({
     position: "relative",
@@ -217,6 +239,11 @@ const WorkspacePanel = () => {
   }
 `;
 
+
+const handleShowMembers = () => {
+  setShowMembers(availableMembers);
+  console.log(availableMembers,'availableMembers')
+};
 
   return (
     <Box
@@ -335,8 +362,10 @@ const WorkspacePanel = () => {
         </Container>
   
         {/* Project Section */}
+        {/* <Box sx={{display:'flex',flexDirection:'row'}}> */}
         <Container
           sx={{
+            // width:'100%',
             maxWidth: "100%",
             backgroundColor: "rgba(255, 255, 255, 0.8)",
             backdropFilter: "blur(12px)",
@@ -361,6 +390,7 @@ const WorkspacePanel = () => {
                 display: "flex",
                 alignItems: "center",
                 color: "#2A5175",
+                
               }}
             >
               <BsListCheck
@@ -437,6 +467,35 @@ const WorkspacePanel = () => {
                     >
                       {project.status ? "Active" : "Pending"}
                     </Typography>
+                    <Button
+                  
+          variant="contained"
+          color="primary"
+          sx={{ marginRight: 2 ,}}
+          onClick={handleShowMembers}
+        >
+          {showMembers ? "Hide Members" : "Show Members"}
+        </Button>
+        {showMembers && (
+        <Container sx={{ mt: 3 }}>
+          <Typography variant="h5" sx={{ mb: 2 }}>
+            Workspace Members:
+          </Typography>
+          <List>
+            {workspaceMembers.length > 0 ? (
+              workspaceMembers.map((member) => (
+                <ListItem key={member._id}>
+                  <ListItemText
+                    primary={`${member.name} (${member.email})`}
+                  />
+                </ListItem>
+              ))
+            ) : (
+              <Typography>No members found in this workspace.</Typography>
+            )}
+          </List>
+        </Container>
+      )}
                   </Box>
                   <Divider sx={{ mb: 2 }} />
                 </Box>
@@ -467,6 +526,129 @@ const WorkspacePanel = () => {
             </Button>
           </Box>
         </Container>
+
+
+
+        {/* <Container
+          sx={{
+            width:'35%',
+            // maxWidth: "50%",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            backdropFilter: "blur(12px)",
+            padding: "30px",
+            borderRadius: "12px",
+            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.08)",
+            marginTop: "30px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                fontFamily: "Poppins",
+                display: "flex",
+                alignItems: "center",
+                color: "#2A5175",
+              }}
+            >
+              <BsListCheck
+                style={{
+                  marginRight: "12px",
+                  fontSize: "30px",
+                }}
+              />
+              Members
+            </Typography>
+  
+           
+          </Box>
+  
+          <List>
+  {availableMembers.length > 0 ? (
+    availableMembers.map((member) => ( 
+      <Box key={member._id}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "12px 0",
+            cursor: "pointer",
+            "&:hover": {
+              backgroundColor: "#F9FAFC",
+              borderRadius: "8px",
+            },
+          }}
+        >
+          <ListItem sx={{ width: "75%" }}>
+            <ListItemText
+              primary={
+                <Typography
+                  sx={{
+                    fontSize: "20px",
+                    fontWeight: "500",
+                    color: "#2A5175",
+                  }}
+                >
+                  {member.email}
+                </Typography>
+              }
+            />
+          </ListItem>
+
+          <Button
+            sx={{
+              fontSize: "15px",
+              color: "#357793",
+              fontWeight: "bold",
+              textAlign: "right",
+            }}
+          >
+            Add
+          </Button>
+          
+        </Box>
+        <Divider sx={{ mb: 2 }} />
+      </Box>
+    ))
+  ) : (
+    <Typography variant="body1">No members available.</Typography>
+  )}
+</List>
+
+  
+         
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+            <Button
+              onClick={handlePrevPage}
+              disabled={currentPage === 0}
+              variant="contained"
+            >
+              Previous
+            </Button>
+            <Typography>
+              Page {currentPage + 1} of {totalPages}
+            </Typography>
+            <Button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages - 1}
+              variant="contained"
+            >
+              Next
+            </Button>
+          </Box>
+        </Container> */}
+
+        {/* </Box> */}
+       
+        
       </Box>
     </Box>
   );
