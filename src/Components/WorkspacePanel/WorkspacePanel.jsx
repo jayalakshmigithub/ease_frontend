@@ -163,6 +163,7 @@ const [showMembers, setShowMembers] = useState(false);
   const handleProject = (projectId) => {
     navigate(`/projects/${projectId}`);
   };
+
   useEffect(() => {
     if (workspace && projects) {
       const projectMembers = new Set();
@@ -172,11 +173,60 @@ const [showMembers, setShowMembers] = useState(false);
   
       const availableMembers = workspace.members.filter(
         (member) => !projectMembers.has(member._id)
+
       );
+       console.log('hiii in avalable',availableMembers)
   
       setAvailableMembers(availableMembers); 
     }
   }, [workspace, projects]);
+
+
+
+  //workinggg
+ 
+  // useEffect(() => {
+  //   if (
+  //     workspace?.members?.length > 0 &&
+  //     Array.isArray(projects) &&
+  //     projects.length > 0
+  //   ) {
+  //     const projectMembers = new Set();
+  //     projects.forEach((project) =>
+  //       project.members.forEach((member) => projectMembers.add(member._id))
+  //     );
+      
+  
+  //     const availableMembers = workspace.members.filter(
+  //       (member) => !projectMembers.has(member._id)
+  //     );
+  
+  //     console.log("Calculated availableMembers:", availableMembers);
+  //     setAvailableMembers(availableMembers);
+  //   }
+  // }, [workspace, projects]);
+  
+  
+  // const getAvailableMembers = (workspace, projects) => {
+  //   if (!workspace || !workspace.members || !projects) return [];
+    
+  //   const projectMembers = new Set(
+  //     projects.flatMap((project) => project.members.map((m) => m._id))
+  //   );
+  
+  //   return workspace.members.filter(
+  //     (member) => !projectMembers.has(member._id)
+  //   );
+  // };
+
+  // useEffect(() => {
+  //   const members = getAvailableMembers(workspace, projects);
+  //   console.log("Calculated availableMembers:", members);
+  //   setAvailableMembers(members);
+  // }, [workspace, projects]);
+  
+  // console.log("Rendered availableMembers:", availableMembers);
+  
   
   
 
@@ -467,35 +517,7 @@ const handleShowMembers = () => {
                     >
                       {project.status ? "Active" : "Pending"}
                     </Typography>
-                    <Button
-                  
-          variant="contained"
-          color="primary"
-          sx={{ marginRight: 2 ,}}
-          onClick={handleShowMembers}
-        >
-          {showMembers ? "Hide Members" : "Show Members"}
-        </Button>
-        {showMembers && (
-        <Container sx={{ mt: 3 }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
-            Workspace Members:
-          </Typography>
-          <List>
-            {workspaceMembers.length > 0 ? (
-              workspaceMembers.map((member) => (
-                <ListItem key={member._id}>
-                  <ListItemText
-                    primary={`${member.name} (${member.email})`}
-                  />
-                </ListItem>
-              ))
-            ) : (
-              <Typography>No members found in this workspace.</Typography>
-            )}
-          </List>
-        </Container>
-      )}
+              
                   </Box>
                   <Divider sx={{ mb: 2 }} />
                 </Box>
@@ -529,7 +551,7 @@ const handleShowMembers = () => {
 
 
 
-        {/* <Container
+         <Container
           sx={{
             width:'35%',
             // maxWidth: "50%",
@@ -561,7 +583,7 @@ const handleShowMembers = () => {
               <BsListCheck
                 style={{
                   marginRight: "12px",
-                  fontSize: "30px",
+                  fontSize: "5px",
                 }}
               />
               Members
@@ -625,7 +647,7 @@ const handleShowMembers = () => {
 
   
          
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+          {/* <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
             <Button
               onClick={handlePrevPage}
               disabled={currentPage === 0}
@@ -643,8 +665,8 @@ const handleShowMembers = () => {
             >
               Next
             </Button>
-          </Box>
-        </Container> */}
+          </Box> */}
+        </Container> 
 
         {/* </Box> */}
        
@@ -656,3 +678,38 @@ const handleShowMembers = () => {
 };
 
 export default WorkspacePanel;
+
+
+
+
+
+
+      {/* <Button
+                  
+          variant="contained"
+          color="primary"
+          sx={{ marginRight: 2 ,}}
+          onClick={handleShowMembers}
+        >
+          {showMembers ? "Hide Members" : "Show Members"}
+        </Button> */}
+        {/* {showMembers && (
+        <Container sx={{ mt: 3 }}>
+          <Typography variant="h5" sx={{ mb: 2 }}>
+            Workspace Members:
+          </Typography>
+          <List>
+            {workspaceMembers.length > 0 ? (
+              workspaceMembers.map((member) => (
+                <ListItem key={member._id}>
+                  <ListItemText
+                    primary={`${member.name} (${member.email})`}
+                  />
+                </ListItem>
+              ))
+            ) : (
+              <Typography>No members found in this workspace.</Typography>
+            )}
+          </List>
+        </Container>
+      )} */}
