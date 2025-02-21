@@ -1,21 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  CircularProgress,
-  Button,
-  Avatar,
-  Paper,
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
+import {Box,Grid,Typography,Select,MenuItem,FormControl,InputLabel,CircularProgress,Button,Avatar,Paper, TextField,List, ListItem,ListItemText,} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SideBar from "../SideBar";
 import groupChat from "../../Assets/groupChat.png";
@@ -26,8 +10,13 @@ import config from "../../config/config";
 import DoneIcon from "@mui/icons-material/Done";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { CgAttachment } from "react-icons/cg";
+import { MdOutlineVideoCall } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import IncomingCallModal from "./IncomingCallModal";
 
 const ChatComponent = () => {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user?.userInfo?.user);
   const [workspaces, setWorkspaces] = useState([]);
   const [sharedWorkspaces, setSharedWorkspaces] = useState([]);
@@ -44,6 +33,19 @@ const ChatComponent = () => {
   const [existingChatRooms, setExistingChatRooms] = useState([]);
   const socket = io(config.API_URL_SOCKET);
   const messageEndRef = useRef(null);
+
+  const handleVideoCall = () => {
+    const roomId = chatRoom._id;
+    socket.emit("initiate-call",{
+      roomId,
+      callerId:user?._id,
+      participants:chatRoom.members,
+      chatRoomId:chatRoom._id, 
+    })
+    console.log('call initiating','chatRoom._id:',chatRoom._id,'chatRoom.members:',chatRoom.members,'current userid:',user?._id)
+    navigate(`/video-call/${roomId}`);
+  };
+
   const fetchChatRooms = async (workspaceId) => {
     try {
       const response = await userAxiosInstance.get(`/chatrooms/${workspaceId}`);
@@ -85,8 +87,8 @@ const ChatComponent = () => {
       socket.on("receive-message", (message) => {
         setMessages((prevMessages) => [...prevMessages, message]);
       });
-      console.log('message in socket',messages)
-      
+      console.log("message in socket", messages);
+
       return () => {
         socket.off("receive-message");
       };
@@ -111,7 +113,7 @@ const ChatComponent = () => {
       read: false,
       date: new Date().toISOString(),
     };
-    console.log('messageeee',message)
+    console.log("messageeee", message);
 
     setCurrentChatRoomId(chatRoom._id);
 
@@ -119,16 +121,18 @@ const ChatComponent = () => {
       const response = await userAxiosInstance.post("/messages", message);
 
       if (response.data && response.data.message) {
-
         if (typeof response.data.message.senderId === "string") {
           response.data.message.senderId = {
             _id: response.data.message.senderId,
           };
         }
-        console.log('response.data.message.senderId',response.data.message.senderId?.name)
+        console.log(
+          "response.data.message.senderId",
+          response.data.message.senderId?.name
+        );
         setMessages((prevMessages) => [...prevMessages, message]);
         const message = response.data.message;
-        console.log(message,'message socket to send m=founcion')
+        console.log(message, "message socket to send m=founcion");
         setNewMessage("");
         socket.emit("send-message", { message });
       }
@@ -312,10 +316,7 @@ const ChatComponent = () => {
         width: "100vw",
         height: "100vh",
         display: "flex",
-        backgroundImage: `
-    radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-    radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
-  `,
+    backgroundColor:'#0f172a',
         overflowX: "hidden",
       }}
     >
@@ -414,7 +415,7 @@ const ChatComponent = () => {
               >
                 <ListItemText
                   sx={{ color: "black" }}
-                  primary={`Project: ${chatRoom.projectId.projectName}`}
+                  primary={`Project: ${chatRoom.projectId?.projectName}`}
                   secondary={`Members: ${chatRoom.members.length}`}
                 />
               </ListItem>
@@ -436,14 +437,6 @@ const ChatComponent = () => {
           p: 2,
         }}
       >
-        <Box display="flex" alignItems="center" sx={{ mb: 2 }}>
-          <ArrowBackIcon
-            sx={{ display: { md: "none" }, mr: 1, cursor: "pointer" }}
-          />
-          <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>C</Avatar>
-          <Typography variant="h6">{selectedProject.projectName}</Typography>
-        </Box>
-
         <Box
           sx={{
             flexGrow: 1,
@@ -479,47 +472,125 @@ const ChatComponent = () => {
             </Box>
           ) : (
             <>
-              {/* Display Messages */}
-
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  overflowY: "auto",
-                  maxHeight: "calc(100vh - 300px)",
+                  height: "100vh",
                   width: "100%",
-                  height: "auto",
+                  overflowY: "hidden", 
                 }}
               >
-                {messages.map((msg, index) => (
-                  <Box
-                    key={index}
-                    display="flex"
-                    justifyContent={
-                      msg.senderId?._id === user?._id
-                        ? "flex-end"
-                        : "flex-start"
-                    }
-                    mb={2}
-                    sx={{ "&:last-child": { mb: 0 }, px: 2 }}
-                  >
-                    <Paper
-                      elevation={1}
+                {/* Chat Navbar */}
+                <Box
+                  sx={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 10,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    bgcolor: "rgba(0, 0, 0, 0.3)",
+                    color: "#fff",
+                    padding: "10px 16px",
+                    borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
+                    borderRadius: "12px",
+                    width: "100%",
+                    boxSizing: "border-box",
+                    height: "50px",
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.05)",
+                    backdropFilter: "blur(8px)",
+                    WebkitBackdropFilter: "blur(8px)",
+                  }}
+                >
+                  {/* Left Section */}
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <ArrowBackIcon
                       sx={{
-                        p: 2,
-                        borderRadius: "12px",
-                        maxWidth: "70%",
-                        bgcolor:
-                          msg.senderId?._id === user?._id
-                            ? "primary.light"
-                            : "grey.300",
-                        color:
-                          msg.senderId?._id === user?._id
-                            ? "primary.contrastText"
-                            : "text.primary",
+                        display: { md: "none" },
+                        mr: 2,
+                        cursor: "pointer",
+                        fontSize: "24px",
+                        color: "#fff",
+                      }}
+                    />
+                    <Avatar
+                      sx={{
+                        bgcolor: "#1976d2",
+                        mr: 2,
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
                       }}
                     >
-                      <Box>
+                      C
+                    </Avatar>
+                    <Typography
+                      variant="h6"
+                      noWrap
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {selectedProject.projectName || "Project Name"}
+                    </Typography>
+                  </Box>
+
+                  {/* Right Section */}
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <MdOutlineVideoCall
+                      style={{
+                        fontSize: "28px",
+                        color: "#fff",
+                        cursor: "pointer",
+                      }}
+                      onClick={handleVideoCall}
+                    />
+                  </Box>
+                </Box>
+
+                {/* Chat Messages */}
+                <Box
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    overflowY: "auto",
+                    padding: "16px",
+                    boxSizing: "border-box",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  {messages.map((msg, index) => (
+                    <Box
+                      key={index}
+                      display="flex"
+                      justifyContent={
+                        msg.senderId?._id === user?._id
+                          ? "flex-end"
+                          : "flex-start"
+                      }
+                      mb={2}
+                      sx={{ "&:last-child": { mb: 0 } }}
+                    >
+                      <Paper
+                        elevation={1}
+                        sx={{
+                          p: 2,
+                          borderRadius: "12px",
+                          maxWidth: "70%",
+                          bgcolor:
+                            msg.senderId?._id === user?._id
+                              ? "primary.light"
+                              : "grey.300",
+                          color:
+                            msg.senderId?._id === user?._id
+                              ? "primary.contrastText"
+                              : "text.primary",
+                        }}
+                      >
                         <Typography
                           variant="body2"
                           sx={{
@@ -528,22 +599,18 @@ const ChatComponent = () => {
                               msg.senderId?._id === user?._id
                                 ? "white"
                                 : "textSecondary",
-                               
                           }}
-                         
                         >
                           {msg.senderId?._id === user?._id
                             ? user?.name
                             : msg?.senderId?.name}
                         </Typography>
-
                         <Typography
                           variant="body1"
                           sx={{ wordBreak: "break-word" }}
                         >
                           {msg.content}
                         </Typography>
-
                         <Box
                           display="flex"
                           justifyContent="space-between"
@@ -565,10 +632,9 @@ const ChatComponent = () => {
                                 })()
                               : "Invalid Date"}
                           </Typography>
-
                           <Box ml={1}>
-                            {msg.senderId?._id === user?._id ? (
-                              msg.readBy?.length > 0 ? (
+                            {msg.senderId?._id === user?._id &&
+                              (msg.readBy?.length > 0 ? (
                                 <DoneAllIcon
                                   sx={{ fontSize: "1rem", color: "blue" }}
                                 />
@@ -576,15 +642,14 @@ const ChatComponent = () => {
                                 <DoneIcon
                                   sx={{ fontSize: "1rem", color: "gray" }}
                                 />
-                              )
-                            ) : null}
+                              ))}
                           </Box>
                         </Box>
-                      </Box>
-                    </Paper>
-                  </Box>
-                ))}
-                <Box ref={messageEndRef} sx={{ height: 1 }} />
+                      </Paper>
+                    </Box>
+                  ))}
+                  <Box ref={messageEndRef} sx={{ height: 1 }} />
+                </Box>
               </Box>
 
               {/* Message Box */}
@@ -601,7 +666,7 @@ const ChatComponent = () => {
                   borderRadius: "0 0 12px 12px",
                 }}
               >
-              <CgAttachment/>
+                <CgAttachment />
                 <TextField
                   variant="outlined"
                   label="Type a message"
@@ -610,6 +675,8 @@ const ChatComponent = () => {
                   fullWidth
                   sx={{ mr: 2 }}
                 />
+                {/* <MdOutlineVideoCall style={{ fontSize: "30px", color: "blue", marginLeft: "2px" }} /> */}
+
                 <Button
                   variant="contained"
                   color="primary"

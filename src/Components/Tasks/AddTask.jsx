@@ -152,40 +152,49 @@ const currentUserId = userInfo?.userId;
   //   }));
   // };
 
+  // const handleImageUpload = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   setTaskData((prevData) => ({
+  //     ...prevData,
+  //     images: [...(prevData.images || []), ...files], 
+  //   }));
+  // };
   const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files).map((file) => ({
+      file, 
+      preview: URL.createObjectURL(file)
+    }));
+  
     setTaskData((prevData) => ({
       ...prevData,
-      images: [...(prevData.images || []), ...files], 
+      images: [...(prevData.images || []), ...files],
     }));
   };
   
-  const handleRemoveImage = (index) => {
-    setTaskData((prevData) => ({
-      ...prevData,
-      images: prevData.images.filter((_, i) => i !== index), 
-    }));
-  };
-
-
-  // const createTask = async () => {
-  //   try {
-  //     if(!validateFields()){
-  //       return
-  //     }
-  //     console.log("taskData before sending:", taskData);
-  //     const response = await userAxiosInstance.post("/tasks", taskData);
-  //     console.log("responsee in createtask", response.data);
-  //     if (response.status === 200) {
-  //       toast.success("Task created successfully");
-  //       onClose();
-  //       fetchTasks();
-  //     }
-  //   } catch (error) {
-  //     toast.error("Task creation failed");
-  //     console.error("Error:", error);
-  //   }
+  
+  // const handleRemoveImage = (index) => {
+  //   setTaskData((prevData) => ({
+  //     ...prevData,
+  //     images: prevData.images.filter((_, i) => i !== index), 
+  //   }));
   // };
+  const handleRemoveImage = (index) => {
+    setTaskData((prevData) => {
+      const updatedImages = prevData.images.filter((_, i) => i !== index);
+  
+      // Revoke the object URL to free memory
+      URL.revokeObjectURL(prevData.images[index].preview);
+  
+      return {
+        ...prevData,
+        images: updatedImages,
+      };
+    });
+  };
+  
+
+
+
 
 
   const createTask = async () => {
@@ -205,10 +214,10 @@ const currentUserId = userInfo?.userId;
       formData.append("assignee", taskData.assignee);
       formData.append("ownerId", taskData.ownerId);
   
- 
-      if (taskData.images && taskData.images.length > 0) {
+     
+      if (taskData.images?.length > 0) {
         taskData.images.forEach((image) => {
-          formData.append("images", image); 
+          formData.append("images", image.file);
         });
       }
       console.log(taskData.images,'imagesss')
@@ -323,25 +332,47 @@ const currentUserId = userInfo?.userId;
 {stepper === 1 && (
   <Box display="flex" flexDirection="column" gap={2}>
     <Typography variant="body1">Add images related to task</Typography>
-    <input
-      accept="images/*"
-      type="file"
-      name="file"
-      multiple
-      onChange={handleImageUpload}
-    />
+
+    {/* Styled File Input */}
+    <Box display="flex" alignItems="center" gap={2}>
+      <Button variant="contained" component="label">
+        Choose Files
+        <input
+          accept="image/*"
+          type="file"
+          name="file"
+          multiple
+          hidden
+          onChange={handleImageUpload}
+        />
+      </Button>
+    </Box>
+
+    {/* Image Preview Section */}
     {taskData.images && taskData.images.length > 0 && (
       <Box mt={2} display="flex" flexWrap="wrap" gap={2}>
         {taskData.images.map((image, index) => (
-          <Box key={index} display="flex" flexDirection="column" alignItems="center">
+          <Box
+            key={index}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap={1}
+          >
             <img
               src={image.preview}
               alt={`Uploaded ${index + 1}`}
-              style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "4px" }}
+              style={{
+                width: "100px",
+                height: "100px",
+                objectFit: "cover",
+                borderRadius: "4px",
+              }}
             />
             <Button
               variant="text"
               color="error"
+              size="small"
               onClick={() => handleRemoveImage(index)}
             >
               Remove
@@ -352,6 +383,7 @@ const currentUserId = userInfo?.userId;
     )}
   </Box>
 )}
+
 
           
 
@@ -409,3 +441,28 @@ const currentUserId = userInfo?.userId;
 ;
 
 export default AddTask;
+
+
+
+
+
+
+
+  // const createTask = async () => {
+  //   try {
+  //     if(!validateFields()){
+  //       return
+  //     }
+  //     console.log("taskData before sending:", taskData);
+  //     const response = await userAxiosInstance.post("/tasks", taskData);
+  //     console.log("responsee in createtask", response.data);
+  //     if (response.status === 200) {
+  //       toast.success("Task created successfully");
+  //       onClose();
+  //       fetchTasks();
+  //     }
+  //   } catch (error) {
+  //     toast.error("Task creation failed");
+  //     console.error("Error:", error);
+  //   }
+  // };

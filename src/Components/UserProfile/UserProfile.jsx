@@ -16,6 +16,7 @@ import {
   Paper,
   Stack,
   Chip,
+  Hidden
 } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { toast } from "react-toastify";
@@ -24,6 +25,7 @@ import { store } from "../../utils/Redux/store";
 import { userAxiosInstance } from "../../utils/api/axiosInstance";
 import { addUser } from "../../utils/Redux/Slice/userSlice";
 import ChangePassword from "./UserPassword";
+import SideBar from "../SideBar";
 
 
 
@@ -100,36 +102,135 @@ const UserProfile = () => {
     }));
   };
 
-  return (
-    <Box
+//   return (
+//     <Box
+//       sx={{
+//         backgroundColor:'#0f172a',
+//         width: '100vw',
+//         height: '100vh',
+//       }}
+//     >
+//       <Navbar />
+      
+// <Box sx={{display:'flex',flexGrow:1,flexDirection:'row'}}>
+
+
+//       {/* <Typography variant="h4">My profile</Typography> */}
+//       <Hidden smDown>
+//                     <SideBar />
+//                 </Hidden>
+//       <Container maxWidth="sm">
+//         <Paper elevation={2} sx={{ padding: 4,backgroundColor:"#1e293b",color:"#fff", marginTop:'55px' }}>
+//           <Box display="flex" alignItems="center" flexDirection="column">
+//             <Avatar
+//               sx={{
+//                 width: 80,
+//                 height: 80,
+//                 marginBottom: 2,
+//                 backgroundColor: '#1976d2', 
+//                 display: 'flex',
+//                 justifyContent: 'center',
+//                 alignItems: 'center',
+//                 fontSize: '30px', 
+//                 color: '#fff', 
+//               }}
+//             >
+//               {profile.avatarLetter || '?' /*  */}
+//             </Avatar>
+
+//             <Typography variant="h5" gutterBottom>
+//               {isEditing ? (
+//                 <TextField
+//                   fullWidth
+//                   variant="outlined"
+//                   name="name"
+//                   value={profile.name}
+//                   onChange={handleInputChange}
+//                 />
+//               ) : (
+//                 profile.name
+//               )}
+//             </Typography>
+//             <Typography variant="subtitle1" color="textSecondary">
+//               {profile.email}
+//             </Typography>
+
+//             <Button
+//               variant="contained"
+//               onClick={handleEditToggle}
+//               sx={{ alignSelf: 'center' }}
+//             >
+//               {isEditing ? 'Save' : 'Edit'}
+//             </Button>
+//           </Box>
+//         </Paper>
+//       </Container>
+//       </Box>
+
+//       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+//         <ChangePassword />
+//       </Box>
+//     </Box>
+//   );
+return (
+  <Box
+    sx={{
+      backgroundColor: '#0f172a',
+      width: '100vw',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    <Navbar />
+    
+    <Box 
       sx={{
-        backgroundImage: `radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%), radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%)`,
-        width: '100vw',
-        height: '100vh',
+        display: 'flex',
+        flexGrow: 1,
+        flexDirection: 'row',
       }}
     >
-      <Navbar />
-      <Box sx={{ borderBottom: 'dotted', borderColor: '#A2CFFE' }}></Box>
-
-      <Typography variant="h4">My profile</Typography>
-
-      <Container maxWidth="sm">
-        <Paper elevation={2} sx={{ padding: 4 }}>
+      <Hidden smDown>
+        <SideBar />
+      </Hidden>
+      
+      <Box 
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          px: 4,
+          pt: 8, 
+        }}
+      >
+        <Paper 
+          elevation={2} 
+          sx={{ 
+            padding: 4,
+            backgroundColor: "#1e293b",
+            color: "#fff",
+            width: '100%',
+            maxWidth: '500px', 
+            mb: 3,
+          }}
+        >
           <Box display="flex" alignItems="center" flexDirection="column">
             <Avatar
               sx={{
                 width: 80,
                 height: 80,
                 marginBottom: 2,
-                backgroundColor: '#1976d2', 
+                backgroundColor: '#2563eb', 
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                fontSize: '30px', 
-                color: '#fff', 
+                fontSize: '30px',
+                color: '#fff',
               }}
             >
-              {profile.avatarLetter || '?' /*  */}
+              {profile.avatarLetter || 'J'}
             </Avatar>
 
             <Typography variant="h5" gutterBottom>
@@ -145,27 +246,62 @@ const UserProfile = () => {
                 profile.name
               )}
             </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
+            <Typography variant="subtitle1" sx={{ color: 'gray' }}>
               {profile.email}
             </Typography>
 
             <Button
               variant="contained"
               onClick={handleEditToggle}
-              sx={{ alignSelf: 'center' }}
+              sx={{ 
+                mt: 2,
+                backgroundColor: '#2563eb',
+                '&:hover': {
+                  backgroundColor: '#1d4ed8'
+                }
+              }}
             >
-              {isEditing ? 'Save' : 'Edit'}
+              {isEditing ? 'Save' : 'EDIT'}
             </Button>
           </Box>
         </Paper>
-      </Container>
 
-      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-        <ChangePassword />
+        <Paper 
+          elevation={2}
+          sx={{ 
+            padding: 4,
+            backgroundColor: "#1e293b",
+            color: "#fff",
+            width: '100%',
+            maxWidth: '500px',
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Change Password
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'gray' }}>
+            Keep your account secure
+          </Typography>
+          <Button
+            variant="contained"
+            sx={{ 
+              mt: 2,
+              backgroundColor: '#2563eb',
+              '&:hover': {
+                backgroundColor: '#1d4ed8'
+              }
+            }}
+          >
+            UPDATE
+          </Button>
+        </Paper>
       </Box>
     </Box>
-  );
-};
+  </Box>
+);
+}
+
+;
 
 
 export default UserProfile;

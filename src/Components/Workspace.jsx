@@ -10,7 +10,10 @@ import {
   CardContent,
   List,
   ListItem,
-  CircularProgress
+  CircularProgress,
+  IconButton,
+  Menu,
+  MenuItem, 
 } from "@mui/material";
 import { userAxiosInstance } from "../utils/api/axiosInstance";
 import { Container } from "@mui/system";
@@ -19,6 +22,7 @@ import { useSelector } from "react-redux";
 import WorkspaceList from "./WorkspaceList";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const Workspace = () => {
   const navigate = useNavigate();
@@ -31,6 +35,19 @@ const Workspace = () => {
   const [filteredWorkspaces, setFilteredWorkspaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading,setLoading] = useState(true)
+  const [anchorEl,setAnchorEl] = useState(null)
+
+  const open =Boolean(anchorEl)
+
+  const handleMenuOpen=(event)=>{
+    event.stopPropagation()
+    setAnchorEl(event.currentTarget)
+  }
+  const handleMenuClose=(event)=>{
+    event.stopPropagation()
+    setAnchorEl(null)
+  }
+
 
   const handleInvitation = async () => {
     const query = new URLSearchParams(location.search);
@@ -99,6 +116,15 @@ const Workspace = () => {
       setLoading(false); 
     }
   };
+ const handleViewActivities =(event,workspaceId)=>{
+  event.stopPropagation();
+  console.log("Workspace in handleViewActivities:", workspaces);
+  setAnchorEl(null)
+  navigate(`/activities/${workspaceId}`)
+ 
+  
+ }
+
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -167,10 +193,7 @@ const Workspace = () => {
       <Box
         className="homepage"
         sx={{
-          backgroundImage: `
-            radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-            radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
-          `,
+          backgroundColor:'#0f172a',
           width: "100vw",
           height: "100vh",
           display: "flex",
@@ -200,6 +223,7 @@ const Workspace = () => {
               borderRadius: "8px",
               boxShadow: "0px 0px 20px rgba(0,0,0,0.1)",
               maxWidth: "600px",
+              
             }}
           >
             <Container
@@ -210,9 +234,10 @@ const Workspace = () => {
                 alignItems: "flex-start",
                 p: 0,
                 width: "90%",
-                backgroundColor: "white",
+                // backgroundColor: "white",
                 padding: "5px",
                 borderRadius: "12px",
+                backgroundColor: "#1e293b"
               }}
             >
               <Box
@@ -221,6 +246,7 @@ const Workspace = () => {
                     xs: mobileDropdown ? "block" : "none",
                     md: "flex",
                     flexDirection: { xs: "column", md: "row" },
+                    
                   },
                   width: { xs: "100%", md: "auto" },
                 }}
@@ -233,9 +259,10 @@ const Workspace = () => {
                     width: "90%",
                     p: 0,
                     gap: { xs: 0.5, md: 1 },
+                    
                   }}
                 >
-                  <ListItem disablePadding sx={{ mr: { md: 0.5 } }}>
+                  <ListItem disablePadding sx={{ mr: { md: 0.5 } ,}}>
                     <Button
                       variant="text"
                       fullWidth
@@ -321,7 +348,7 @@ const Workspace = () => {
             marginBottom: "20px",
             display: "flex",
             justifyContent: "flex-start",
-            color: "#2A5175",
+            color: "primary.main",
           }}
         >
           Your Workspaces
@@ -338,74 +365,173 @@ const Workspace = () => {
         >
           {workspaces?.length > 0 ? (
             workspaces.map((workspace) => (
+              // <Card
+              //   key={workspace._id}
+              //   sx={{
+              //     width: 320,
+              //     borderRadius: "12px",
+              //     boxShadow: 3,
+              //     transition: "all 0.3s ease",
+              //     cursor: "pointer",
+              //     "&:hover": {
+              //       boxShadow: 6,
+              //       transform: "translateY(-3px)",
+              //     },
+              //     bgcolor: "background.paper",
+              //   }}
+              //   onClick={() => handleWorkspacePanel(workspace._id)}
+              // >
+              //   <CardContent>
+              //     <Typography
+              //       variant="h6"
+              //       component="div"
+              //       sx={{
+              //         fontWeight: "bold",
+              //         color: "primary.main",
+              //         mb: 1,
+              //       }}
+              //     >
+              //       {workspace.name}
+              //     </Typography>
+
+              //     <Typography
+              //       variant="body2"
+              //       color="text.secondary"
+              //       sx={{ mb: 2, lineHeight: 1.6 }}
+              //     >
+              //       {workspace.description || "No description available"}
+              //     </Typography>
+
+              //     <Box
+              //       sx={{
+              //         display: "flex",
+              //         justifyContent: "space-between",
+              //         alignItems: "center",
+              //         mt: 2,
+              //       }}
+              //     >
+              //       <Typography
+              //         variant="caption"
+              //         color="text.secondary"
+              //         sx={{
+              //           fontStyle: "italic",
+              //         }}
+              //       >
+              //         Created at:{" "}
+              //         {new Date(workspace.createdAt).toLocaleDateString()}
+              //       </Typography>
+
+              //       <Typography
+              //         variant="subtitle2"
+              //         sx={{
+              //           fontWeight: "medium",
+              //           color: "text.primary",
+              //         }}
+              //       >
+              //         Owner: {workspace.OwnerId?.name || "Unassigned"}
+              //       </Typography>
+              //     </Box>
+              //   </CardContent>
+              // </Card>
+
               <Card
-                key={workspace._id}
-                sx={{
-                  width: 320,
-                  borderRadius: "12px",
-                  boxShadow: 3,
-                  transition: "all 0.3s ease",
-                  cursor: "pointer",
-                  "&:hover": {
-                    boxShadow: 6,
-                    transform: "translateY(-3px)",
-                  },
-                  bgcolor: "background.paper",
-                }}
-                onClick={() => handleWorkspacePanel(workspace._id)}
+              key={workspace._id}
+              sx={{
+                width: 320,
+                borderRadius: "12px",
+                boxShadow: 3,
+                transition: "all 0.3s ease",
+                cursor: "pointer",
+                position:'relative',
+                "&:hover": {
+                  boxShadow: 6,
+                  transform: "translateY(-3px)",
+                },
+                bgcolor: "background.paper",
+                
+              }}
+              onClick={() => handleWorkspacePanel(workspace._id)}
+            >
+              {/* <IconButton
+              sx={{
+                position: 'absolute',
+                top:8,
+                right:8,
+              }}
+             onClick={handleMenuOpen}
               >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{
-                      fontWeight: "bold",
-                      color: "primary.main",
-                      mb: 1,
-                    }}
-                  >
-                    {workspace.name}
-                  </Typography>
+                <MoreVertIcon/>
+              </IconButton> */}
+              <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        {/* <MenuItem onClick={(event)=>handleViewActivities(event,workspace._id)}>
+          See your activities
+        </MenuItem> */}
+      </Menu>
+           
+              <CardContent>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "primary.main",
+                    mb: 1,
+                  }}
+                >
+                  {workspace.name}
+                </Typography>
 
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2, lineHeight: 1.6 }}
+                >
+                  {workspace.description || "No description available"}
+                </Typography>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mt: 2,
+                  }}
+                >
                   <Typography
-                    variant="body2"
+                    variant="caption"
                     color="text.secondary"
-                    sx={{ mb: 2, lineHeight: 1.6 }}
-                  >
-                    {workspace.description || "No description available"}
-                  </Typography>
-
-                  <Box
                     sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      mt: 2,
+                      fontStyle: "italic",
                     }}
                   >
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{
-                        fontStyle: "italic",
-                      }}
-                    >
-                      Created at:{" "}
-                      {new Date(workspace.createdAt).toLocaleDateString()}
-                    </Typography>
+                    Created at:{" "}
+                    {new Date(workspace.createdAt).toLocaleDateString()}
+                  </Typography>
 
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        fontWeight: "medium",
-                        color: "text.primary",
-                      }}
-                    >
-                      Owner: {workspace.OwnerId?.name || "Unassigned"}
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </Card>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: "medium",
+                      color: "text.primary",
+                    }}
+                  >
+                    Owner: {workspace.OwnerId?.name || "Unassigned"}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
             ))
           ) : (
             <Typography sx={{ textAlign: "center" }} variant="body1">
@@ -415,6 +541,7 @@ const Workspace = () => {
 
           <Card
             sx={{
+              backgroundColor: "#1e293b",
               width: 320,
               borderRadius: "12px",
               boxShadow: 3,
@@ -445,7 +572,7 @@ const Workspace = () => {
             marginBottom: "20px",
             display: "flex",
             justifyContent: "flex-start",
-            color: "#2A5175",
+           color: "primary.main"
           }}
         >
           Shared Workspaces
@@ -465,6 +592,8 @@ const Workspace = () => {
               <Card
                 key={workspace._id}
                 sx={{
+                  backgroundColor: "#1e293b",
+                 
                   width: 320,
                   borderRadius: "12px",
                   boxShadow: 3,
@@ -474,7 +603,7 @@ const Workspace = () => {
                     boxShadow: 6,
                     transform: "translateY(-3px)",
                   },
-                  bgcolor: "background.paper",
+                  // bgcolor: "background.paper",
                 }}
                 onClick={() => handleWorkspacePanel(workspace._id)}
               >

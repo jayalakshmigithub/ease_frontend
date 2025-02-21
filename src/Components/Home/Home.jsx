@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-
-import { useNavigate } from "react-router-dom";
 import Hidden from "@mui/material/Hidden";
 import {
   Box,
@@ -9,7 +7,6 @@ import {
   Button,
   Container,
   Grid,
-  Paper,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -18,7 +15,9 @@ import Navbar from "../Navbar/Navbar";
 import { useEffect } from "react";
 import SideBar from "../SideBar";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { store } from "../../utils/Redux/store";
+import { Briefcase, Users, Clock, CheckCircle2, Shield, Zap, ArrowRight } from "lucide-react";
 // const useStyles = makeStyles(()=>({
 // CustomButton: {
 //   padding: '20px 30px',
@@ -57,6 +56,7 @@ import { store } from "../../utils/Redux/store";
 // }))
 
 const Home = () => {
+  const navigate = useNavigate()
   const [greeting, setGreeting] = useState("");
 
   const theme = useTheme();
@@ -280,16 +280,54 @@ const Home = () => {
 
   //     </>
   //   );
+  // Feature Card Component
+const FeatureCard = ({ icon, title, description }) => (
+  <Box
+    sx={{
+      bgcolor: "grey.800",
+      p: 3,
+      borderRadius: 2,
+      textAlign: "center",
+      transition: "all 0.3s",
+      "&:hover": { transform: "translateY(-4px)" },
+    }}
+  >
+    <Box sx={{ fontSize: 40, mb: 2 }}>{icon}</Box>
+    <Typography variant="h6" sx={{ mb: 1 }}>
+      {title}
+    </Typography>
+    <Typography sx={{ color: "grey.400" }}>{description}</Typography>
+  </Box>
+);
+
+// Feature Text Component
+const FeatureText = ({ icon, title, description }) => (
+  <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+    <Box sx={{ fontSize: 30, mr: 2 }}>{icon}</Box>
+    <Box>
+      <Typography variant="h6" sx={{ mb: 1 }}>
+        {title}
+      </Typography>
+      <Typography sx={{ color: "grey.400" }}>{description}</Typography>
+    </Box>
+  </Box>
+);
+
+const handleStepper = ()=>{
+  navigate('/stepper')
+  
+}
 
   return (
+    
     <>
       <Box
         className="homepage"
         sx={{
-          backgroundImage: `
-          radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-          radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
-        `,
+          background: {
+            default: '#0f172a', 
+            paper: '#1e293b', 
+          },
           width: "100vw",
           height: "100vh",
           display: "flex",
@@ -322,13 +360,13 @@ const Home = () => {
                 fontFamily: "Poppins",
                 fontSize: isXs ? "24px" : "35px",
                 marginTop: "20px",
-                color: "black",
+                color: "#8a9098",
                 fontWeight: "semibold",
               }}
             >
               {greeting} {userName}!
             </Typography>
-            <Box sx={{ py: 5 }}>
+            {/* <Box sx={{ py: 5 }}>
               <Container maxWidth="md">
                 <Box sx={{ textAlign: "center", mb: 4 }}>
                   <motion.div
@@ -381,11 +419,12 @@ const Home = () => {
                             transition: "transform 0.3s",
                           },
                           cursor: "pointer",
+                        backgroundColor: "#313b50"
                         }}
                       >
                         <Typography
                           variant="h6"
-                          sx={{ fontWeight: "bold", mb: 2 }}
+                          sx={{ fontWeight: "bold", mb: 2, }}
                         >
                           Workspace
                         </Typography>
@@ -416,6 +455,7 @@ const Home = () => {
                             transition: "transform 0.3s",
                           },
                           cursor: "pointer",
+                            backgroundColor: "#313b50"
                         }}
                       >
                         <Typography
@@ -451,6 +491,7 @@ const Home = () => {
                             transition: "transform 0.3s",
                           },
                           cursor: "pointer",
+                            backgroundColor: "#313b50"
                         }}
                       >
                         <Typography
@@ -472,7 +513,84 @@ const Home = () => {
                   </Grid>
                 </Grid>
               </Container>
-            </Box>
+            </Box> */}
+            
+              <Container maxWidth="lg" sx={{ py: 8 }}>
+          <Box sx={{ textAlign: "center", mb: 8 }}>
+            <Typography variant="h2" sx={{ mb: 2, fontWeight: "bold" }}>
+              Project Management Made Simple
+            </Typography>
+            <Typography variant="h6" sx={{ color: "grey.400", maxWidth: "md", mx: "auto",fontSize:'18px' }}>
+            planIt provides a comprehensive set of tools and features to
+            streamline your project management process.
+            </Typography>
+          </Box>
+
+          {/* Features Section */}
+          <Grid container spacing={4} sx={{ mb: 8 }}>
+            <Grid item xs={12} md={4}>
+              <FeatureCard icon={<Briefcase />} title="Workspace" description="Efficiently track manage workspaces, assign
+                          responsibilities, and monitor progress." />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FeatureCard icon={<Users />} title=" Project Discussions" description="Foster seamless collaboration among team members, with
+                          real-time communication" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FeatureCard icon={<Clock />} title="Project Analytics" description="Meet deadlines and track progress ease, assign
+                          responsibilities." />
+            </Grid>
+          </Grid>
+
+          {/* Why Choose Us */}
+          <Box sx={{ bgcolor: "grey.800", p: 4, borderRadius: 2, mb: 8 }}>
+            <Typography variant="h4" sx={{ textAlign: "center", mb: 4 }}>
+              Why Choose PlanIt?
+            </Typography>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={4}>
+                <FeatureText icon={<CheckCircle2 />} title="Easy to Use" description="Intuitive interface that requires no training" />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FeatureText icon={<Shield />} title="Enterprise Security" description="Bank-grade security for your data" />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FeatureText icon={<Zap />} title="Lightning Fast" description="Optimized performance for quick actions" />
+              </Grid>
+            </Grid>
+          </Box>
+
+          {/* CTA Section */}
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="h3" sx={{ mb: 2 }}>
+              Ready to Get Started?
+            </Typography>
+            <Typography sx={{ color: "grey.400", mb: 4 }}>
+              Join thousands of teams already using PlanIt to deliver successful projects.
+            </Typography>
+            <Button
+              variant="contained"
+              size="large"
+              endIcon={<ArrowRight />}
+              sx={{
+                px: 4,
+                py: 1.5,
+                borderRadius: 2,
+                fontSize: "1.1rem",
+                transition: "all 0.3s",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                },
+              }}
+              onClick={handleStepper}
+            >
+              Start Here
+            </Button>
+          </Box>
+          
+        </Container>
+        
+        
           </Box>
         </Box>
       </Box>

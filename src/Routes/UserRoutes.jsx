@@ -29,7 +29,41 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import WorkspaceList from '../Components/WorkspaceList';
 import ForgotPassword from '../Components/PasswordReset/ForgotPassword';
 import NewPassword from '../Components/PasswordReset/NewPassword';
+import NotificationPage from '../Components/Chat/Notification';
+import Activities from '../Components/WorkspacePanel/Activities';
+import VideoConference from '../Components/Chat/VideoConference';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import TaskListRough from '../Components/TaskListRough';
 const UserRoutes = () => {
+  const theme = createTheme({
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: '#60a5fa', // blue-400
+      },
+      background: {
+        default: '#0f172a', // slate-900
+        paper: '#1e293b', // slate-800
+      },
+      grey: {
+        700: '#334155', // slate-700
+        800: '#1e293b', // slate-800
+        900: '#0f172a', // slate-900
+      },
+    },
+    typography: {
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+          },
+        },
+      },
+    },
+  });
   return (
     <div>
        <Routes>
@@ -41,7 +75,20 @@ const UserRoutes = () => {
          <Route path='/otp' element={<OtpPage/>}/>
          <Route path='/stepper' element={ <PrivateRoute><FormsStepper/></PrivateRoute>}/>
          <Route path='/reset-password' element={<NewPassword/>}/>
-         <Route path='/home' element={ <PrivateRoute><ProSidebarProvider><Home/></ProSidebarProvider></PrivateRoute> }/>
+         <Route
+  path="/home"
+  element={
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <PrivateRoute>
+        <ProSidebarProvider>
+          <Home />
+        </ProSidebarProvider>
+      </PrivateRoute>
+    </ThemeProvider>
+  }
+/>
+
          <Route path='/invite' element={<InviteMembers open={true} onClose={() => navigate('/home')} />} />
          <Route path='/workspace' element={<PrivateRoute><ProSidebarProvider><Workspace/></ProSidebarProvider></PrivateRoute>}/>
          <Route path='/newproject' element={<PrivateRoute><LocalizationProvider><NewProject/></LocalizationProvider></PrivateRoute>}/>
@@ -52,8 +99,12 @@ const UserRoutes = () => {
          <Route path='/projects/:projectId/tasks/' element={<ProSidebarProvider><TaskPage/></ProSidebarProvider>}/>
          <Route path='/tasks' element={<ProSidebarProvider><AddTask/></ProSidebarProvider>}/>
          <Route path='/messages' element={<ProSidebarProvider><ChatComponent/></ProSidebarProvider>}/>
+         <Route path= '/notifications' element={<ProSidebarProvider><NotificationPage/></ProSidebarProvider>}/>
+         <Route path='/video-call/:roomId' element={<VideoConference/>}/>
+         <Route path='/activities/:workspaceId'element={<ProSidebarProvider><Activities/></ProSidebarProvider>}/>
          <Route path='/list'element={<ProSidebarProvider><WorkspaceList/></ProSidebarProvider>}/>
          <Route path='/forgotpassword'element={<ForgotPassword/>}/>
+         <Route path='/tasklist'element={<ProSidebarProvider><TaskListRough/></ProSidebarProvider>}/>
          
 
 

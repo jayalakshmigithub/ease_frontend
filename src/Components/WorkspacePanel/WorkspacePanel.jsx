@@ -1,10 +1,12 @@
-import { Box, Container, margin, width } from "@mui/system";
+import { Box, Container, fontSize, margin, width } from "@mui/system";
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navbar from "../Navbar/Navbar";
-import SideBar from "../SideBar";
 import { userAxiosInstance } from "../../utils/api/axiosInstance";
+import MembersList from "../MembersList";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   TextField,
   Typography,
@@ -13,6 +15,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Modal,
+  Hidden,
 } from "@mui/material";
 import { List, ListItem, ListItemText } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -21,18 +25,18 @@ import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { GrProjects } from "react-icons/gr";
 import AddIcon from "@mui/icons-material/Add";
 import InviteMembers from "../InviteMembers";
-import { MdOutlineDescription } from "react-icons/md";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { FaBarsProgress } from "react-icons/fa6";
-import { IoPeopleSharp } from "react-icons/io5";
 import { BsListCheck } from "react-icons/bs";
 import dayjs from "dayjs";
 import { Divider } from "@mui/material";
 import { keyframes } from "@mui/system";
+import { toast } from "react-toastify";
+import SideBar from "../SideBar";
+import { FaEdit } from "react-icons/fa";
+import EditProjectModal from "../NewProject/EditProject";
 
 const WorkspacePanel = () => {
   const userInfo = useSelector((state) => state?.user?.userInfo?.user);
-  
+
   const userId = userInfo?._id;
   const location = useLocation();
   const [workspace, setWorkspace] = useState(null);
@@ -41,11 +45,19 @@ const WorkspacePanel = () => {
   const [error, setError] = useState(null);
   const [openInvite, setOpenInvite] = useState(false);
   const [OwnerId, setOwnerId] = useState(null);
-  const [members,setMembers] = useState([])
+  const [members, setMembers] = useState([]);
   const [workspaceMembers, setWorkspaceMembers] = useState([]);
-const [projectMembers, setProjectMembers] = useState([]);
-const [availableMembers, setAvailableMembers] = useState([]);
-const [showMembers, setShowMembers] = useState(false);
+  const [projectMembers, setProjectMembers] = useState([]);
+  const [availableMembers, setAvailableMembers] = useState([]);
+  const [SelectedProject, setSelectedProject] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [editProject, setEditProject] = useState(null);
+const [openEditModal, setOpenEditModal] = useState(false);
+const handleEditProject = (project) => {
+  setEditProject(project); // Set selected project for editing
+  setOpenEditModal(true);  // Open modal
+};
+
 
   const [currentPage, setCurrentPage] = useState(0);
   const projectsPerPage = 4;
@@ -56,6 +68,102 @@ const [showMembers, setShowMembers] = useState(false);
     currentPage * projectsPerPage,
     currentPage * projectsPerPage + projectsPerPage
   );
+
+  const handleOpenModal = (projectId) => {
+    console.log("projectid", projectId);
+    setSelectedProject(projectId);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  // const handleAddMember = (member) => {
+  //   console.log("Adding member:", member);
+  //   setWorkspaceMembers((prevMembers)=>
+  //     prevMembers.filter((m)=>m._id!==member._id)
+  //   )
+  //   handleCloseModal();
+  // };
+
+  //23/01/2025
+
+  // const handleAddMember = (member, projectId) => {
+  //   console.log("Adding member:", member, "to project:", projectId);
+  //   const project = projects.find((proj) => proj._id === projectId);
+  //   setSelectedProject(projectId)
+  //   if (!project) {
+  //     console.error("Project not found");
+  //     return;
+  //   }
+
+  //   const isMemberInProject = project.members.some(
+  //     (projMember) => projMember._id === member._id
+  //   );
+
+  //   if (isMemberInProject) {
+  //     toast.error("Member already exists in project: " + project.projectName);
+  //           return;
+  //   }
+
+  //   const updatedProjects = projects.map((proj) =>
+  //     proj._id === projectId
+  //       ? { ...proj, members: [...proj.members, member] }
+  //       : proj
+  //   );
+
+  //   setProjects(updatedProjects);
+  //   console.log(updatedProjects,'updatedProjectsupdatedProjects')
+  //   toast.success(`Member added to project: ${project.name}`);
+  //   handleCloseModal();
+  // };
+
+  // const handleAddMember = async (member, projectId) => {
+  //     console.log("Adding member:", member, "to project:", projectId);
+  //     const project = projects.find((proj) => proj._id === projectId);
+  //     setSelectedProject(projectId);
+
+  //     if (!project) {
+  //         console.error("Project not found");
+  //         return;
+  //     }
+
+  //     const isMemberInProject = project.members.some(
+  //         (projMember) => projMember._id === member._id
+  //     );
+
+  //     if (isMemberInProject) {
+  //         toast.error("Member already exists in project: " + project.projectName);
+  //         return;
+  //     }
+
+  //     try {
+  //         const response = await userAxiosInstance.post('/projects/addmembers', {
+  //             projectId,
+  //             memberEmails: [member.email]
+  //         });
+
+  //         if (response.status === 200) {
+  //             toast.success(`Member added to project: ${project.name}`);
+
+  //             const updatedProjects = projects.map((proj) =>
+  //                 proj._id === projectId
+  //                     ? { ...proj, members: [...proj.members, member] }
+  //                     : proj
+  //             );
+  //             setProjects(updatedProjects);
+  //             console.log(updatedProjects, 'Updated Projects');
+  //         } else {
+  //             toast.error("Error adding member to the project.");
+  //         }
+  //     } catch (error) {
+  //         console.error("Error adding member to the project:", error);
+  //         toast.error("Failed to add member.");
+  //     }
+
+  //     handleCloseModal();
+  // };
 
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
@@ -91,11 +199,10 @@ const [showMembers, setShowMembers] = useState(false);
       );
 
       setWorkspace(response.data.workspace);
+      console.log(response.data.workspace,'response.data.workspace')
       setOwnerId(response.data.workspace.OwnerId);
-      setWorkspaceMembers(response.data.workspace.members)
-      console.log('response.data.workspace.members',response.data.workspace.members)
-
-      console.log("Workspace data:", response.data.workspace);
+      console.log(OwnerId,'OwnerId')
+      setWorkspaceMembers(response.data.workspace.members);
     } catch (error) {
       console.error("Error fetching workspace:", error);
       setError("Failed to load workspace");
@@ -121,7 +228,6 @@ const [showMembers, setShowMembers] = useState(false);
           { token, workspaceId, encryptedEmail },
           { withCredentials: true }
         );
-        console.log("workspaceid", workspaceId);
 
         navigate("/workspace");
       } catch (error) {
@@ -142,11 +248,13 @@ const [showMembers, setShowMembers] = useState(false);
 
       const currentUserId = userId;
 
-      const userProjects = response.data.projects.filter(
-        (project) =>
+      const userProjects = response.data.projects.filter((project) => {
+        console.log("Project Members:", project.members);
+        return (
           project.members.some((member) => member._id === currentUserId) ||
           OwnerId === currentUserId
-      );
+        );
+      });
 
       setProjects(userProjects);
       console.log("User Projects:", userProjects);
@@ -160,75 +268,100 @@ const [showMembers, setShowMembers] = useState(false);
     fetchProjects();
   }, [workspaceId, OwnerId, userId]);
 
+  // const handleProject = (projectId) => {
+  //   navigate(`/projects/${projectId}`);
+  // };
+
   const handleProject = (projectId) => {
+    const today = dayjs().format("YYYY-MM-DD");
+  
+    // Find the project by ID
+    const project = projects.find((proj) => proj._id === projectId);
+    if (!project) {
+      toast.error("Project not found.");
+      return;
+    }
+  
+    const projectDeadline = dayjs(project.toDate).format("YYYY-MM-DD");
+  
+    if (projectDeadline < today && OwnerId !== userId) {
+      console.log(OwnerId,'owner')
+      toast.error("Deadline expired. Only the workspace owner has access.");
+      return;
+    }
+  
     navigate(`/projects/${projectId}`);
   };
+  
+  
+  useEffect(() => {
+    console.log("Projects state after update:", projects);
+  }, [projects]);
 
+ 
+
+  const handleAddMember = async (member, projectId) => {
+    const project = projects.find((proj) => proj._id === projectId);
+    setSelectedProject(projectId);
+
+    if (!project) {
+      console.error("Project not found");
+      return;
+    }
+
+    const isMemberInProject = project.members.some(
+      (projMember) => projMember._id === member._id
+    );
+
+    if (isMemberInProject) {
+      toast.error("Member already exists in project: " + project.projectName);
+      return;
+    }
+
+    try {
+      const response = await userAxiosInstance.post("/projects/addmembers", {
+        projectId,
+        memberEmails: [member.email],
+      });
+      console.log("Response from /projects/addmembers:", response.data);
+
+      if (response.status === 200) {
+        toast.success(`Member added to project: ${project.projectName}`,{ autoClose: 1000 });
+
+        const updatedProjects = projects.map((proj) =>
+          proj._id === projectId
+            ? { ...proj, members: [...proj.members, member] }
+            : proj
+        );
+        setProjects(updatedProjects);
+        console.log(updatedProjects, "Updated Projects");
+
+      
+        await fetchProjects();
+      } else {
+        toast.error("Error adding member to the project.",{ autoClose: 1000 });
+      }
+    } catch (error) {
+      console.error("Error adding member to the project:", error);
+      toast.error("Failed to add member.",{ autoClose: 1000 });
+    }
+
+    handleCloseModal();
+  };
   useEffect(() => {
     if (workspace && projects) {
       const projectMembers = new Set();
       projects.forEach((project) =>
         project.members.forEach((member) => projectMembers.add(member._id))
       );
-  
+
       const availableMembers = workspace.members.filter(
         (member) => !projectMembers.has(member._id)
-
       );
-       console.log('hiii in avalable',availableMembers)
-  
-      setAvailableMembers(availableMembers); 
+
+      setAvailableMembers(availableMembers);
     }
   }, [workspace, projects]);
-
-
-
-  //workinggg
- 
-  // useEffect(() => {
-  //   if (
-  //     workspace?.members?.length > 0 &&
-  //     Array.isArray(projects) &&
-  //     projects.length > 0
-  //   ) {
-  //     const projectMembers = new Set();
-  //     projects.forEach((project) =>
-  //       project.members.forEach((member) => projectMembers.add(member._id))
-  //     );
-      
-  
-  //     const availableMembers = workspace.members.filter(
-  //       (member) => !projectMembers.has(member._id)
-  //     );
-  
-  //     console.log("Calculated availableMembers:", availableMembers);
-  //     setAvailableMembers(availableMembers);
-  //   }
-  // }, [workspace, projects]);
-  
-  
-  // const getAvailableMembers = (workspace, projects) => {
-  //   if (!workspace || !workspace.members || !projects) return [];
-    
-  //   const projectMembers = new Set(
-  //     projects.flatMap((project) => project.members.map((m) => m._id))
-  //   );
-  
-  //   return workspace.members.filter(
-  //     (member) => !projectMembers.has(member._id)
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   const members = getAvailableMembers(workspace, projects);
-  //   console.log("Calculated availableMembers:", members);
-  //   setAvailableMembers(members);
-  // }, [workspace, projects]);
-  
-  // console.log("Rendered availableMembers:", availableMembers);
-  
-  
-  
 
   const StyledButton = styled(Button)(({ theme }) => ({
     position: "relative",
@@ -236,11 +369,11 @@ const [showMembers, setShowMembers] = useState(false);
     padding: "15px 30px",
     border: "2px solid #fefefe",
     textTransform: "uppercase",
-    color: "#fefefe",
+    color: "#1e293b",
     textDecoration: "none",
     fontWeight: 600,
     fontSize: "20px",
-    backgroundColor: "transparent",
+    backgroundColor: "#1e293b",
     overflow: "hidden",
     "&::before": {
       content: '""',
@@ -249,7 +382,7 @@ const [showMembers, setShowMembers] = useState(false);
       left: "-2px",
       width: "calc(100% + 4px)",
       height: "calc(100% - 12px)",
-      backgroundColor: "#88AED0",
+      backgroundColor: "#1e293b",
       transition: "0.3s ease-in-out",
       transform: "scaleY(1)",
       zIndex: 1,
@@ -264,7 +397,7 @@ const [showMembers, setShowMembers] = useState(false);
       top: "-2px",
       height: "calc(100% + 4px)",
       width: "calc(100% - 12px)",
-      backgroundColor: "#88AED0",
+      backgroundColor: "#1e293b",
       transition: "0.3s ease-in-out",
       transform: "scaleX(1)",
       transitionDelay: "0.5s",
@@ -274,7 +407,7 @@ const [showMembers, setShowMembers] = useState(false);
       transform: "scaleX(0)",
     },
     "&:hover": {
-      color: "white",
+      color: "#1e293b",
     },
   }));
   const jumpAnimation = keyframes`
@@ -289,269 +422,403 @@ const [showMembers, setShowMembers] = useState(false);
   }
 `;
 
-
-const handleShowMembers = () => {
-  setShowMembers(availableMembers);
-  console.log(availableMembers,'availableMembers')
-};
-
   return (
     <Box
       className="homepage"
       sx={{
-        backgroundImage: `
-        radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-            radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
-          `,
+        backgroundColor: "#0f172a",
         width: "100vw",
         height: "100vh",
         display: "flex",
+        flexDirection: "column",
         boxSizing: "border-box",
         overflowX: "hidden",
       }}
     >
-       
-     
-      
-      <SideBar
-        sx={{
-          backgroundColor: "white",
-          width: { xs: "100%", md: "260px" },
-          flexShrink: 0,
-          boxShadow: { md: "4px 0px 10px rgba(0, 0, 0, 0.05)" },
-        }}
-      />
-      
-  
-    
-      <Box
-        sx={{
-          flexGrow: 1,
-          padding: "30px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems: "stretch",
-        }}
-      >
-       
-        {/* Workspace Section */}
-        <Container
+      <Hidden smDown>
+        <Navbar />
+      </Hidden>
+
+      <Box sx={{ display: "flex", flexGrow: 1, flexDirection: "row" }}>
+        <SideBar />
+
+        <Box
           sx={{
-            maxWidth: "100%",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(12px)",
+            flexGrow: 1,
             padding: "30px",
-            borderRadius: "12px",
-            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.08)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            alignItems: "stretch",
           }}
         >
-          <Box
+          {/* Workspace Section */}
+          <Container
+            // sx={{
+            //   maxWidth: "100%",
+
+            //   backgroundColor: "#1e293b",
+            //   backdropFilter: "blur(12px)",
+            //   padding: "30px",
+            //   borderRadius: "12px",
+            //   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.08)",
+            // }}
+          >
+            {/* <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
+              {loading ? (
+                <Typography variant="h4">Loading workspace...</Typography>
+              ) : error ? (
+                <Typography variant="h4" color="error">
+                  {error}
+                </Typography>
+              ) : workspace ? (
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontFamily: "Poppins",
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#318CE7",
+                    mb: "5px",
+                  }}
+                >
+                  <VscWorkspaceTrusted
+                    style={{ marginRight: "12px", fontSize: "36px" }}
+                  />
+                  {workspace.name}
+                </Typography>
+              ) : (
+                <Typography variant="h4">No workspace found</Typography>
+              )}
+
+              <StyledButton
+                component="a"
+                href="#"
+                onClick={handelOpenInvite}
+                sx={{
+                  padding: "8px 16px",
+                  fontSize: "15px",
+                  display: "flex",
+                  alignItems: "center",
+                  borderRadius: "8px",
+                  backgroundColor: "#357793",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#2A5175",
+                  },
+                }}
+              >
+                <AddIcon sx={{ marginRight: "8px" }} />
+                <span style={{ position: "relative", zIndex: 3 }}>
+                  Invite members
+                </span>
+              </StyledButton>
+            </Box> */}
+
+            <InviteMembers
+              workspace={workspaceId}
+              open={openInvite}
+              onClose={handleCloseInvite}
+            />
+          </Container>
+
+          {/* Project Section */}
+          {/* <Box sx={{display:'flex',flexDirection:'row'}}> */}
+          <Container
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 2,
+              // width:'100%',
+              maxWidth: "100%",
+              // backgroundColor: "rgba(255, 255, 255, 0.8)",
+              backgroundColor: "#1e293b",
+              backdropFilter: "blur(12px)",
+              padding: "30px",
+              borderRadius: "12px",
+              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.08)",
+              marginTop: "8px",
             }}
           >
-            {loading ? (
-              <Typography variant="h4">Loading workspace...</Typography>
-            ) : error ? (
-              <Typography variant="h4" color="error">
-                {error}
-              </Typography>
-            ) : workspace ? (
+              <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
+              {loading ? (
+                <Typography variant="h4">Loading workspace...</Typography>
+              ) : error ? (
+                <Typography variant="h4" color="error">
+                  {error}
+                </Typography>
+              ) : workspace ? (
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontFamily: "Poppins",
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#318CE7",
+                    mb: "5px",
+                  }}
+                >
+                  <VscWorkspaceTrusted
+                    style={{ marginRight: "12px", fontSize: "36px" }}
+                  />
+                  {workspace.name}
+                </Typography>
+              ) : (
+                <Typography variant="h4">No workspace found</Typography>
+              )}
+
+              <StyledButton
+                component="a"
+                href="#"
+                onClick={handelOpenInvite}
+                sx={{
+                  padding: "8px 16px",
+                  fontSize: "15px",
+                  display: "flex",
+                  alignItems: "center",
+                  borderRadius: "8px",
+                  backgroundColor: "#357793",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#2A5175",
+                  },
+                }}
+              >
+                <AddIcon sx={{ marginRight: "8px" }} />
+                <span style={{ position: "relative", zIndex: 3 }}>
+                  Invite members
+                </span>
+              </StyledButton>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
               <Typography
-                variant="h3"
+                variant="h4"
                 sx={{
                   fontFamily: "Poppins",
                   display: "flex",
                   alignItems: "center",
-                  color: "#2A5175",
-                  mb: "5px",
+                  color: "#fff",
                 }}
               >
-                <VscWorkspaceTrusted
-                  style={{ marginRight: "12px", fontSize: "36px" }}
+                <BsListCheck
+                  style={{
+                    marginRight: "12px",
+                    fontSize: "30px",
+                    color: "#fff",
+                  }}
                 />
-                {workspace.name}
+                List of Projects
               </Typography>
-            ) : (
-              <Typography variant="h4">No workspace found</Typography>
-            )}
-  
-            <StyledButton
-              component="a"
-              href="#"
-              onClick={handelOpenInvite}
-              sx={{
-                padding: "8px 16px",
-                fontSize: "15px",
-                display: "flex",
-                alignItems: "center",
-                borderRadius: "8px",
-                backgroundColor: "#357793",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#2A5175",
-                },
-              }}
-            >
-              <AddIcon sx={{ marginRight: "8px" }} />
-              <span style={{ position: "relative", zIndex: 3 }}>
-               Invite members
-             </span>
-            </StyledButton>
-          </Box>
-  
-          <InviteMembers
-            workspace={workspaceId}
-            open={openInvite}
-            onClose={handleCloseInvite}
-          />
-        </Container>
-  
-        {/* Project Section */}
-        {/* <Box sx={{display:'flex',flexDirection:'row'}}> */}
-        <Container
-          sx={{
-            // width:'100%',
-            maxWidth: "100%",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(12px)",
-            padding: "30px",
-            borderRadius: "12px",
-            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.08)",
-            marginTop: "30px",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 2,
-            }}
-          >
-            <Typography
-              variant="h4"
-              sx={{
-                fontFamily: "Poppins",
-                display: "flex",
-                alignItems: "center",
-                color: "#2A5175",
-                
-              }}
-            >
-              <BsListCheck
-                style={{
-                  marginRight: "12px",
-                  fontSize: "30px",
+
+              <Typography
+                sx={{
+                  textAlign: "right",
+                  paddingRight: "30px",
+                  animation: `${jumpAnimation} 2s ease-in-out infinite`,
+                  fontSize: "20px",
+                  color: "grey",
                 }}
-              />
-              List of Projects
-            </Typography>
-  
-            <Typography
-              sx={{
-               textAlign: "right",
-               paddingRight: "30px",
-               animation: `${jumpAnimation} 2s ease-in-out infinite`,
-              fontSize: "20px",
-              color:'grey'
-           }}
-          >
-             * select a project for details
-           </Typography>
-          </Box>
-  
-          {/* Project List */}
-          <List>
-            {currentProjects.length > 0 ? (
-              currentProjects.map((project) => (
-                <Box key={project._id}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "12px 0",
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "#F9FAFC",
-                        borderRadius: "8px",
-                      },
-                    }}
-                    onClick={() => handleProject(project._id)}
-                  >
-                    <ListItem sx={{ width: "75%" }}>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            sx={{
-                              fontSize: "20px",
-                              fontWeight: "500",
-                              color: "#2A5175",
-                            }}
-                          >
-                            {project.projectName}
-                          </Typography>
-                        }
-                        secondary={
-                          <Typography
-                            sx={{ fontSize: "16px", color: "grey" }}
-                          >
-                            {project.Description}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-  
-                    <Typography
+              >
+                * select a project for details
+              </Typography>
+            </Box>
+
+            {/* Project List */}
+            <List>
+              {currentProjects.length > 0 ? (
+                currentProjects.map((project) => (
+                  <Box key={project._id}>
+                    <Box
                       sx={{
-                        fontSize: "18px",
-                        color: project.status ? "#357793" : "grey",
-                        fontWeight: "bold",
-                        textAlign: "right",
+                        color: "#318CE7",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "12px 0",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#0f172a",
+                          borderRadius: "8px",
+                        },
                       }}
+                      onClick={() => handleProject(project._id)}
                     >
-                      {project.status ? "Active" : "Pending"}
-                    </Typography>
-              
+                      <ListItem sx={{ width: "75%" }}>
+                        <ListItemText
+                          primary={
+                            <Typography
+                              sx={{
+                                fontSize: "20px",
+                                fontWeight: "500",
+                                color: "#fff",
+                              }}
+                            >
+                              {project.projectName}
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography
+                              sx={{ fontSize: "16px", color: "grey" }}
+                            >
+                              {project.Description}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                      {OwnerId === userId && (
+  <Button onClick={(e) => { e.stopPropagation(); handleEditProject(project); }} sx={{ minWidth: 0 }}>
+    <FaEdit size={21} color="#fff" />
+  </Button>
+)}
+
+                      <Typography
+                        sx={{
+                          fontSize: "18px",
+                          color: project.status ? "#357793" : "grey",
+                          fontWeight: "bold",
+                          textAlign: "right",
+                        }}
+                      >
+                        {project.status ? "Active" : "Pending"}
+                      </Typography>
+
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenModal(project._id);
+                        }}
+                        sx={{
+                          padding: "8px 16px",
+                          fontSize: "15px",
+                          backgroundColor: "#fff",
+                          marginRight: "8px",
+                          color:'#0f172a',
+                          "&:hover": { backgroundColor: "#fff" },
+                        }}
+                      >
+                        <AddIcon sx={{ marginRight: "8px" }} />
+                        Add Members
+                      </Button>
+                    </Box>
+                    <Divider sx={{ mb: 2 }} />
                   </Box>
-                  <Divider sx={{ mb: 2 }} />
-                </Box>
-              ))
-            ) : (
-              <Typography variant="body1">No projects found.</Typography>
-            )}
-          </List>
-  
-          {/* Pagination */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-            <Button
-              onClick={handlePrevPage}
-              disabled={currentPage === 0}
-              variant="contained"
+                ))
+              ) : (
+                <Typography variant="body1">No projects found.</Typography>
+              )}
+            </List>
+            {openEditModal && (
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+  <EditProjectModal
+    project={editProject}
+    onClose={() => setOpenEditModal(false)}
+    onUpdate={fetchProjects} 
+  />
+  </LocalizationProvider>
+)}
+
+            {/* Pagination */}
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}
             >
-              Previous
-            </Button>
-            <Typography>
-              Page {currentPage + 1} of {totalPages}
-            </Typography>
-            <Button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages - 1}
-              variant="contained"
-            >
-              Next
-            </Button>
-          </Box>
-        </Container>
+              <Button
+                onClick={handlePrevPage}
+                disabled={currentPage === 0}
+                variant="contained"
+              >
+                Previous
+              </Button>
+              <Typography>
+                Page {currentPage + 1} of {totalPages}
+              </Typography>
+              <Button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages - 1}
+                variant="contained"
+              >
+                Next
+              </Button>
+            </Box>
+          </Container>
 
+          {/* </Box> */}
 
+          <MembersList
+            open={isModalOpen}
+            onClose={handleCloseModal}
+            members={workspaceMembers}
+            onAddMember={(member) => handleAddMember(member, SelectedProject)}
+          />
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
-         <Container
+export default WorkspacePanel;
+
+//workinggg
+
+// useEffect(() => {
+//   if (
+//     workspace?.members?.length > 0 &&
+//     Array.isArray(projects) &&
+//     projects.length > 0
+//   ) {
+//     const projectMembers = new Set();
+//     projects.forEach((project) =>
+//       project.members.forEach((member) => projectMembers.add(member._id))
+//     );
+
+//     const availableMembers = workspace.members.filter(
+//       (member) => !projectMembers.has(member._id)
+//     );
+
+//     console.log("Calculated availableMembers:", availableMembers);
+//     setAvailableMembers(availableMembers);
+//   }
+// }, [workspace, projects]);
+
+// const getAvailableMembers = (workspace, projects) => {
+//   if (!workspace || !workspace.members || !projects) return [];
+
+//   const projectMembers = new Set(
+//     projects.flatMap((project) => project.members.map((m) => m._id))
+//   );
+
+//   return workspace.members.filter(
+//     (member) => !projectMembers.has(member._id)
+//   );
+// };
+
+// useEffect(() => {
+//   const members = getAvailableMembers(workspace, projects);
+//   console.log("Calculated availableMembers:", members);
+//   setAvailableMembers(members);
+// }, [workspace, projects]);
+
+// console.log("Rendered availableMembers:", availableMembers);
+
+{
+  /* <Container
           sx={{
             width:'35%',
             // maxWidth: "50%",
@@ -637,17 +904,18 @@ const handleShowMembers = () => {
           </Button>
           
         </Box>
-        <Divider sx={{ mb: 2 }} />
-      </Box>
-    ))
-  ) : (
     <Typography variant="body1">No members available.</Typography>
   )}
 </List>
 
   
          
-          {/* <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+       
+        </Container>  */
+}
+
+{
+  /* <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
             <Button
               onClick={handlePrevPage}
               disabled={currentPage === 0}
@@ -665,26 +933,11 @@ const handleShowMembers = () => {
             >
               Next
             </Button>
-          </Box> */}
-        </Container> 
+          </Box> */
+}
 
-        {/* </Box> */}
-       
-        
-      </Box>
-    </Box>
-  );
-  
-};
-
-export default WorkspacePanel;
-
-
-
-
-
-
-      {/* <Button
+{
+  /* <Button
                   
           variant="contained"
           color="primary"
@@ -692,8 +945,10 @@ export default WorkspacePanel;
           onClick={handleShowMembers}
         >
           {showMembers ? "Hide Members" : "Show Members"}
-        </Button> */}
-        {/* {showMembers && (
+        </Button> */
+}
+{
+  /* {showMembers && (
         <Container sx={{ mt: 3 }}>
           <Typography variant="h5" sx={{ mb: 2 }}>
             Workspace Members:
@@ -712,4 +967,5 @@ export default WorkspacePanel;
             )}
           </List>
         </Container>
-      )} */}
+      )} */
+}

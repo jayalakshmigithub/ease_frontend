@@ -20,6 +20,7 @@ import { userAxiosInstance } from "../../utils/api/axiosInstance";
 import { useParams } from "react-router-dom";
 import ProgressionChart from "../Charts/ProgressionChart";
 import { DataGrid } from '@mui/x-data-grid';
+import TaskListRough from "../TaskListRough";
 import TaskPage from "../Tasks/TaskPage";
 
 
@@ -40,8 +41,11 @@ const ProjectsOverview = () => {
     try {
       if (!projectId) throw new Error("Project ID is required");
       const response = await userAxiosInstance.get(`/projects/${projectId}`);
+
+    console.log("Fetching project with ID:", projectId);
       if (response.data.project) {
         setProject(response.data.project);
+        console.log(response.data.project,'checking owner')
        
         setMembers(response.data.project.members);
      
@@ -55,6 +59,38 @@ const ProjectsOverview = () => {
       setLoading(false);
     }
   };
+  // const fetchProject = async () => {
+  //   try {
+  //     if (!projectId) throw new Error("Project ID is required");
+  
+  //     const response = await userAxiosInstance.get(`/projects/${projectId}`);
+  
+  //     if (response.status === 401) {
+  //       console.warn("Unauthorized access. Redirecting to login.");
+  //       // Handle unauthorized access without force logging out
+  //       // Example: Redirect to a different page instead of logging out
+  //       return;
+  //     }
+  
+  //     if (response.data.project) {
+  //       setProject(response.data.project);
+  //       setMembers(response.data.project.members);
+  //     } else {
+  //       console.warn("No project data found in the response");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching project:", error);
+  //     if (error.response?.status === 403) {
+  //       console.warn("Access denied. Redirecting...");
+  //       navigate("/home"); // Redirect to a safe page instead of logging out
+  //     }
+  
+  //     setError(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
 
   useEffect(() => {
     fetchProject();
@@ -119,10 +155,11 @@ const ProjectsOverview = () => {
   return (
     <Box
       sx={{
-        backgroundImage: `
-          radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-          radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%)
-        `,
+        // backgroundImage: `
+        //   radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
+        //   radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%)
+        // `,
+        backgroundColor:'#0f172a',
         width: "100vw",
         minHeight: "100vh",
         display: "flex",
@@ -153,7 +190,7 @@ const ProjectsOverview = () => {
             flexDirection: "column",
             justifyContent: "left",
             alignItems: "flex-start",
-            backgroundColor: "transparent",
+            backgroundColor: '#1e293b',
             backdropFilter: "blur(20px)",
             boxShadow: "0px 0px 20px rgba(0,0,0,0.1)",
             borderRadius: "15px",
@@ -299,8 +336,8 @@ const ProjectsOverview = () => {
         <Box
           sx={{
             flex: 1, 
-            height: "55vh",
-            backgroundColor: "transparent",
+            height: "57vh",
+            backgroundColor: '#fff',
             backdropFilter: "blur(10px)",
             padding: "20px",
             borderRadius: "8px",
@@ -347,7 +384,7 @@ const ProjectsOverview = () => {
 
 <Typography sx={{ color: '#357793', fontSize: '30px', fontFamily: 'poppins', marginTop: '30px' }}>Members on project</Typography>
 
-<Box sx={{ height: '200px', width: '100%', marginTop: '20px' }}>
+<Box sx={{ height: '200px', width: '100%', marginTop: '20px' ,backgroundColor:'#fff'}}>
   <DataGrid
     rows={rows}
     columns={columns}
@@ -362,6 +399,23 @@ const ProjectsOverview = () => {
   ) : (
     // <Task projectId={projectId} tasks={tasks} />
     <TaskPage projectId={projectId} members={members}/>
+  //   <Box
+  //   sx={{
+  //     flex: 1, // Allows it to take equal space
+  //     height: "55vh", // Adjust height to match sibling
+  //     backgroundColor: "#1e293b",
+  //     backdropFilter: "blur(10px)",
+  //     padding: "2px",
+  //     borderRadius: "3px",
+  //     boxShadow: "0px 0px 20px rgba(0,0,0,0.1)",
+  //     marginTop: { xs: "20px", md: "8px" },
+  //    marginRight:'50px',
+  //     overflow: "hidden", // Prevents unnecessary scrolling
+  //   }}
+  // >
+  //   <TaskListRough />
+  // </Box>
+  
    
   )}
 </Box>

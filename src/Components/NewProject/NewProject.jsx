@@ -46,6 +46,7 @@ const NewProject = (workSpace) => {
   const [emails, setEmails] = useState([]);
   const socket = io(config.API_URL_SOCKET)
   const [projectDetails, setProjectDetails] = useState({
+    _id: "",
     workspaceName: "",
     projectName: "",
     Description: "",
@@ -91,6 +92,20 @@ const handleWorkspaceChange = (workspaceId) => {
   }
 };
 
+useEffect(() => {
+  if (projectDetails._id) {
+    console.log("Processing Members for Project ID:", projectDetails._id);
+
+    emails.forEach((member) => {
+      console.log("Processing Member:", member);
+      handleToggle(member.email, projectDetails);
+    });
+  }
+}, [projectDetails._id]);
+
+
+
+
 
 
   const createProject = async (projectDetails) => {
@@ -99,9 +114,19 @@ const handleWorkspaceChange = (workspaceId) => {
 
       const response = await userAxiosInstance.post(
         "/createproject",
-        projectDetails
+        projectDetails,
+        
       );
       if (response.status === 200) {
+        console.log('responseeee in create project',response.data)
+        const newProjectId = response.data.response.project._id;
+       
+        setProjectDetails((prevDetails) => ({
+          ...prevDetails,
+          _id: newProjectId,
+        }));
+      
+
         toast.success("project created successfully");
         setTimeout(() => {
           navigate("/workspace");
@@ -112,6 +137,29 @@ const handleWorkspaceChange = (workspaceId) => {
       console.error(error, "error");
     }
   };
+
+    // const newProjectId = response.data.response.project._id;
+        // // setProjectDetails((prevDetails) => ({
+        // //     ...prevDetails,
+        // //     _id: newProjectId, 
+        // // }));
+
+      //   setProjectDetails((prevDetails) => {
+      //     const updatedDetails = { ...prevDetails, _id: newProjectId };
+      //     console.log("Project created and ID set:", updatedDetails);
+
+          
+      //     if (callback) {
+      //         callback(updatedDetails);
+      //     }
+
+      //     return updatedDetails;
+      // });
+
+
+
+
+
 
   // const handleToggle = (email) => {
   //   setProjectDetails((prevDetails) => {
@@ -132,32 +180,32 @@ const handleWorkspaceChange = (workspaceId) => {
 
 // OG
   
-const handleToggle = (email) => {
-    setProjectDetails((prevDetails) => {
-        const selectedMember = prevDetails.members.find(member => member.email === email);
+// const handleToggle = (email) => {
+//     setProjectDetails((prevDetails) => {
+//         const selectedMember = prevDetails.members.find(member => member.email === email);
         
-        let updatedMembers;
-        if (selectedMember) {
+//         let updatedMembers;
+//         if (selectedMember) {
         
-            updatedMembers = prevDetails.members.filter(member => member.email !== email);
-        } else {
+//             updatedMembers = prevDetails.members.filter(member => member.email !== email);
+//         } else {
             
-            const newMember = emails.find(member => member.email === email);
-            if (newMember) {
+//             const newMember = emails.find(member => member.email === email);
+//             if (newMember) {
                
-                updatedMembers = [...prevDetails.members, newMember];
-            } else {
-                updatedMembers = prevDetails.members;
-            }
-        }
+//                 updatedMembers = [...prevDetails.members, newMember];
+//             } else {
+//                 updatedMembers = prevDetails.members;
+//             }
+//         }
 
-        console.log("Updated Members List:", updatedMembers);
-        return {
-            ...prevDetails,
-            members: updatedMembers, 
-        };
-    });
-};
+//         console.log("Updated Members List:", updatedMembers);
+//         return {
+//             ...prevDetails,
+//             members: updatedMembers, 
+//         };
+//     });
+// };
 
 
 
@@ -196,6 +244,7 @@ const handleToggle = (email) => {
 
 
 //changed for notification
+
 // const handleToggle = (email) => {
   
 //   setProjectDetails((prevDetails) => {
@@ -216,11 +265,13 @@ const handleToggle = (email) => {
 //                   projectId: prevDetails._id, 
 //                   projectName: prevDetails.projectName,
 //               });
-
+// console.log(prevDetails._id,'prevDetails._id')
          
 //               socket.emit("send-notification", {
 //                   userId: newMember._id,
 //                   message: `You have been added to the project: ${prevDetails.projectName}`,
+//                   projectId : prevDetails._id,
+//                   projectName : prevDetails.projectName
 //               });
 
 //               console.log(`Notification sent to ${newMember.email}`);
@@ -236,6 +287,203 @@ const handleToggle = (email) => {
 //       };
 //   });
 // };
+// const handleToggle = (email) => {
+//   setProjectDetails((prevDetails) => {
+//     console.log(prevDetails,'prevDetails')
+    
+//       const selectedMember = prevDetails.members.find((member) => member.email === email);
+
+//       let updatedMembers;
+//       if (selectedMember) {
+//           updatedMembers = prevDetails.members.filter((member) => member.email !== email);
+//       } else {
+//           const newMember = emails.find((member) => member.email === email);
+//           if (newMember) {
+//               updatedMembers = [...prevDetails.members, newMember];
+
+//               if (prevDetails._id) {
+                 
+//                   socket.emit("add-member", {
+//                       email: newMember.email,
+//                       projectId: prevDetails._id, 
+//                       projectName: prevDetails.projectName,
+//                   });
+
+//                   console.log(prevDetails._id, "prevDetails._id");
+
+//                   socket.emit("send-notification", {
+//                       userId: newMember._id,
+//                       message: `You have been added to the project: ${prevDetails.projectName}`,
+//                       projectId: prevDetails._id,
+//                       projectName: prevDetails.projectName,
+//                   });
+
+//                   console.log(`Notification sent to ${newMember.email}`);
+//               } else {
+//                   console.error("Project ID is not set yet. Cannot add member.");
+//               }
+//           } else {
+//               updatedMembers = prevDetails.members;
+//           }
+//       }
+
+//       console.log("Updated Members List:", updatedMembers);
+//       return {
+//           ...prevDetails,
+//           members: updatedMembers,
+//       };
+//   });
+// };
+
+// const handleToggle = (email, updatedDetails = null) => {
+//   setProjectDetails((prevDetails) => {
+//     const details = updatedDetails || prevDetails; // Use updated details if provided
+//     console.log(details, 'Current Project Details');
+
+//     const selectedMember = details.members.find((member) => member.email === email);
+//     let updatedMembers;
+
+//     if (selectedMember) {
+//       updatedMembers = details.members.filter((member) => member.email !== email);
+//     } else {
+//       const newMember = emails.find((member) => member.email === email);
+//       if (newMember) {
+//         updatedMembers = [...details.members, newMember];
+
+//         if (details._id) {
+//           socket.emit("add-member", {
+//             email: newMember.email,
+//             projectId: details._id,
+//             projectName: details.projectName,
+//           });
+
+//           console.log(details._id, "Project ID in Notification");
+
+//           socket.emit("send-notification", {
+//             userId: newMember._id,
+//             message: `You have been added to the project: ${details.projectName}`,
+//             projectId: details._id,
+//             projectName: details.projectName,
+//           });
+
+//           console.log(`Notification sent to ${newMember.email}`);
+//         } else {
+//           console.error("Project ID is not set yet. Cannot add member.");
+//         }
+//       } else {
+//         updatedMembers = details.members;
+//       }
+//     }
+
+//     console.log("Updated Members List:", updatedMembers);
+//     return {
+//       ...details,
+//       members: updatedMembers,
+//     };
+//   });
+// };
+
+// const handleToggle = (email, updatedDetails = null) => {
+//   setProjectDetails((prevDetails) => {
+//     const details = updatedDetails || prevDetails; 
+//     console.log(details, "Current Project Details");
+
+//     const selectedMember = details.members.find((member) => member.email === email);
+//     let updatedMembers;
+
+//     if (selectedMember) {
+//       updatedMembers = details.members.filter((member) => member.email !== email);
+//     } else {
+//       const newMember = emails.find((member) => member.email === email);
+//       if (newMember) {
+//         updatedMembers = [...details.members, newMember];
+
+//         if (details._id) {
+//           console.log('got the id ',details._id)
+//           socket.emit("add-member", {
+//             email: newMember.email,
+//             projectId: details._id,
+//             projectName: details.projectName,
+//           });
+
+//           console.log(details._id, "Project ID in Notification");
+
+//           socket.emit("send-notification", {
+//             userId: newMember._id,
+//             message: `You have been added to the project: ${details.projectName}`,
+//             projectId: details._id,
+//             projectName: details.projectName,
+//           });
+
+//           console.log(`Notification sent to ${newMember.email}`);
+//         } else {
+//           console.error("Project ID is not set yet. Cannot add member.");
+//         }
+//       } else {
+//         updatedMembers = details.members;
+//       }
+//     }
+
+//     console.log("Updated Members List:", updatedMembers);
+//     return {
+//       ...details,
+//       members: updatedMembers,
+//     };
+//   });
+// };
+
+
+const handleToggle = (email, updatedDetails = null) => {
+  setProjectDetails((prevDetails) => {
+    const details = updatedDetails || prevDetails;
+
+    // if (!details._id) {
+    //   console.error("Project ID is not set yet. Cannot add member.");
+    //   return prevDetails; 
+    // }
+
+    const selectedMember = details.members.find((member) => member.email === email);
+    let updatedMembers;
+
+    if (selectedMember) {
+      updatedMembers = details.members.filter((member) => member.email !== email);
+    } else {
+      const newMember = emails.find((member) => member.email === email);
+      if (newMember) {
+        updatedMembers = [...details.members, newMember];
+
+        // Emit socket events with the updated project details
+        // socket.emit("add-member", {
+        //   email: newMember.email,
+        //   projectId: details._id,
+        //   projectName: details.projectName,
+        // });
+
+        console.log(details._id, "Project ID in Notification");
+
+        socket.emit("send-notification", {
+          userId: newMember._id,
+          message: `You have been added to the project: ${details.projectName}`,
+          // projectId: details._id,
+          projectName: details.projectName,
+        });
+
+        console.log(`Notification sent to ${newMember.email}`);
+      } else {
+        updatedMembers = details.members;
+      }
+    }
+
+    console.log("Updated Members List:", updatedMembers);
+    return {
+      ...details,
+      members: updatedMembers,
+    };
+  });
+};
+
+
+
 
 
 console.log('projectDetails',projectDetails)
@@ -245,21 +493,18 @@ console.log('projectDetails',projectDetails)
       <ToastContainer />
       <Box
         sx={{
-          backgroundImage: `
-          radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-          radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
-        `,
+         backgroundColor:'#0f172a',
           width: "100vw",
           height: "100vh",
         }}
       >
         <Navbar />
-        <Box sx={{ borderBottom: "dotted", borderColor: "#A2CFFE" }}></Box>
-        <Container sx={{ marginTop: "20px" }}>
-          <Typography variant="h4" align="center" gutterBottom>
-            Streamline Your Project: Plan and Execute with planIt
+
+        <Container sx={{ marginTop: "18px" ,}}>
+          <Typography variant="h6" align="start" gutterBottom>
+          Create Your New Project:
           </Typography>
-          <Paper elevation={3} sx={{ padding: 2 }}>
+          <Paper elevation={3} sx={{ padding: 2,backgroundColor:"#1e293b" }}>
             <Tabs
               value={toggleName}
               onChange={(e, newValue) => setToggleName(newValue)}
@@ -272,11 +517,19 @@ console.log('projectDetails',projectDetails)
             <Box p={2}>
               {/* Workspace Selection */}
               {toggleName === "workspace" && (
-                <Box>
+                <Box    sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" }, 
+                    "&:hover fieldset": { borderColor: "white" }, 
+                    "&.Mui-focused fieldset": { borderColor: "white" }, 
+                  },
+                  "& .MuiInputLabel-root": { color: "white" }, 
+                  "& input, & textarea": { color: "white" }, 
+                }}>
                   <Grid container spacing={3} alignItems="center">
                     <Grid item xs={12} md={8}>
                       <FormControl fullWidth margin="normal">
-                        <InputLabel id="workspaceSelect-label">
+                        <InputLabel  >
                           Select a workspace
                         </InputLabel>
                         <Select
@@ -292,7 +545,9 @@ console.log('projectDetails',projectDetails)
                               workspaceName: selectedWorkspaceId,
                             });
                           }}
+                           label="Select a workspace"
                         >
+                           
                           <MenuItem value="" disabled>
                             Select a Workspace
                           </MenuItem>
@@ -350,6 +605,15 @@ console.log('projectDetails',projectDetails)
                         })
                       }
                       required
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": { borderColor: "white" }, // Default border color
+                          "&:hover fieldset": { borderColor: "white" }, // Hover effect
+                          "&.Mui-focused fieldset": { borderColor: "white" }, // Focus effect
+                        },
+                        "& .MuiInputLabel-root": { color: "white" }, // Label color
+                        "& input, & textarea": { color: "white" }, // Text color
+                      }}
                     />
                     <TextField
                       fullWidth
@@ -366,6 +630,15 @@ console.log('projectDetails',projectDetails)
                         })
                       }
                       required
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": { borderColor: "white" }, // Default border color
+                          "&:hover fieldset": { borderColor: "white" }, // Hover effect
+                          "&.Mui-focused fieldset": { borderColor: "white" }, // Focus effect
+                        },
+                        "& .MuiInputLabel-root": { color: "white" }, // Label color
+                        "& input, & textarea": { color: "white" }, // Text color
+                      }}
                     />
 
 <Grid item xs={12} md={8}>
@@ -375,8 +648,9 @@ console.log('projectDetails',projectDetails)
         sx={{
           padding: '12px',
           borderRadius: '4px',
-          border: '1px solid #ccc',
-          backgroundColor: '#fff',
+          border: '1px solid #fff',
+          backgroundColor:"#1e293b",
+        
         }}
       >
         <FormControl component="fieldset">
@@ -419,6 +693,15 @@ console.log('projectDetails',projectDetails)
                             toDate: newValue[1],
                           });
                         }}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": { borderColor: "white" }, // Default border color
+                            "&:hover fieldset": { borderColor: "white" }, // Hover effect
+                            "&.Mui-focused fieldset": { borderColor: "white" }, // Focus effect
+                          },
+                          "& .MuiInputLabel-root": { color: "white" }, // Label color
+                          "& input, & textarea": { color: "white" }, // Text color
+                        }}
                         minDate={today}
                         renderInput={(startProps, endProps) => (
                           <React.Fragment>
@@ -458,6 +741,9 @@ console.log('projectDetails',projectDetails)
                         Create Project
                       </Button>
                     </Box>
+    
+
+                    
                   </Box>
                 </Box>
               )}

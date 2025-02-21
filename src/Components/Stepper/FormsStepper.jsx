@@ -4,7 +4,7 @@ import Navbar from '../Navbar/Navbar';
 import CreateWorkspace from '../CreateWorkspace';
 import ColorlibConnector from './Connectors/ColorlibConnector';
 import ColorlibStepIcon from './StepperIcons/ColorlibStepIcon';
-import AddMembers from "../AddMembers";
+
 import { Bounce,toast,ToastContainer } from "react-toastify";
 import InviteMembers from "../InviteMembers";
 import { Container } from "@mui/system";
@@ -50,21 +50,22 @@ const [workSpace , setWorkSpace] = useState(null)
     <>
       <Box
         sx={{
-          backgroundImage: `
-            radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-            radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
-          `,
+          // backgroundImage: `
+          //   radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
+          //   radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
+          // `,
+          backgroundColor:'#0f172a',
           width: '100vw',
           height: '100vh',
         }}
       >
         <Navbar />
 
-        <Box sx={{ borderBottom: 'dotted', borderColor: '#A2CFFE' }}></Box>
+        {/* <Box sx={{ borderBottom: 'dotted', borderColor: '#A2CFFE' }}></Box> */}
         <Container
         sx={{
           marginTop: '150px',
-          backgroundColor: 'transparent',
+          backgroundColor:"#1e293b",
           backdropFilter: 'blur(10px)',
           padding: '20px',
           borderRadius: '8px',

@@ -15,11 +15,19 @@ import Toggle from '../Toggle';
 import InviteMembers from '../InviteMembers';
 import { IoNotificationsSharp } from "react-icons/io5";
 import logo from '../../Assets/logo2.png'
+import NotificstionBadge from '../Chat/NotificstionBadge';
+import {
+
+  Typography,
+  Container,
+ 
+} from "@mui/material";
+import { BarChart3,} from "lucide-react";
 
 
 
 
-const Navbar = () => {
+const Navbar = ({notificationCount}) => {
   const navigate = useNavigate();
   const [openInviteDialog, setOpenInviteDialog] = useState(false); 
   const [drawerOpen , setDrawerOpen] = useState(false);
@@ -49,11 +57,11 @@ const Navbar = () => {
     display: 'flex',
     alignItems: 'center',
     fontFamily: 'inherit',
-    fontWeight: 500,
-    fontSize: '12px',
+    fontWeight: 700,
+    fontSize: '14px',
     padding: '9px 14.5px',
-    color: 'white',
-    backgroundColor: '#357793',
+    color: '#1e293b',
+    backgroundColor: '#fff',
     border: 'none',
     boxShadow: '0 0.7em 1.5em -0.5em rgba(59, 48, 78, 0.527)',
     letterSpacing: '0.05em',
@@ -63,7 +71,7 @@ const Navbar = () => {
     overflow: 'hidden',
     marginRight:'30px',
     '&:hover': {
-      backgroundColor: 'rgb(103, 92, 156)',
+      backgroundColor: '#8a9098',
       boxShadow: '0 0.5em 1.5em -0.5em rgba(88, 71, 116, 0.627)',
     },
     '&:active': {
@@ -121,15 +129,17 @@ const Navbar = () => {
   const isWorkspacesPage = location.pathname ==='/workspace'
 
   const handleNotificationClick = async()=>{
+    
     console.log('Notification clicked')
+    navigate('/notifications')
   }
 
   return (
 
 
 
-<nav className={`navClass ${isLandingPage ? 'landing-navbar' : ''}`}>
-  <div className="navbar-logo-container">
+<nav className={`navClass ${isLandingPage ? 'landing-navbar' : ''}`}  style={{ backgroundColor: '#1e293b' }}>
+  {/* <div className="navbar-logo-container">
     <Box
       component="img"
       src={logo}
@@ -140,7 +150,14 @@ const Navbar = () => {
         objectFit: 'contain',
       }}
     />
-  </div>
+   
+  </div> */}
+   <Box sx={{ display: "flex", marginLeft:'30px',alignItems: "center",height: { xs: '50px', sm: '60px', md: '180px', marginTop: '8px' } }}>
+              <BarChart3 size={32} color={theme.palette.primary.main} />
+              <Typography variant="h5" sx={{ ml: 1, fontWeight: "bold" }}>
+              PlanIt
+              </Typography>
+            </Box>
 
   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
     {/* <NavLink className="nav-link" to="/about">
@@ -189,22 +206,22 @@ const Navbar = () => {
       </>
     ) : (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <Button
-  sx={{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '10px',
-    borderRadius: '50%',
-    // backgroundColor: '#f5f5f5', 
-    color: '#357793',
-    cursor: 'pointer',
-    fontSize: '25px',
-  }}
-  onClick={handleNotificationClick} 
->
-  <IoNotificationsSharp />
-</Button>
+      <Button
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px',
+            borderRadius: '50%',
+            color: '#fff',
+            cursor: 'pointer',
+            fontSize: '25px',
+            marginTop:'16px'
+          }}
+          onClick={handleNotificationClick}
+        >
+          <NotificstionBadge notificationCount={notificationCount} />
+        </Button>
         {!isLandingPage && (
           
           <StyledButton onClick={handleNewProject}>
