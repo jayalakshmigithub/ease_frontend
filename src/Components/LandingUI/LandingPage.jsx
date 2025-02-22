@@ -375,6 +375,9 @@ function LandingPage() {
   const handleSignupClick=()=>{
     navigate('/signup')
    }
+   const handleLogin = ()=>{
+    navigate('/signin')
+   }
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -524,6 +527,7 @@ function LandingPage() {
                     borderColor: 'primary.main',
                   },
                 }}
+                onClick={handleLogin}
               >
                 Continue to Account
               </Button>

@@ -300,54 +300,171 @@ const handleEditProject = (project) => {
 
  
 
+  // const handleAddMember = async (member, projectId) => {
+  //   const project = projects.find((proj) => proj._id === projectId);
+  //   setSelectedProject(projectId);
+
+  //   if (!project) {
+  //     console.error("Project not found");
+  //     return;
+  //   }
+
+  //   const isMemberInProject = project.members.some(
+  //     (projMember) => projMember._id === member._id
+  //   );
+
+  //   if (isMemberInProject) {
+  //     toast.error("Member already exists in project: " + project.projectName);
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await userAxiosInstance.post("/projects/addmembers", {
+  //       projectId,
+  //       memberEmails: [member.email],
+  //     });
+  //     console.log("Response from /projects/addmembers:", response.data);
+
+  //     if (response.status === 200) {
+  //       toast.success(`Member added to project: ${project.projectName}`,{ autoClose: 1000 });
+
+  //       const updatedProjects = projects.map((proj) =>
+  //         proj._id === projectId
+  //           ? { ...proj, members: [...proj.members, member] }
+  //           : proj
+  //       );
+  //       setProjects(updatedProjects);
+  //       console.log(updatedProjects, "Updated Projects");
+
+      
+  //       await fetchProjects();
+  //     } else {
+  //       toast.error("Error adding member to the project.",{ autoClose: 1000 });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error adding member to the project:", error);
+  //     toast.error("Failed to add member.",{ autoClose: 1000 });
+  //   }
+
+  //   handleCloseModal();
+  // };
+  // const handleAddMember = async (member, projectId) => {
+  //   try {
+  //     const response = await userAxiosInstance.post("/projects/addmembers", {
+  //       projectId,
+  //       memberEmails: [member.email],
+  //     });
+  // console.log(response.data.project,'adhjksdjljk')
+  //     if (response.status === 200) {
+  //       toast.success(`Member added to project: ${response.data.project.projectName}`, { autoClose: 1000 });
+        
+        
+  //       const updatedProjects = projects.map((proj) =>
+  //         proj._id === projectId ? response.data.project : proj
+  //       );
+  //       setProjects(updatedProjects);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error adding member to the project:", error);
+  //     toast.error("Failed to add member.",{ autoClose: 1000 });
+  //   }
+  // };
+  
+  
+  
+  // const handleAddMember = async (member, projectId) => {
+  //   try {
+     
+  //     const project = projects.find(proj => proj._id === projectId);
+      
+  //     if (!project) {
+  //       toast.error("Project not found", { autoClose: 1000 });
+  //       return;
+  //     }
+  
+ 
+  //     const isMemberExists = project.members.some(existingMember => 
+  //       existingMember.email === member.email
+  //     );
+  
+  //     if (isMemberExists) {
+  //       toast.error(`Member already exists in project: ${project.projectName}`, { autoClose: 1000 });
+  //       return;
+  //     }
+  
+  //     const response = await userAxiosInstance.post("/projects/addmembers", {
+  //       projectId,
+  //       memberEmails: [member.email],
+  //     });
+  
+  //     if (response.status === 200) {
+  //       toast.success(`Member added to project: ${response.data.project.projectName}`, { autoClose: 1000 });
+        
+  //       const updatedProjects = projects.map((proj) =>
+  //         proj._id === projectId ? response.data.project : proj
+  //       );
+  //       setProjects(updatedProjects);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error adding member to the project:", error);
+    
+  //     if (error.response?.data?.message) {
+  //       toast.error(error.response.data.message, { autoClose: 1000 });
+  //     } else {
+  //       toast.error("Failed to add member.", { autoClose: 1000 });
+  //     }
+  //   }
+  // };
+
   const handleAddMember = async (member, projectId) => {
-    const project = projects.find((proj) => proj._id === projectId);
-    setSelectedProject(projectId);
-
-    if (!project) {
-      console.error("Project not found");
-      return;
-    }
-
-    const isMemberInProject = project.members.some(
-      (projMember) => projMember._id === member._id
-    );
-
-    if (isMemberInProject) {
-      toast.error("Member already exists in project: " + project.projectName);
-      return;
-    }
-
     try {
+      const project = projects.find(proj => proj._id === projectId);
+      
+      if (!project) {
+        toast.error("Project not found", { autoClose: 1000 });
+        return;
+      }
+
+     
+      const isWorkspaceOwner = OwnerId === userId
+      
+      if (!isWorkspaceOwner) {
+        toast.error("Only workspace owner can add members", { autoClose: 1000 });
+        return;
+      }
+  
+      const isMemberExists = project.members.some(existingMember => 
+        existingMember.email === member.email
+      );
+  
+      if (isMemberExists) {
+        toast.error(`Member already exists in project: ${project.projectName}`, { autoClose: 1000 });
+        return;
+      }
+  
       const response = await userAxiosInstance.post("/projects/addmembers", {
         projectId,
         memberEmails: [member.email],
       });
-      console.log("Response from /projects/addmembers:", response.data);
-
+  
       if (response.status === 200) {
-        toast.success(`Member added to project: ${project.projectName}`,{ autoClose: 1000 });
-
+        toast.success(`Member added to project: ${response.data.project.projectName}`, { autoClose: 1000 });
+        
         const updatedProjects = projects.map((proj) =>
-          proj._id === projectId
-            ? { ...proj, members: [...proj.members, member] }
-            : proj
+          proj._id === projectId ? response.data.project : proj
         );
         setProjects(updatedProjects);
-        console.log(updatedProjects, "Updated Projects");
-
-      
-        await fetchProjects();
-      } else {
-        toast.error("Error adding member to the project.",{ autoClose: 1000 });
       }
     } catch (error) {
       console.error("Error adding member to the project:", error);
-      toast.error("Failed to add member.",{ autoClose: 1000 });
+    
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message, { autoClose: 1000 });
+      } else {
+        toast.error("Failed to add member.", { autoClose: 1000 });
+      }
     }
-
-    handleCloseModal();
-  };
+};
   useEffect(() => {
     if (workspace && projects) {
       const projectMembers = new Set();
