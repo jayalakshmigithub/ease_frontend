@@ -88,7 +88,7 @@ const ChangePassword = ({ userEmail }) => {
 
   return (
     <>
-    <ToastContainer/>
+   
     <Container maxWidth="sm" sx={{ marginTop: 1, }}>
       <Paper elevation={3} sx={{ padding: 2, textAlign: "center" ,backgroundColor:"#1e293b",color:'#fff'}}>
         <Box display="flex" alignItems="center" flexDirection="column">

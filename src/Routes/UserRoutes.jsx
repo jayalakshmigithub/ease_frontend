@@ -34,6 +34,7 @@ import Activities from '../Components/WorkspacePanel/Activities';
 import VideoConference from '../Components/Chat/VideoConference';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import TaskListRough from '../Components/TaskListRough';
+import NotFoundPage from '../Components/Helper/NotFound';
 const UserRoutes = () => {
   const theme = createTheme({
     palette: {
@@ -105,6 +106,7 @@ const UserRoutes = () => {
          <Route path='/list'element={<ProSidebarProvider><WorkspaceList/></ProSidebarProvider>}/>
          <Route path='/forgotpassword'element={<ForgotPassword/>}/>
          <Route path='/tasklist'element={<ProSidebarProvider><TaskListRough/></ProSidebarProvider>}/>
+         <Route path='*' element={<NotFoundPage/>}/>
          
 
 

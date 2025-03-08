@@ -27,6 +27,9 @@ import {
 import { clearUser } from "../utils/Redux/Slice/userSlice";
 import { useDispatch } from "react-redux";
 import { fontSize } from "@mui/system";
+import { userAxiosInstance } from "../utils/api/axiosInstance";
+import axios from "axios";
+import { axiosUser } from "../utils/api/baseUrl";
 
 const SideBar = () => {
   const { collapseSidebar } = useProSidebar();
@@ -42,13 +45,53 @@ const SideBar = () => {
     setDrawerOpen(false);
   };
 
+  // const handleLogout = async () => {
+  //   localStorage.removeItem("useraccessToken");
+  //   localStorage.removeItem("userrefreshToken");
+  //   dispatch(clearUser());
+  //   navigate("/signin");
+  //   setDrawerOpen(false);
+  // };
+
   const handleLogout = async () => {
-    localStorage.removeItem("useraccessToken");
-    localStorage.removeItem("userrefreshToken");
-    dispatch(clearUser());
-    navigate("/signin");
-    setDrawerOpen(false);
+      try {
+          const refreshtoken = localStorage.getItem("userrefreshToken");
+          const accesstoken = localStorage.getItem("useraccessToken");
+  
+          if (!refreshtoken || !accesstoken) {
+              console.error("No refresh or access token found!");
+              return;
+          }
+  
+          const response = await axiosUser.post(
+              "/logout",
+              { refreshtoken }, 
+              {
+                  headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${accesstoken}`, 
+                  },
+                  withCredentials: true,
+              }
+          );
+  
+          console.log("Logout successful:", response.data);
+          
+         
+          localStorage.removeItem("useraccessToken");
+          localStorage.removeItem("userrefreshToken");
+          dispatch(clearUser());
+  
+        
+          navigate("/signin");
+  
+      } catch (error) {
+          console.error("Logout error", error);
+      }
   };
+  
+
+
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);

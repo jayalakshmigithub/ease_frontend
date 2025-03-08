@@ -54,8 +54,8 @@ const WorkspacePanel = () => {
   const [editProject, setEditProject] = useState(null);
 const [openEditModal, setOpenEditModal] = useState(false);
 const handleEditProject = (project) => {
-  setEditProject(project); // Set selected project for editing
-  setOpenEditModal(true);  // Open modal
+  setEditProject(project); 
+  setOpenEditModal(true);  
 };
 
 
@@ -79,91 +79,7 @@ const handleEditProject = (project) => {
     setModalOpen(false);
   };
 
-  // const handleAddMember = (member) => {
-  //   console.log("Adding member:", member);
-  //   setWorkspaceMembers((prevMembers)=>
-  //     prevMembers.filter((m)=>m._id!==member._id)
-  //   )
-  //   handleCloseModal();
-  // };
-
-  //23/01/2025
-
-  // const handleAddMember = (member, projectId) => {
-  //   console.log("Adding member:", member, "to project:", projectId);
-  //   const project = projects.find((proj) => proj._id === projectId);
-  //   setSelectedProject(projectId)
-  //   if (!project) {
-  //     console.error("Project not found");
-  //     return;
-  //   }
-
-  //   const isMemberInProject = project.members.some(
-  //     (projMember) => projMember._id === member._id
-  //   );
-
-  //   if (isMemberInProject) {
-  //     toast.error("Member already exists in project: " + project.projectName);
-  //           return;
-  //   }
-
-  //   const updatedProjects = projects.map((proj) =>
-  //     proj._id === projectId
-  //       ? { ...proj, members: [...proj.members, member] }
-  //       : proj
-  //   );
-
-  //   setProjects(updatedProjects);
-  //   console.log(updatedProjects,'updatedProjectsupdatedProjects')
-  //   toast.success(`Member added to project: ${project.name}`);
-  //   handleCloseModal();
-  // };
-
-  // const handleAddMember = async (member, projectId) => {
-  //     console.log("Adding member:", member, "to project:", projectId);
-  //     const project = projects.find((proj) => proj._id === projectId);
-  //     setSelectedProject(projectId);
-
-  //     if (!project) {
-  //         console.error("Project not found");
-  //         return;
-  //     }
-
-  //     const isMemberInProject = project.members.some(
-  //         (projMember) => projMember._id === member._id
-  //     );
-
-  //     if (isMemberInProject) {
-  //         toast.error("Member already exists in project: " + project.projectName);
-  //         return;
-  //     }
-
-  //     try {
-  //         const response = await userAxiosInstance.post('/projects/addmembers', {
-  //             projectId,
-  //             memberEmails: [member.email]
-  //         });
-
-  //         if (response.status === 200) {
-  //             toast.success(`Member added to project: ${project.name}`);
-
-  //             const updatedProjects = projects.map((proj) =>
-  //                 proj._id === projectId
-  //                     ? { ...proj, members: [...proj.members, member] }
-  //                     : proj
-  //             );
-  //             setProjects(updatedProjects);
-  //             console.log(updatedProjects, 'Updated Projects');
-  //         } else {
-  //             toast.error("Error adding member to the project.");
-  //         }
-  //     } catch (error) {
-  //         console.error("Error adding member to the project:", error);
-  //         toast.error("Failed to add member.");
-  //     }
-
-  //     handleCloseModal();
-  // };
+ 
 
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
@@ -201,7 +117,6 @@ const handleEditProject = (project) => {
       setWorkspace(response.data.workspace);
       console.log(response.data.workspace,'response.data.workspace')
       setOwnerId(response.data.workspace.OwnerId);
-      console.log(OwnerId,'OwnerId')
       setWorkspaceMembers(response.data.workspace.members);
     } catch (error) {
       console.error("Error fetching workspace:", error);
@@ -275,7 +190,6 @@ const handleEditProject = (project) => {
   const handleProject = (projectId) => {
     const today = dayjs().format("YYYY-MM-DD");
   
-    // Find the project by ID
     const project = projects.find((proj) => proj._id === projectId);
     if (!project) {
       toast.error("Project not found.");
@@ -300,121 +214,7 @@ const handleEditProject = (project) => {
 
  
 
-  // const handleAddMember = async (member, projectId) => {
-  //   const project = projects.find((proj) => proj._id === projectId);
-  //   setSelectedProject(projectId);
 
-  //   if (!project) {
-  //     console.error("Project not found");
-  //     return;
-  //   }
-
-  //   const isMemberInProject = project.members.some(
-  //     (projMember) => projMember._id === member._id
-  //   );
-
-  //   if (isMemberInProject) {
-  //     toast.error("Member already exists in project: " + project.projectName);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await userAxiosInstance.post("/projects/addmembers", {
-  //       projectId,
-  //       memberEmails: [member.email],
-  //     });
-  //     console.log("Response from /projects/addmembers:", response.data);
-
-  //     if (response.status === 200) {
-  //       toast.success(`Member added to project: ${project.projectName}`,{ autoClose: 1000 });
-
-  //       const updatedProjects = projects.map((proj) =>
-  //         proj._id === projectId
-  //           ? { ...proj, members: [...proj.members, member] }
-  //           : proj
-  //       );
-  //       setProjects(updatedProjects);
-  //       console.log(updatedProjects, "Updated Projects");
-
-      
-  //       await fetchProjects();
-  //     } else {
-  //       toast.error("Error adding member to the project.",{ autoClose: 1000 });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error adding member to the project:", error);
-  //     toast.error("Failed to add member.",{ autoClose: 1000 });
-  //   }
-
-  //   handleCloseModal();
-  // };
-  // const handleAddMember = async (member, projectId) => {
-  //   try {
-  //     const response = await userAxiosInstance.post("/projects/addmembers", {
-  //       projectId,
-  //       memberEmails: [member.email],
-  //     });
-  // console.log(response.data.project,'adhjksdjljk')
-  //     if (response.status === 200) {
-  //       toast.success(`Member added to project: ${response.data.project.projectName}`, { autoClose: 1000 });
-        
-        
-  //       const updatedProjects = projects.map((proj) =>
-  //         proj._id === projectId ? response.data.project : proj
-  //       );
-  //       setProjects(updatedProjects);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error adding member to the project:", error);
-  //     toast.error("Failed to add member.",{ autoClose: 1000 });
-  //   }
-  // };
-  
-  
-  
-  // const handleAddMember = async (member, projectId) => {
-  //   try {
-     
-  //     const project = projects.find(proj => proj._id === projectId);
-      
-  //     if (!project) {
-  //       toast.error("Project not found", { autoClose: 1000 });
-  //       return;
-  //     }
-  
- 
-  //     const isMemberExists = project.members.some(existingMember => 
-  //       existingMember.email === member.email
-  //     );
-  
-  //     if (isMemberExists) {
-  //       toast.error(`Member already exists in project: ${project.projectName}`, { autoClose: 1000 });
-  //       return;
-  //     }
-  
-  //     const response = await userAxiosInstance.post("/projects/addmembers", {
-  //       projectId,
-  //       memberEmails: [member.email],
-  //     });
-  
-  //     if (response.status === 200) {
-  //       toast.success(`Member added to project: ${response.data.project.projectName}`, { autoClose: 1000 });
-        
-  //       const updatedProjects = projects.map((proj) =>
-  //         proj._id === projectId ? response.data.project : proj
-  //       );
-  //       setProjects(updatedProjects);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error adding member to the project:", error);
-    
-  //     if (error.response?.data?.message) {
-  //       toast.error(error.response.data.message, { autoClose: 1000 });
-  //     } else {
-  //       toast.error("Failed to add member.", { autoClose: 1000 });
-  //     }
-  //   }
-  // };
 
   const handleAddMember = async (member, projectId) => {
     try {
@@ -570,74 +370,8 @@ const handleEditProject = (project) => {
           }}
         >
           {/* Workspace Section */}
-          <Container
-            // sx={{
-            //   maxWidth: "100%",
-
-            //   backgroundColor: "#1e293b",
-            //   backdropFilter: "blur(12px)",
-            //   padding: "30px",
-            //   borderRadius: "12px",
-            //   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.08)",
-            // }}
-          >
-            {/* <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 2,
-              }}
-            >
-              {loading ? (
-                <Typography variant="h4">Loading workspace...</Typography>
-              ) : error ? (
-                <Typography variant="h4" color="error">
-                  {error}
-                </Typography>
-              ) : workspace ? (
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontFamily: "Poppins",
-                    display: "flex",
-                    alignItems: "center",
-                    color: "#318CE7",
-                    mb: "5px",
-                  }}
-                >
-                  <VscWorkspaceTrusted
-                    style={{ marginRight: "12px", fontSize: "36px" }}
-                  />
-                  {workspace.name}
-                </Typography>
-              ) : (
-                <Typography variant="h4">No workspace found</Typography>
-              )}
-
-              <StyledButton
-                component="a"
-                href="#"
-                onClick={handelOpenInvite}
-                sx={{
-                  padding: "8px 16px",
-                  fontSize: "15px",
-                  display: "flex",
-                  alignItems: "center",
-                  borderRadius: "8px",
-                  backgroundColor: "#357793",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#2A5175",
-                  },
-                }}
-              >
-                <AddIcon sx={{ marginRight: "8px" }} />
-                <span style={{ position: "relative", zIndex: 3 }}>
-                  Invite members
-                </span>
-              </StyledButton>
-            </Box> */}
+          <Container>
+            
 
             <InviteMembers
               workspace={workspaceId}
@@ -650,9 +384,7 @@ const handleEditProject = (project) => {
           {/* <Box sx={{display:'flex',flexDirection:'row'}}> */}
           <Container
             sx={{
-              // width:'100%',
               maxWidth: "100%",
-              // backgroundColor: "rgba(255, 255, 255, 0.8)",
               backgroundColor: "#1e293b",
               backdropFilter: "blur(12px)",
               padding: "30px",
