@@ -40,7 +40,9 @@ const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAct
             if (error.response && error.response.status === 401 && !originalRequest._retry) {
                 originalRequest._retry = true;
                 try {
+                    const refreshToken = localStorage.getItem(refreshTokenKey);
                     const response = await axios.post(refreshTokenApi, {
+                        refreshToken: refreshToken,
                         userRole: userRole
                     }, {
                         withCredentials: true,
