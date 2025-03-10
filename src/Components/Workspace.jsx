@@ -101,7 +101,7 @@ const Workspace = () => {
       });
       const userWorkspaces = response.data.workspace || [];
       const userSharedWorkspace = response.data.sharedWorkspace || [];
-
+      console.log('userworkspces',userWorkspaces)
       setWorkspaces(userWorkspaces);
       setSharedWorkspaces(userSharedWorkspace);
       setFilteredWorkspaces(userWorkspaces);

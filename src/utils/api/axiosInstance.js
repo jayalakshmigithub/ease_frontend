@@ -45,13 +45,25 @@ const createAxiosInstance = (baseURL, accessTokenKey, refreshTokenKey, logoutAct
                     }, {
                         withCredentials: true,
                     });
-                    const { accessToken, refreshToken: newRefreshToken } = response.data;
-                    console.log();
+                    // const { accessToken, refreshToken: newRefreshToken } = response.data;
+                    // console.log();
                     
+                    // localStorage.setItem(accessTokenKey, accessToken);
+                    // localStorage.setItem(refreshTokenKey, newRefreshToken);
+                    // originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+                    
+                    // return instance(originalRequest);
+                    const { accessToken } = response.data;
                     localStorage.setItem(accessTokenKey, accessToken);
-                    localStorage.setItem(refreshTokenKey, newRefreshToken);
+                    
+                    // The refresh token is automatically stored as a cookie by the browser
+                    // So we DON'T need this line anymore:
+                    // localStorage.setItem(refreshTokenKey, newRefreshToken);
+                    
+                    // Update the Authorization header with the new access token
                     originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
                     
+                    // Retry the original request with the new token
                     return instance(originalRequest);
                 } catch (err) {
                     console.error("Token refresh failed:", err.response ? err.response.data : err.message);

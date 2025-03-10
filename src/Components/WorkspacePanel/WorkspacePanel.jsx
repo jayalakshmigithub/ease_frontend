@@ -52,12 +52,11 @@ const WorkspacePanel = () => {
   const [SelectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [editProject, setEditProject] = useState(null);
-const [openEditModal, setOpenEditModal] = useState(false);
-const handleEditProject = (project) => {
-  setEditProject(project); 
-  setOpenEditModal(true);  
-};
-
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const handleEditProject = (project) => {
+    setEditProject(project);
+    setOpenEditModal(true);
+  };
 
   const [currentPage, setCurrentPage] = useState(0);
   const projectsPerPage = 4;
@@ -78,8 +77,6 @@ const handleEditProject = (project) => {
   const handleCloseModal = () => {
     setModalOpen(false);
   };
-
- 
 
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
@@ -115,7 +112,7 @@ const handleEditProject = (project) => {
       );
 
       setWorkspace(response.data.workspace);
-      console.log(response.data.workspace,'response.data.workspace')
+      console.log(response.data.workspace, "response.data.workspace");
       setOwnerId(response.data.workspace.OwnerId);
       setWorkspaceMembers(response.data.workspace.members);
     } catch (error) {
@@ -161,15 +158,33 @@ const handleEditProject = (project) => {
         `/workspaces/${workspaceId}/projects`
       );
 
+      const today = dayjs().format("YYYY-MM-DD");
+
       const currentUserId = userId;
 
-      const userProjects = response.data.projects.filter((project) => {
-        console.log("Project Members:", project.members);
-        return (
-          project.members.some((member) => member._id === currentUserId) ||
-          OwnerId === currentUserId
-        );
-      });
+      // const userProjects = response.data.projects.filter((project) => {
+      //   console.log("Project Members:", project.members);
+      //   return (
+      //     project.members.some((member) => member._id === currentUserId) ||
+      //     OwnerId === currentUserId
+      //   );
+      // });
+      const userProjects = response.data.projects
+        .filter((project) => {
+          return (
+            project.members.some((member) => member._id === currentUserId) ||
+            OwnerId === currentUserId
+          );
+        })
+        .map((project) => {
+          const projectDeadline = dayjs(project.toDate).format("YYYY-MM-DD");
+          return {
+            ...project,
+            status: projectDeadline < today ? "Closed" : "Active",
+          };
+        });
+
+      console.log("User Projects:", userProjects);
 
       setProjects(userProjects);
       console.log("User Projects:", userProjects);
@@ -189,67 +204,69 @@ const handleEditProject = (project) => {
 
   const handleProject = (projectId) => {
     const today = dayjs().format("YYYY-MM-DD");
-  
+
     const project = projects.find((proj) => proj._id === projectId);
     if (!project) {
       toast.error("Project not found.");
       return;
     }
-  
+
     const projectDeadline = dayjs(project.toDate).format("YYYY-MM-DD");
-  
+
     if (projectDeadline < today && OwnerId !== userId) {
-      console.log(OwnerId,'owner')
+      console.log(OwnerId, "owner");
       toast.error("Deadline expired. Only the workspace owner has access.");
       return;
     }
-  
+
     navigate(`/projects/${projectId}`);
   };
-  
-  
+
   useEffect(() => {
     console.log("Projects state after update:", projects);
   }, [projects]);
 
- 
-
-
-
   const handleAddMember = async (member, projectId) => {
     try {
-      const project = projects.find(proj => proj._id === projectId);
-      
+      const project = projects.find((proj) => proj._id === projectId);
+
       if (!project) {
         toast.error("Project not found", { autoClose: 1000 });
         return;
       }
 
-     
-      const isWorkspaceOwner = OwnerId === userId
-      
+      const isWorkspaceOwner = OwnerId === userId;
+
       if (!isWorkspaceOwner) {
-        toast.error("Only workspace owner can add members", { autoClose: 1000 });
+        toast.error("Only workspace owner can add members", {
+          autoClose: 1000,
+        });
         return;
       }
-  
-      const isMemberExists = project.members.some(existingMember => 
-        existingMember.email === member.email
+
+      const isMemberExists = project.members.some(
+        (existingMember) => existingMember.email === member.email
       );
-  
+
       if (isMemberExists) {
-        toast.error(`Member already exists in project: ${project.projectName}`, { autoClose: 1000 });
+        toast.error(
+          `Member already exists in project: ${project.projectName}`,
+          { autoClose: 1000 }
+        );
         return;
       }
-  
+
       const response = await userAxiosInstance.post("/projects/addmembers", {
         projectId,
         memberEmails: [member.email],
       });
-  
+
       if (response.status === 200) {
-        toast.success(`Member added to project: ${response.data.project.projectName}`, { autoClose: 1000 });
-        
+        toast.success(
+          `Member added to project: ${response.data.project.projectName}`,
+          { autoClose: 1000 }
+        );
+
         const updatedProjects = projects.map((proj) =>
           proj._id === projectId ? response.data.project : proj
         );
@@ -257,14 +274,14 @@ const handleEditProject = (project) => {
       }
     } catch (error) {
       console.error("Error adding member to the project:", error);
-    
+
       if (error.response?.data?.message) {
         toast.error(error.response.data.message, { autoClose: 1000 });
       } else {
         toast.error("Failed to add member.", { autoClose: 1000 });
       }
     }
-};
+  };
   useEffect(() => {
     if (workspace && projects) {
       const projectMembers = new Set();
@@ -371,8 +388,6 @@ const handleEditProject = (project) => {
         >
           {/* Workspace Section */}
           <Container>
-            
-
             <InviteMembers
               workspace={workspaceId}
               open={openInvite}
@@ -393,7 +408,7 @@ const handleEditProject = (project) => {
               marginTop: "8px",
             }}
           >
-              <Box
+            <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -533,23 +548,34 @@ const handleEditProject = (project) => {
                         />
                       </ListItem>
                       {OwnerId === userId && (
-  <Button onClick={(e) => { e.stopPropagation(); handleEditProject(project); }} sx={{ minWidth: 0 }}>
-    <FaEdit size={21} color="#fff" />
-  </Button>
-)}
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditProject(project);
+                          }}
+                          sx={{ minWidth: 0 }}
+                        >
+                          <FaEdit size={21} color="#fff" />
+                        </Button>
+                      )}
 
                       <Typography
                         sx={{
                           fontSize: "18px",
-                          color: project.status ? "#357793" : "grey",
+                          color:
+                            project.status === "Active"
+                              ? "#357793"
+                              : project.status === "Closed"
+                              ? "#357793"
+                              : "grey",
                           fontWeight: "bold",
                           textAlign: "right",
                         }}
                       >
-                        {project.status ? "Active" : "Pending"}
+                        {project.status}
                       </Typography>
 
-                      <Button
+                      {/* <Button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleOpenModal(project._id);
@@ -565,6 +591,25 @@ const handleEditProject = (project) => {
                       >
                         <AddIcon sx={{ marginRight: "8px" }} />
                         Add Members
+                      </Button> */}
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenModal(project._id);
+                        }}
+                        sx={{
+                          fontFamily: " sans-serif poppins",
+                          fontWeight: "600",
+                          padding: "8px 16px",
+                          fontSize: "15px",
+                          backgroundColor: "#fff",
+                          marginRight: "8px",
+                          color: "#0f172a",
+                          "&:hover": { backgroundColor: "#fff" },
+                        }}
+                      >
+                        {/* <AddIcon sx={{ marginRight: "8px" }} /> */}
+                        Manage
                       </Button>
                     </Box>
                     <Divider sx={{ mb: 2 }} />
@@ -576,13 +621,13 @@ const handleEditProject = (project) => {
             </List>
             {openEditModal && (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-  <EditProjectModal
-    project={editProject}
-    onClose={() => setOpenEditModal(false)}
-    onUpdate={fetchProjects} 
-  />
-  </LocalizationProvider>
-)}
+                <EditProjectModal
+                  project={editProject}
+                  onClose={() => setOpenEditModal(false)}
+                  onUpdate={fetchProjects}
+                />
+              </LocalizationProvider>
+            )}
 
             {/* Pagination */}
             <Box

@@ -117,6 +117,7 @@ const Login = () => {
     navigate("/signup");
   };
   return (
+    <Box sx={{backgroundColor: '#1e293b'}}>
     <div className="container">
       <div className="wrapper">
         <img src={login_icon} alt="Login Image" className="login-image" />
@@ -260,6 +261,7 @@ const Login = () => {
         </div>
       </div>
     </div>
+    </Box>
   );
 };
 

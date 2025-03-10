@@ -509,9 +509,10 @@ console.log('projectDetails',projectDetails)
               value={toggleName}
               onChange={(e, newValue) => setToggleName(newValue)}
               aria-label="project creation tabs"
+              
             >
-              <Tab label="Select a workspace" value="workspace" />
-              <Tab label="Add Project" value="project" />
+              <Tab sx={{color:'white'}} label="Select a workspace" value="workspace" />
+              <Tab sx={{color:'white'}} label="Add Project" value="project" />
             </Tabs>
 
             <Box p={2}>
@@ -607,12 +608,12 @@ console.log('projectDetails',projectDetails)
                       required
                       sx={{
                         "& .MuiOutlinedInput-root": {
-                          "& fieldset": { borderColor: "white" }, // Default border color
-                          "&:hover fieldset": { borderColor: "white" }, // Hover effect
-                          "&.Mui-focused fieldset": { borderColor: "white" }, // Focus effect
+                          "& fieldset": { borderColor: "white" },
+                          "&:hover fieldset": { borderColor: "white" }, 
+                          "&.Mui-focused fieldset": { borderColor: "white" }, 
                         },
-                        "& .MuiInputLabel-root": { color: "white" }, // Label color
-                        "& input, & textarea": { color: "white" }, // Text color
+                        "& .MuiInputLabel-root": { color: "white" }, 
+                        "& input, & textarea": { color: "white" },
                       }}
                     />
                     <TextField
@@ -632,12 +633,12 @@ console.log('projectDetails',projectDetails)
                       required
                       sx={{
                         "& .MuiOutlinedInput-root": {
-                          "& fieldset": { borderColor: "white" }, // Default border color
-                          "&:hover fieldset": { borderColor: "white" }, // Hover effect
-                          "&.Mui-focused fieldset": { borderColor: "white" }, // Focus effect
+                          "& fieldset": { borderColor: "white" }, 
+                          "&:hover fieldset": { borderColor: "white" }, 
+                          "&.Mui-focused fieldset": { borderColor: "white" }, 
                         },
-                        "& .MuiInputLabel-root": { color: "white" }, // Label color
-                        "& input, & textarea": { color: "white" }, // Text color
+                        "& .MuiInputLabel-root": { color: "white" }, 
+                        "& input, & textarea": { color: "white" }, 
                       }}
                     />
 
@@ -650,6 +651,7 @@ console.log('projectDetails',projectDetails)
           borderRadius: '4px',
           border: '1px solid #fff',
           backgroundColor:"#1e293b",
+          color:"whitesmoke"
         
         }}
       >
@@ -695,12 +697,12 @@ console.log('projectDetails',projectDetails)
                         }}
                         sx={{
                           "& .MuiOutlinedInput-root": {
-                            "& fieldset": { borderColor: "white" }, // Default border color
-                            "&:hover fieldset": { borderColor: "white" }, // Hover effect
-                            "&.Mui-focused fieldset": { borderColor: "white" }, // Focus effect
+                            "& fieldset": { borderColor: "white" }, 
+                            "&:hover fieldset": { borderColor: "white" }, 
+                            "&.Mui-focused fieldset": { borderColor: "white" },
                           },
-                          "& .MuiInputLabel-root": { color: "white" }, // Label color
-                          "& input, & textarea": { color: "white" }, // Text color
+                          "& .MuiInputLabel-root": { color: "white" },
+                          "& input, & textarea": { color: "white" }, 
                         }}
                         minDate={today}
                         renderInput={(startProps, endProps) => (

@@ -13,16 +13,16 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#60a5fa', // blue-400
+      main: '#60a5fa',
     },
     background: {
-      default: '#0f172a', // slate-900
-      paper: '#1e293b', // slate-800
+      default: '#0f172a', 
+      paper: '#1e293b', 
     },
     grey: {
-      700: '#334155', // slate-700
-      800: '#1e293b', // slate-800
-      900: '#0f172a', // slate-900
+      700: '#334155', 
+      800: '#1e293b', 
+      900: '#0f172a', 
     },
   },
   typography: {

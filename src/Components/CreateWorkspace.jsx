@@ -65,30 +65,45 @@ const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorksp
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Create Workspace</DialogTitle>
+      <DialogTitle sx={{  backgroundColor: "#1e293b",color:'#007FFF'}}>Create Workspace</DialogTitle>
+      <Box sx={{  backgroundColor: "#1e293b",}}>
       <DialogContent>
         <Box
           component="form"
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 ,}}
           noValidate
           autoComplete="off"
           onSubmit={handleSubmit} 
+          
         >
           <TextField
             label="Workspace Name"
             variant="outlined"
             fullWidth
             onChange={(e) => setName(e.target.value)}
+            InputLabelProps={{
+              sx: {
+                color: '#FAF9F6', 
+              },
+            }}
+        
+          
           />
           <TextField
             label="Description"
             variant="outlined"
             fullWidth
             onChange={(e) => setDescription(e.target.value)}
+            InputLabelProps={{
+              sx: {
+                color: '#FAF9F6', 
+              },
+            }}
           />
         </Box>
       </DialogContent>
-      <DialogActions>
+      </Box>
+      <DialogActions sx={{  backgroundColor: "#1e293b",}}>
         <Button onClick={onClose} color="primary">
           Cancel
         </Button>
