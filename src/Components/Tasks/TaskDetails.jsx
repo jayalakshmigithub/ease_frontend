@@ -405,9 +405,13 @@ return (
               <Typography variant="body2" sx={{ color: "#cbd5e1", mb: 2 }}>
                 <strong>Status:</strong> {task.status}
               </Typography>
-              <Button onClick={() => setIsEditing(true)} variant="contained" sx={{ mt: 2 }}>
+              {
+                isOwner&&
+                <Button onClick={() => setIsEditing(true)} variant="contained" sx={{ mt: 2 }}>
                 Edit Task
               </Button>
+              }
+              
             </>
           )}
 
