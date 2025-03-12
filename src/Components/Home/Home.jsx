@@ -82,7 +82,9 @@ const Home = () => {
   }, []);
 
   const userInfo = useSelector((state) => state?.user?.userInfo?.user);
+  const userId = userInfo._id
   console.log("userinfo in home", userInfo);
+  console.log('userId::',userId)
   const userName = userInfo?.name;
   console.log("useerrrname", userName);
   // const buttOnClasses = useStyles()

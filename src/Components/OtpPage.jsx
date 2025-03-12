@@ -35,12 +35,6 @@ console.log(response,'response')
      useEffect(()=>{
       console.log(userData,"userData");  
      },[userData])
-      
-
-  
- 
-  
-
 
 useEffect(()=>{
   const params = new URLSearchParams(location.search)
@@ -153,10 +147,7 @@ useEffect(()=>{
     <Box
     
       sx={{
-        backgroundImage: `
-          radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-          radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
-        `,
+        backgroundColor:'#0f172a',
         width: "100vw",
         height: "100vh",
         display: "flex",
@@ -174,7 +165,6 @@ useEffect(()=>{
           padding: isXs || isSm ? "10px" : isMd ? "20px" : "30px",
           borderRadius: "10px",
           background: "white",
-          boxShadow: "3px 6px 15px rgba(192, 207, 250, 0.7)",
         }}
       >
         <Typography variant="h5" gutterBottom>

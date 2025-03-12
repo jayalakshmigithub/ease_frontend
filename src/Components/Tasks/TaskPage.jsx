@@ -15,7 +15,8 @@ import {
   Select,
   Tabs,
   Tab,
-  Pagination
+  Pagination,
+  Tooltip
 } from "@mui/material";
 import SideBar from "../SideBar";
 import { useNavigate, useParams } from 'react-router-dom';
@@ -32,7 +33,7 @@ import { useSelector } from 'react-redux';
 
 
 
-const TaskPage = () => {
+const TaskPage = ({OwnerId}) => {
   const [tasks, setTasks] = useState([]);
   const [activeTab, setActiveTab] = useState("ALL TASKS");
   const [isModalOpen, setModalOpen] = useState(false);
@@ -44,9 +45,11 @@ const TaskPage = () => {
   const ITEMS_PER_PAGE = 2;
   const navigate = useNavigate()
 
+
  
-  const { userInfo } = useSelector((state) => state.user);
-const currentUser = userInfo?.userId;
+  const userInfo  = useSelector((state) => state.user?.userInfo?.user);
+const currentUser = userInfo._id;
+const isOwner = currentUser === OwnerId
   const fetchTasks = async () => {
     try {
       if (!projectId) throw new Error("Project not found");
@@ -224,7 +227,7 @@ return (
       <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
         
       </Typography>
-      <Button
+      {/* <Button
         variant="contained"
         onClick={handleAddNewTask}
         sx={{
@@ -236,7 +239,26 @@ return (
         }}
       >
         + New Task
-      </Button>
+      </Button> */}
+      
+<Tooltip title={!isOwner ? "Only the owner can create tasks" : ""} arrow>
+  <span>
+    <Button
+      variant="contained"
+      onClick={handleAddNewTask}
+      disabled={!isOwner}
+      sx={{
+        backgroundColor: isOwner ? "#1976d2" : "#b0bec5",
+        fontWeight: "bold",
+        padding: "10px 20px",
+        marginRight: "30px",
+        ":hover": { backgroundColor: isOwner ? "#115293" : "#b0bec5" },
+      }}
+    >
+      + New Task
+    </Button>
+  </span>
+</Tooltip>
     </Box>
 
     <Container>
@@ -448,6 +470,7 @@ return (
           onDelete={handleDeleteTask}
           onEdit={handleEditTask}
           currentUser={currentUser}
+          OwnerId={OwnerId}
         />
       )}
     </Container>

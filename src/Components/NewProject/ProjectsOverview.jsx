@@ -22,6 +22,7 @@ import ProgressionChart from "../Charts/ProgressionChart";
 import { DataGrid } from '@mui/x-data-grid';
 import TaskListRough from "../TaskListRough";
 import TaskPage from "../Tasks/TaskPage";
+import { useLocation } from "react-router-dom";
 
 
 
@@ -34,6 +35,11 @@ const ProjectsOverview = () => {
   const [error, setError] = useState(null);
   const [members,setMembers] = useState([])
   const { projectId } = useParams();
+  const location  = useLocation()
+  const OwnerId =location.state?.OwnerId || null
+  useEffect(() => {
+    console.log(OwnerId, "OwnerId inside TasksPage");
+  }, [OwnerId]);
 
   const [project, setProject] = useState(null);
 
@@ -155,10 +161,6 @@ const ProjectsOverview = () => {
   return (
     <Box
       sx={{
-        // backgroundImage: `
-        //   radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-        //   radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%)
-        // `,
         backgroundColor:'#0f172a',
         width: "100vw",
         minHeight: "100vh",
@@ -398,7 +400,7 @@ const ProjectsOverview = () => {
     </>
   ) : (
     // <Task projectId={projectId} tasks={tasks} />
-    <TaskPage projectId={projectId} members={members}/>
+    <TaskPage projectId={projectId} members={members} OwnerId = {OwnerId}/>
   //   <Box
   //   sx={{
   //     flex: 1, // Allows it to take equal space

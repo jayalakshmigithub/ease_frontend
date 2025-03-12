@@ -228,7 +228,7 @@ useEffect(()=>{
   
   
   return (
-    <Box className="signup-container">
+    <Box className="signup-container" sx={{backgroundColor:'#0f172a'}}>
       <div className="wrapper" style={{ width: "650px", height: "500px" }}>
         {/* <ToastContainer
           position="top-center"

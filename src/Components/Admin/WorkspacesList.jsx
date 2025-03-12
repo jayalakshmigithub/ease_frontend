@@ -6,15 +6,16 @@ import {
   TextField,
   Typography,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Button
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import AdminSideBar from "./AdminSideBar";
 import { adminAxiosInstance } from "../../utils/api/axiosInstance";
 import { toast } from "react-toastify";
 import { FaCrown } from "react-icons/fa6";
-import { MdOutlineWorkspaces } from "react-icons/md";
-import { GrProjects } from "react-icons/gr";
+import { MdOutlineWorkspaces,MdManageAccounts } from "react-icons/md";
+import { GrProjects ,GrStatusGood} from "react-icons/gr";
 
 
 
@@ -32,6 +33,7 @@ const WorkspaceList = () => {
   const fetchWorkspaceInAdmin = async () => {
     try {
       const response = await adminAxiosInstance.get("/workspacelist");
+      console.log(response.data,'workspace list ')
       return response.data;
     } catch (error) {
       throw error;
@@ -74,6 +76,13 @@ const WorkspaceList = () => {
     }
   };
   
+  // const handleListToggle = async()=>{
+  //   try {
+      
+  //   } catch (error) {
+      
+  //   }
+  // }
 
   const columns = [
     {
@@ -132,6 +141,29 @@ const WorkspaceList = () => {
         );
       },
     },
+
+
+    // {
+    //   field: "actions",
+    //   headerName: "Actions",
+    //   width: isSmDown ? 120 : 150,
+    //   renderHeader: () => (
+    //     <Box style={{ color: "#734128", fontSize: "18px", fontFamily: "poppins" }}>
+    //       <MdManageAccounts /> Actions
+    //     </Box>
+    //   ),
+    //   renderCell: (params) => (
+    //     <Button
+    //       variant="contained"
+    //       color={params.row.isListed ? "error" : "success"}
+    //       size="small"
+    //       onClick={() => handleListToggle(params.row._id, params.row.isListed)}
+    //     >
+    //       {params.row.isListed ? "Delist" : "List"}
+    //     </Button>
+    //   ),
+    // },
+
   ];
 
   return (

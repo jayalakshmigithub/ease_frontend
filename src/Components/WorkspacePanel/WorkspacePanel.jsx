@@ -218,8 +218,8 @@ const WorkspacePanel = () => {
       toast.error("Deadline expired. Only the workspace owner has access.");
       return;
     }
-
-    navigate(`/projects/${projectId}`);
+console.log('ownerid before navigating',OwnerId)
+    navigate(`/projects/${projectId}`,{state:{OwnerId:OwnerId}});
   };
 
   useEffect(() => {

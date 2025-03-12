@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 import { RefreshCw } from 'lucide-react';
 import { userAxiosInstance } from "../../utils/api/axiosInstance";
 import { Edit } from "lucide-react";
+import { toast } from "react-toastify";
 
 
 // const TaskDetails = ({ open, task, onClose, onDelete, onEdit, currentUser }) => {
@@ -71,13 +72,13 @@ import { Edit } from "lucide-react";
 //     </Dialog>
 //   );
 // };
-const TaskDetails = ({ open, task, onClose, onDelete, onEdit }) => {
+const TaskDetails = ({ open, task, onClose, onDelete, onEdit , currentUser,OwnerId}) => {
   if (!task) return null;
 
-  const { userInfo } = useSelector((state) => state.user?.userInfo?.user._id);
-  const currentUserId = userInfo?.userId;
+  const  userInfo  = useSelector((state) => state.user?.userInfo?.user._id);
    const [isRefreshing, setIsRefreshing] = useState(false);
    const statusHistory = task?.statusHistory || [];
+   const isOwner = currentUser === OwnerId
 
   const handleRefreshTracking = () => {
     setIsRefreshing(true);
@@ -95,6 +96,7 @@ const TaskDetails = ({ open, task, onClose, onDelete, onEdit }) => {
     status: task?.status || "",
   });
   const [editedStatus, setEditedStatus] = useState("");
+  const [loading, setLoading] = useState(false);
   
   const handleEditClick = (index, status) => {
     setEditingIndex(index);
@@ -136,6 +138,21 @@ const TaskDetails = ({ open, task, onClose, onDelete, onEdit }) => {
       console.error("Error updating task:", error);
     }
   };
+
+  const handleDelete = async()=>{
+    try {
+      setLoading(true)
+       await userAxiosInstance.post('/tasks/delete-task',{taskId: task._id})
+       toast.success("Task Deleted Successfully",{autoClose:1000})
+       onClose()
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast.error("Error deleting task", { autoClose: 1000 });
+    }
+    finally{
+      setLoading(false)
+    }
+  }
   // const [isEditing, setIsEditing] = useState(false);
   // const [editedTask, setEditedTask] = useState({
   //   name: task?.name || "",
@@ -477,6 +494,22 @@ return (
       >
         Close
       </Button>
+      {
+        isOwner&&
+ <Button  
+ onClick={handleDelete}
+ variant="outlined"
+ disabled={loading}
+   sx={{
+     color: "red",
+     borderColor: "#64748b",
+     "&:hover": { backgroundColor: "#334155" }, 
+   }}>
+     {loading ? "Deleting":"Delete Task"}
+
+ </Button>
+      }
+     
     </DialogActions>
   </Dialog>
 );

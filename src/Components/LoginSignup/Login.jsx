@@ -117,7 +117,7 @@ const Login = () => {
     navigate("/signup");
   };
   return (
-    <Box sx={{backgroundColor: '#1e293b'}}>
+    <Box sx={{backgroundColor: '#0f172a'}}>
     <div className="container">
       <div className="wrapper">
         <img src={login_icon} alt="Login Image" className="login-image" />
