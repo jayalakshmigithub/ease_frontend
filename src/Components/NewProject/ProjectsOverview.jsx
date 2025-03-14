@@ -113,9 +113,16 @@ const ProjectsOverview = () => {
       
     }
   }
-  useEffect(()=>{
+  // useEffect(()=>{
+  //   fetchTasks()
+  // },[projectId])
+  useEffect(() => {
     fetchTasks()
-  },[projectId])
+    const interval = setInterval(fetchTasks, 10000) 
+    
+    return () => clearInterval(interval) 
+  }, [projectId])
+  
  const calculateProgress = () => {
   if (!tasks.length) return { completed: 0, inProgress: 0 ,pending:0 };
 

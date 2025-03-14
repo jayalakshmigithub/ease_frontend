@@ -39,7 +39,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  bgcolor: "background.paper",
+  backgroundColor:"#1e293b",
   boxShadow: 24,
   p: 4,
   borderRadius: 2,
@@ -283,14 +283,20 @@ const currentUserId = userInfo?.userId;
                 fullWidth
                 value={taskData.name}
                 onChange={handleChange}
+                InputProps={{
+                  sx: {
+                    color: "white"
+                  },
+                }}
               />
-              <FormControl fullWidth variant="outlined">
+              <FormControl fullWidth variant="outlined" >
                 <InputLabel>Priority</InputLabel>
                 <Select
                   label="Priority"
                   name="priority"
                   value={taskData.priority}
                   onChange={handleChange}
+                  sx={{color:'white'}}
                 >
                   <MenuItem value="Low">Low</MenuItem>
                   <MenuItem value="Medium">Medium</MenuItem>
@@ -304,6 +310,11 @@ const currentUserId = userInfo?.userId;
                 name="description"
                 value={taskData.description}
                 onChange={handleChange}
+                InputProps={{
+                  sx: {
+                    color: "white"
+                  },
+                }}
               />
               {/* <Box display="flex" gap={2}>
                 <TextField
@@ -406,8 +417,9 @@ const currentUserId = userInfo?.userId;
                         />
                       }
                       label={
-                        <Typography color="black">{member.email}</Typography>
+                        <Typography color="white">{member.email}</Typography>
                       }
+                      
                     />
                   );
                 })

@@ -7,74 +7,6 @@ import { toast } from "react-toastify";
 import { IoIosRemoveCircle } from "react-icons/io";
 import Swal from "sweetalert2";
 
-// const EditProjectModal = ({ project, onClose, onUpdate }) => {
-//     const [projectName, setProjectName] = useState(project?.projectName || "");
-//     const [description, setDescription] = useState(project?.Description || "");
-//     const [toDate, setToDate] = useState(dayjs(project?.toDate));
-//     const [loading, setLoading] = useState(false);
-  
-//     const handleSave = async () => {
-//       try {
-//         setLoading(true);
-//         await userAxiosInstance.put('/projects/edit-project', {
-//           _id:project._id,
-//           projectName,
-//           description,
-//           toDate: toDate.toISOString(),
-//         });
-//         console.log('project in project',project)
-//   toast.success('project updated successfully',{ autoClose: 1000 })
-//         onUpdate(); 
-//         onClose(); 
-//       } catch (error) {
-//         console.error("Error updating project:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-  
-//     return (
-//       <Modal open onClose={onClose}>
-//         <div style={{ padding: "20px", background: "white", margin: "10% auto", width: "400px" }}>
-//           <h3>Edit Project</h3>
-          
-//           <TextField
-//             label="Project Name"
-//             fullWidth
-//             value={projectName}
-//             onChange={(e) => setProjectName(e.target.value)}
-//             margin="normal"
-//           />
-          
-//           <TextField
-//             label="Description"
-//             fullWidth
-//             multiline
-//             rows={3}
-//             value={description}
-//             onChange={(e) => setDescription(e.target.value)}
-//             margin="normal"
-//           />
-  
-         
-  
-//           <DateTimePicker
-//             label="End Date"
-//             value={toDate}
-//             onChange={(newValue) => setToDate(newValue)}
-//             sx={{ marginTop: 2, width: "100%" }}
-//           />
-  
-//           <Button onClick={handleSave} disabled={loading} variant="contained" color="primary" sx={{ marginTop: 2 }}>
-//             {loading ? "Saving..." : "Save Changes"}
-          
-//           </Button>
-          
-//         </div>
-//       </Modal>
-//     );
-//   };
-
 
 
 const EditProjectModal = ({ project, onClose, onUpdate }) => {
@@ -158,8 +90,8 @@ const handleDeleteProject = async () => {
 
   return (
     <> 
-    <Modal open onClose={onClose}>
-      <div style={{ padding: "20px", background: "white", margin: "10% auto", width: "400px" }}>
+    <Modal open onClose={onClose} >
+      <div style={{ padding: "20px", background: "white", margin: "10% auto", width: "400px",backgroundColor:"#1e293b" }}>
         <h3>Edit Project</h3>
 
         <TextField
@@ -168,6 +100,11 @@ const handleDeleteProject = async () => {
           value={projectName}
           onChange={(e) => setProjectName(e.target.value)}
           margin="normal"
+          InputProps={{
+            sx: {
+              color: "white"
+            },
+          }}
           />
 
         <TextField
@@ -178,13 +115,24 @@ const handleDeleteProject = async () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           margin="normal"
+          InputProps={{
+            sx: {
+              color: "white"
+            },
+          }}
           />
 
         <DateTimePicker
           label="End Date"
           value={toDate}
           onChange={(newValue) => setToDate(newValue)}
-          sx={{ marginTop: 2, width: "100%" }}
+          sx={{ marginTop: 2, width: "100%",
+           
+            "& .MuiOutlinedInput-root": { color: "#FAF9F6" }, 
+          
+            
+           }}
+        
           />
 
        
@@ -193,7 +141,7 @@ const handleDeleteProject = async () => {
           {members.length > 0 ? (
             members.map((member) => (
               <Box key={member._id} sx={{ display: "flex", alignItems: "center", gap: "10px", marginTop: 1 }}>
-                <Typography sx={{color:'black'}}>{member.email}</Typography>
+                <Typography sx={{color:'white'}}>{member.email}</Typography>
                 <Button
                   color="error"
                   size="large"
@@ -259,3 +207,74 @@ const handleDeleteProject = async () => {
 };
 
 export default EditProjectModal;
+
+
+
+
+// const EditProjectModal = ({ project, onClose, onUpdate }) => {
+//     const [projectName, setProjectName] = useState(project?.projectName || "");
+//     const [description, setDescription] = useState(project?.Description || "");
+//     const [toDate, setToDate] = useState(dayjs(project?.toDate));
+//     const [loading, setLoading] = useState(false);
+  
+//     const handleSave = async () => {
+//       try {
+//         setLoading(true);
+//         await userAxiosInstance.put('/projects/edit-project', {
+//           _id:project._id,
+//           projectName,
+//           description,
+//           toDate: toDate.toISOString(),
+//         });
+//         console.log('project in project',project)
+//   toast.success('project updated successfully',{ autoClose: 1000 })
+//         onUpdate(); 
+//         onClose(); 
+//       } catch (error) {
+//         console.error("Error updating project:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+  
+//     return (
+//       <Modal open onClose={onClose}>
+//         <div style={{ padding: "20px", background: "white", margin: "10% auto", width: "400px" }}>
+//           <h3>Edit Project</h3>
+          
+//           <TextField
+//             label="Project Name"
+//             fullWidth
+//             value={projectName}
+//             onChange={(e) => setProjectName(e.target.value)}
+//             margin="normal"
+//           />
+          
+//           <TextField
+//             label="Description"
+//             fullWidth
+//             multiline
+//             rows={3}
+//             value={description}
+//             onChange={(e) => setDescription(e.target.value)}
+//             margin="normal"
+//           />
+  
+         
+  
+//           <DateTimePicker
+//             label="End Date"
+//             value={toDate}
+//             onChange={(newValue) => setToDate(newValue)}
+//             sx={{ marginTop: 2, width: "100%" }}
+//           />
+  
+//           <Button onClick={handleSave} disabled={loading} variant="contained" color="primary" sx={{ marginTop: 2 }}>
+//             {loading ? "Saving..." : "Save Changes"}
+          
+//           </Button>
+          
+//         </div>
+//       </Modal>
+//     );
+//   };

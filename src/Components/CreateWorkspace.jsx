@@ -86,6 +86,11 @@ const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorksp
                 color: '#FAF9F6', 
               },
             }}
+            InputProps={{
+              sx: {
+                color: "white"
+              },
+            }}
         
           
           />
@@ -97,6 +102,11 @@ const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorksp
             InputLabelProps={{
               sx: {
                 color: '#FAF9F6', 
+              },
+            }}
+            InputProps={{
+              sx: {
+                color: "white"
               },
             }}
           />

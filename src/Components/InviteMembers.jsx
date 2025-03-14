@@ -102,15 +102,16 @@ const InviteMembers = ({ workspace, open, onClose }) => {
     <>
     <ToastContainer/>
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Invite Members</DialogTitle>
-      <DialogContent>
+      <DialogTitle sx={{backgroundColor:"#1e293b", color:"white"}}>Invite Members</DialogTitle>
+      <DialogContent sx={{backgroundColor:"#1e293b"}}>
         <Box
           component="form"
-          sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 2,backgroundColor:"#1e293b" }}
           autoComplete="off"
           onSubmit={handleAddEmail}
+          
         >
-          <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
+          <Stack direction="row" spacing={1} sx={{ mt: 2 ,}}>
             {emails.map((email, index) => (
               <Chip
                 key={index}
@@ -130,11 +131,21 @@ const InviteMembers = ({ workspace, open, onClose }) => {
                 handleAddEmail(e);
               }
             }}
+            InputLabelProps={{
+              sx: {
+                color: '#FAF9F6', 
+              },
+            }}
+            InputProps={{
+              sx: {
+                color: "white"
+              },
+            }}
           />
           {error && <p style={{ color: 'red' }}>{error}</p>}
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{backgroundColor:"#1e293b"}}>
         <Button onClick={handleSkip}>Skip</Button>
         <Button onClick={handleSubmit} disabled={loading}>
           {loading ? 'Sending...' : 'Submit'}

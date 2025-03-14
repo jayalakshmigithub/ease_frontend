@@ -153,7 +153,188 @@ const TaskDetails = ({ open, task, onClose, onDelete, onEdit , currentUser,Owner
       setLoading(false)
     }
   }
-  // const [isEditing, setIsEditing] = useState(false);
+ 
+
+return (
+  <Dialog
+    open={open}
+    onClose={onClose}
+    maxWidth="sm"
+    fullWidth
+    PaperProps={{
+      sx: {
+        backgroundColor: "#1e293b",
+        borderRadius: "12px",
+        padding: "20px",
+        maxHeight: "70vh",
+        width: "900px",
+      },
+    }}
+  >
+    {task && (
+      <DialogContent sx={{ display: "flex", flexDirection: "row", gap: 3 }}>
+        <Box sx={{ flex: 1.2 }}>
+          {isEditing ? (
+            <>
+              <TextField
+                label="Task Name"
+                value={editedTask.name}
+                onChange={(e) => setEditedTask({ ...editedTask, name: e.target.value })}
+                fullWidth
+                variant="outlined"
+                sx={{ backgroundColor: "white", borderRadius: "5px", mb: 1 }}
+              />
+           
+              <TextField
+                label="Description"
+                value={editedTask.Description}
+                onChange={(e) => setEditedTask({ ...editedTask, Description: e.target.value })}
+                fullWidth
+                variant="outlined"
+                multiline
+                rows={3}
+                sx={{ backgroundColor: "white", borderRadius: "5px", mb: 1 }}
+              />
+              <Button onClick={handleSaveTask} variant="contained" sx={{ mr: 2 }}>
+                Save
+              </Button>
+              <Button onClick={() => setIsEditing(false)} variant="outlined">
+                Cancel
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography variant="h6" sx={{ color: "white", fontWeight: "bold", mb: 1 }}>
+                {task.name}
+              </Typography>
+              <Typography variant="body1" sx={{ color: "#cbd5e1", mb: 1 }}>
+                {task.Description}
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#cbd5e1" }}>
+                <strong>Priority:</strong> {task.priority}
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#cbd5e1", mb: 2 }}>
+                <strong>Status:</strong> {task.status}
+              </Typography>
+              {
+                isOwner&&
+                <Button onClick={() => setIsEditing(true)} variant="contained" sx={{ mt: 2 }}>
+                Edit Task
+              </Button>
+              }
+              
+            </>
+          )}
+
+          {task.images?.length > 0 && (
+            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 2 }}>
+              {task.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Task Image ${index + 1}`}
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                    borderRadius: "10px",
+                    boxShadow: "0 4px 10px rgba(255, 255, 255, 0.2)",
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+        </Box>
+
+        <Box sx={{ flex: 1, minWidth: "250px", maxWidth: "300px", overflowY: "auto", pr: 2 }}>
+          <Typography variant="h6" sx={{ color: "white", fontWeight: "bold", mb: 2 }}>
+            Status History
+          </Typography>
+
+          <Timeline sx={{ textAlign: "start", marginRight: "200px" }}>
+            {statusHistory.map((entry, index) => (
+              <TimelineItem key={index}>
+                <TimelineSeparator>
+                  <TimelineDot color="primary" />
+                  {index < statusHistory.length - 1 && <TimelineConnector />}
+                </TimelineSeparator>
+                <TimelineContent>
+                  {editingIndex === index ? (
+                    <>
+                      <TextField
+                        value={editedStatus}
+                        onChange={(e) => setEditedStatus(e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ backgroundColor: "white", borderRadius: "5px", mb: 1 }}
+                      />
+                      <IconButton onClick={() => handleSaveClick(index, entry)} sx={{ color: "green" }}>
+                        <Save size={20} />
+                      </IconButton>
+                      <IconButton onClick={() => setEditingIndex(null)} sx={{ color: "red" }}>
+                        <Close size={20} />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant="body1" sx={{ color: "white", fontWeight: "bold" }}>
+                        {entry.status.toUpperCase()}
+                        <IconButton onClick={() => handleEditClick(index, entry.status)} sx={{ color: "#94a3b8", ml: 1 }}>
+                          <Edit size={18} />
+                        </IconButton>
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                        Updated by {entry.changedBy?.name || "Unknown"} on{" "}
+                        {new Date(entry.changedAt).toLocaleDateString()}
+                      </Typography>
+                    </>
+                  )}
+                </TimelineContent>
+              </TimelineItem>
+            ))}
+          </Timeline>
+        </Box>
+      </DialogContent>
+    )}
+
+    <DialogActions sx={{ p: 2, justifyContent: "space-between" }}>
+      <Button
+        onClick={onClose}
+        variant="outlined"
+        sx={{
+          color: "white",
+          borderColor: "#64748b",
+          "&:hover": { backgroundColor: "#334155" },
+        }}
+      >
+        Close
+      </Button>
+      {
+        isOwner&&
+ <Button  
+ onClick={handleDelete}
+ variant="outlined"
+ disabled={loading}
+   sx={{
+     color: "red",
+     borderColor: "#64748b",
+     "&:hover": { backgroundColor: "#334155" }, 
+   }}>
+     {loading ? "Deleting":"Delete Task"}
+
+ </Button>
+      }
+     
+    </DialogActions>
+  </Dialog>
+);
+};
+export default TaskDetails;
+ 
+
+
+
+ // const [isEditing, setIsEditing] = useState(false);
   // const [editedTask, setEditedTask] = useState({
   //   name: task?.name || "",
   //   description: task?.Description || "",
@@ -343,183 +524,3 @@ const TaskDetails = ({ open, task, onClose, onDelete, onEdit , currentUser,Owner
 //       </DialogActions>
 //     </Dialog>
 //   );
-
-return (
-  <Dialog
-    open={open}
-    onClose={onClose}
-    maxWidth="sm"
-    fullWidth
-    PaperProps={{
-      sx: {
-        backgroundColor: "#1e293b",
-        borderRadius: "12px",
-        padding: "20px",
-        maxHeight: "70vh",
-        width: "900px",
-      },
-    }}
-  >
-    {task && (
-      <DialogContent sx={{ display: "flex", flexDirection: "row", gap: 3 }}>
-        <Box sx={{ flex: 1.2 }}>
-          {isEditing ? (
-            <>
-              <TextField
-                label="Task Name"
-                value={editedTask.name}
-                onChange={(e) => setEditedTask({ ...editedTask, name: e.target.value })}
-                fullWidth
-                variant="outlined"
-                sx={{ backgroundColor: "white", borderRadius: "5px", mb: 1 }}
-              />
-           
-              <TextField
-                label="Description"
-                value={editedTask.Description}
-                onChange={(e) => setEditedTask({ ...editedTask, Description: e.target.value })}
-                fullWidth
-                variant="outlined"
-                multiline
-                rows={3}
-                sx={{ backgroundColor: "white", borderRadius: "5px", mb: 1 }}
-              />
-              <Button onClick={handleSaveTask} variant="contained" sx={{ mr: 2 }}>
-                Save
-              </Button>
-              <Button onClick={() => setIsEditing(false)} variant="outlined">
-                Cancel
-              </Button>
-            </>
-          ) : (
-            <>
-              <Typography variant="h6" sx={{ color: "white", fontWeight: "bold", mb: 1 }}>
-                {task.name}
-              </Typography>
-              <Typography variant="body1" sx={{ color: "#cbd5e1", mb: 1 }}>
-                {task.Description}
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#cbd5e1" }}>
-                <strong>Priority:</strong> {task.priority}
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#cbd5e1", mb: 2 }}>
-                <strong>Status:</strong> {task.status}
-              </Typography>
-              {
-                isOwner&&
-                <Button onClick={() => setIsEditing(true)} variant="contained" sx={{ mt: 2 }}>
-                Edit Task
-              </Button>
-              }
-              
-            </>
-          )}
-
-          {task.images?.length > 0 && (
-            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 2 }}>
-              {task.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`Task Image ${index + 1}`}
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    objectFit: "cover",
-                    borderRadius: "10px",
-                    boxShadow: "0 4px 10px rgba(255, 255, 255, 0.2)",
-                  }}
-                />
-              ))}
-            </Box>
-          )}
-        </Box>
-
-        <Box sx={{ flex: 1, minWidth: "250px", maxWidth: "300px", overflowY: "auto", pr: 2 }}>
-          <Typography variant="h6" sx={{ color: "white", fontWeight: "bold", mb: 2 }}>
-            Status History
-          </Typography>
-
-          <Timeline sx={{ textAlign: "start", marginRight: "200px" }}>
-            {statusHistory.map((entry, index) => (
-              <TimelineItem key={index}>
-                <TimelineSeparator>
-                  <TimelineDot color="primary" />
-                  {index < statusHistory.length - 1 && <TimelineConnector />}
-                </TimelineSeparator>
-                <TimelineContent>
-                  {editingIndex === index ? (
-                    <>
-                      <TextField
-                        value={editedStatus}
-                        onChange={(e) => setEditedStatus(e.target.value)}
-                        variant="outlined"
-                        size="small"
-                        sx={{ backgroundColor: "white", borderRadius: "5px", mb: 1 }}
-                      />
-                      <IconButton onClick={() => handleSaveClick(index, entry)} sx={{ color: "green" }}>
-                        <Save size={20} />
-                      </IconButton>
-                      <IconButton onClick={() => setEditingIndex(null)} sx={{ color: "red" }}>
-                        <Close size={20} />
-                      </IconButton>
-                    </>
-                  ) : (
-                    <>
-                      <Typography variant="body1" sx={{ color: "white", fontWeight: "bold" }}>
-                        {entry.status.toUpperCase()}
-                        <IconButton onClick={() => handleEditClick(index, entry.status)} sx={{ color: "#94a3b8", ml: 1 }}>
-                          <Edit size={18} />
-                        </IconButton>
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: "#94a3b8" }}>
-                        Updated by {entry.changedBy?.name || "Unknown"} on{" "}
-                        {new Date(entry.changedAt).toLocaleDateString()}
-                      </Typography>
-                    </>
-                  )}
-                </TimelineContent>
-              </TimelineItem>
-            ))}
-          </Timeline>
-        </Box>
-      </DialogContent>
-    )}
-
-    <DialogActions sx={{ p: 2, justifyContent: "space-between" }}>
-      <Button
-        onClick={onClose}
-        variant="outlined"
-        sx={{
-          color: "white",
-          borderColor: "#64748b",
-          "&:hover": { backgroundColor: "#334155" },
-        }}
-      >
-        Close
-      </Button>
-      {
-        isOwner&&
- <Button  
- onClick={handleDelete}
- variant="outlined"
- disabled={loading}
-   sx={{
-     color: "red",
-     borderColor: "#64748b",
-     "&:hover": { backgroundColor: "#334155" }, 
-   }}>
-     {loading ? "Deleting":"Delete Task"}
-
- </Button>
-      }
-     
-    </DialogActions>
-  </Dialog>
-);
-};
-export default TaskDetails;
- 
-
-
-
