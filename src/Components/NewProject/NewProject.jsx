@@ -530,7 +530,7 @@ console.log('projectDetails',projectDetails)
                   <Grid container spacing={3} alignItems="center">
                     <Grid item xs={12} md={8}>
                       <FormControl fullWidth margin="normal">
-                        <InputLabel  >
+                        <InputLabel sx={{ color: "white", "&.Mui-focused": { color: "white" } }} >
                           Select a workspace
                         </InputLabel>
                         <Select
@@ -547,6 +547,14 @@ console.log('projectDetails',projectDetails)
                             });
                           }}
                            label="Select a workspace"
+                           sx={{
+                            color: "white",
+                            "& .MuiSelect-select": { color: "white" },
+                            "& fieldset": { borderColor: "white" },
+                            "&:hover fieldset": { borderColor: "white" },
+                            "&.Mui-focused fieldset": { borderColor: "white" },
+                            
+                          }}
                         >
                            
                           <MenuItem value="" disabled>
@@ -643,7 +651,7 @@ console.log('projectDetails',projectDetails)
                     />
 
 <Grid item xs={12} md={8}>
-      <Typography sx={{ marginBottom: '8px', fontWeight: 'bold' }}>Members:</Typography>
+      <Typography sx={{ marginBottom: '8px', color:'white' }}>Members:</Typography>
       <Paper
         elevation={1}
         sx={{
@@ -682,7 +690,7 @@ console.log('projectDetails',projectDetails)
       </Paper>
     </Grid>
 
-                    <Typography variant="h6" marginTop="20px">
+                    <Typography marginBottom= '8px' marginTop="20px" sx={{color:'white'}}>
                       Add Due Date:
                     </Typography>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>

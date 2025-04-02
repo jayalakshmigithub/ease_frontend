@@ -7,11 +7,14 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { userAxiosInstance } from "../../utils/api/axiosInstance";
 import { format } from 'date-fns';
 import { useSocket } from "../../utils/context/SocketProvider";
+import { useSelector } from "react-redux";
 
 const NotificationPage = () => {
     const socket = useSocket();
     const [notifications, setNotifications] = useState([]);
     const [notificationCount, setNotificationCount] = useState(0);
+    const currentUser = useSelector((state)=>state?.user?.userInfo?.user)
+    const currentUserID = currentUser._id
 
     const fetchNotifications = async () => {
         try {
@@ -51,17 +54,64 @@ const NotificationPage = () => {
         //     setNotifications((prevNotifications) => [notifications, ...prevNotifications]);
         //     setNotificationCount((prevCount) => prevCount + 1);
         // });
+
+        const handleNotificationRead = ({ notificationId }) => {
+            console.log(`Notification ${notificationId} marked as read in notifacation read`);
+            setNotifications((prevNotifications) =>
+                prevNotifications.map((notification) =>
+                    notification._id === notificationId
+                        ? { ...notification, isRead: true }
+                        : notification
+                )
+            );
+        };
+    
+
         socket.socket.on("receive-notification",handleNewNotification)
+        socket.socket.on("notification-read", handleNotificationRead);
+
 
         return () => {
             if (socket?.socket?.connected) {
                 socket.socket.off("receive-notification", handleNewNotification);
+                socket.socket.off("notification-read", handleNotificationRead);
+
             }
         };
     },  [socket?.socket?.connected]);
     const handleViewNotifications = () => {
         setNotificationCount(0);
     };
+
+    // const handleAsMarked = async(notificationId)=>{
+    //     console.log('clicked ')
+    //     if(socket?.socket){
+    //         socket.socket.emit("mark-notification-as-read",{
+    //             notificationId,
+    //             userId : currentUserID
+    //         })
+    //     }
+    //     console.log('notificationId',notificationId)
+
+    // }
+    const handleAsMarked = async (notificationId) => {
+        console.log("clicked", notificationId);
+        if (socket?.socket) {
+            socket.socket.emit("mark-notification-as-read", {
+                notificationId,
+                userId: currentUserID,
+            });
+    
+            setNotifications((prevNotifications) =>
+                prevNotifications.map((notification) =>
+                    notification._id === notificationId
+                        ? { ...notification, isRead: true }
+                        : notification
+                )
+            );
+        }
+    };
+    
 
     const handleClose = (_id, event) => {
         event.stopPropagation();
@@ -74,10 +124,6 @@ const NotificationPage = () => {
         <Box
             className="homepage"
             sx={{
-                // backgroundImage: `
-                //     radial-gradient(at top right, #C0CFFA 55.55%, #fff 70%),
-                //     radial-gradient(at bottom left, #C0CFFA 55.55%, #fff 70%)
-                // `,
                 backgroundColor:'#0f172a',
                 width: "100vw",
                 height: "100vh",
@@ -103,14 +149,6 @@ const NotificationPage = () => {
                        
                     }}
                 >
-                                        {/* <Box sx={{ display: "flex", justifyContent: "flex-end", marginBottom: 2 }}>
-                        <Badge badgeContent={notificationCount} color="error">
-                            <NotificationsIcon
-                                sx={{ fontSize: 32, cursor: "pointer" }}
-                                onClick={handleViewNotifications} 
-                            />
-                        </Badge>
-                    </Box> */}
 
                     <Typography variant="h4" component="h1" sx={{ marginBottom: 3, textAlign: "center" }}>
                         Notifications
@@ -122,11 +160,12 @@ const NotificationPage = () => {
                                 <ListItem
                                 key={notification._id}
                                     sx={{
-                                        backgroundColor: "#f5f5f5",
+                                        backgroundColor: notification.isRead ? "#333" : "#f5f5f5",
                                         borderRadius: 1,
                                         marginBottom: 1,
                                         ":hover": { backgroundColor: "#e8eaf6" },
                                     }}
+                                    onClick={()=>handleAsMarked(notification._id)}
                                 >
                                     <ListItemIcon>
                                         <NotificationsIcon color="primary" />

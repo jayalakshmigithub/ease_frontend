@@ -631,25 +631,37 @@ console.log('ownerid before navigating',OwnerId)
 
             {/* Pagination */}
             <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}
+              sx={{ display: "flex", justifyContent: "center", mt: 3 }}
             >
-              <Button
-                onClick={handlePrevPage}
-                disabled={currentPage === 0}
-                variant="contained"
-              >
-                Previous
-              </Button>
-              <Typography>
+              {
+                currentPage>0 &&(
+
+                  <Button
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 0}
+                  variant="contained"
+                >
+                  Previous
+                </Button>
+                )
+              }
+             
+              {/* <Typography>
                 Page {currentPage + 1} of {totalPages}
-              </Typography>
-              <Button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages - 1}
-                variant="contained"
-              >
-                Next
-              </Button>
+              </Typography> */}
+              {
+                currentPage < totalPages - 1 &&(
+                  <Button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages - 1}
+                  variant="contained"
+                >
+                  Next
+                </Button>
+
+                )
+              }
+             
             </Box>
           </Container>
 

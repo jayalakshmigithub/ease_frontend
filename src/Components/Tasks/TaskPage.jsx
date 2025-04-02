@@ -241,24 +241,22 @@ return (
         + New Task
       </Button> */}
       
-<Tooltip title={!isOwner ? "Only the owner can create tasks" : ""} arrow>
-  <span>
-    <Button
-      variant="contained"
-      onClick={handleAddNewTask}
-      disabled={!isOwner}
-      sx={{
-        backgroundColor: isOwner ? "#1976d2" : "#b0bec5",
-        fontWeight: "bold",
-        padding: "10px 20px",
-        marginRight: "30px",
-        ":hover": { backgroundColor: isOwner ? "#115293" : "#b0bec5" },
-      }}
-    >
-      + New Task
-    </Button>
-  </span>
-</Tooltip>
+{
+  isOwner &&  <Button
+  variant="contained"
+  onClick={handleAddNewTask}
+  disabled={!isOwner}
+  sx={{
+    backgroundColor: isOwner ? "#1976d2" : "#b0bec5",
+    fontWeight: "bold",
+    padding: "10px 20px",
+    marginRight: "30px",
+    ":hover": { backgroundColor: isOwner ? "#115293" : "#b0bec5" },
+  }}
+>
+  + New Task
+</Button>
+}
     </Box>
 
     <Container>

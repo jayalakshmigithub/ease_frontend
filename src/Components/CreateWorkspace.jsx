@@ -114,10 +114,10 @@ const CreateWorkspaceForm = ({ open, onClose, setWorkSpace,nextStep ,fetchWorksp
       </DialogContent>
       </Box>
       <DialogActions sx={{  backgroundColor: "#1e293b",}}>
-        <Button onClick={onClose} color="primary">
+        <Button variant="contained" onClick={onClose} color="primary">
           Cancel
         </Button>
-        <Button color="primary" type="submit" onClick={()=>{
+        <Button variant="contained" color="primary" type="submit" onClick={()=>{
           handleSubmit()
           setTimeout(() => {
             nextStep()

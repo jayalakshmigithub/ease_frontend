@@ -23,6 +23,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import TaskListRough from "../TaskListRough";
 import TaskPage from "../Tasks/TaskPage";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -36,6 +37,7 @@ const ProjectsOverview = () => {
   const [members,setMembers] = useState([])
   const { projectId } = useParams();
   const location  = useLocation()
+  const navigate = useNavigate()
   const OwnerId =location.state?.OwnerId || null
   useEffect(() => {
     console.log(OwnerId, "OwnerId inside TasksPage");
@@ -59,9 +61,22 @@ const ProjectsOverview = () => {
         console.warn("No project data found in the response");
       }
     } catch (error) {
-      console.error("Error fetching project", error);
-      setError(error.message);
-    } finally {
+      if (error.response) {
+        if (error.response.status === 404) {
+          navigate("*"); 
+        } else if (error.response.status === 401) {
+          console.warn("Unauthorized access - Check if token is valid");
+        } else {
+          console.error("Error fetching project", error);
+        }
+      } else {
+        console.error("Error fetching project", error);
+      }
+    }
+     
+    
+    
+    finally {
       setLoading(false);
     }
   };
